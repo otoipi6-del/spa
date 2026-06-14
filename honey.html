@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Натуральный мёд | Пасека в [Ваш_Регион] | Доставка по всей стране</title>
+    <meta name="description" content="Натуральный мёд, перга, прополис и воск с собственной пасеки. Без подогрева и примесей. Доставка по [Ваш_Город] и всей стране. Закажите полезный подарок для всей семьи!">
+    <meta name="keywords" content="мёд, купить мёд, натуральный мёд, пасека, перга, прополис, воск, мёд с доставкой, мёд оптом, подарок">
+    <meta name="author" content="Пасечник [Ваше Имя]">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F5B041'%3E%3Cpath d='M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2Z'/%3E%3C/svg%3E">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            background: #FFF9E6;
+            color: #3E2A1E;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Цветовая схема */
+        :root {
+            --honey: #F5B041;
+            --honey-dark: #E67E22;
+            --cream: #FFF9E6;
+            --dark: #3E2A1E;
+            --green: #4CAF50;
+            --gray: #7F8C8D;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Шапка */
+        .header {
+            background: var(--cream);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255,249,230,0.95);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--honey-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            font-size: 28px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover {
+            color: var(--honey-dark);
+        }
+
+        .phone {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--honey-dark);
+            text-decoration: none;
+        }
+
+        /* Кнопки */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--honey);
+            color: var(--dark);
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: var(--honey-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--honey);
+            color: var(--honey-dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--honey);
+            color: white;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FEF2D6 100%);
+            padding: 80px 0;
+        }
+
+        .hero .container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            color: var(--honey-dark);
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Секции */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--honey-dark);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 50px;
+        }
+
+        /* Карточки товаров */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .product-info p {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--honey-dark);
+            margin-bottom: 15px;
+        }
+
+        /* Аккордеон для пользы */
+        .accordion {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .accordion-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: var(--honey);
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+
+        .accordion-header:hover {
+            background: var(--honey-dark);
+            color: white;
+        }
+
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background: #fff;
+        }
+
+        .accordion-content p {
+            padding: 20px 0;
+        }
+
+        /* Отзывы */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .review-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .stars {
+            color: var(--honey);
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .review-text {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .review-author {
+            font-weight: bold;
+        }
+
+        /* Как заказать */
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            background: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--honey);
+            color: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        /* Форма */
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--honey);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        .footer a {
+            color: var(--honey);
+            text-decoration: none;
+        }
+
+        /* Адаптив */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 32px;
+            }
+            .hero .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav {
+                justify-content: center;
+                margin: 15px 0;
+            }
+            .phone {
+                margin: 10px 0;
+            }
+            .section-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <a href="#" class="logo">
+            <span>🐝</span> Мёд.by
+        </a>
+        <nav class="nav">
+            <a href="#products">Продукция</a>
+            <a href="#benefits">Польза</a>
+            <a href="#order">Как заказать</a>
+            <a href="#contacts">Контакты</a>
+        </nav>
+        <a href="tel:+XXXXXXXXXX" class="phone" id="phonePlaceholder">📞 +375 (XX) XXX-XX-XX</a>
+    </div>
+</header>
+
+<main>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Натуральный мёд с собственной пасеки</h1>
+                <p>Без сахара, без нагрева, без примесей. Только то, что дала природа.</p>
+                <a href="#order" class="btn">🍯 Заказать мёд</a>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.pexels.com/photos/463169/pexels-photo-463169.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Банка мёда с ложкой">
+            </div>
+        </div>
+    </section>
+
+    <!-- Продукция -->
+    <section id="products" class="section">
+        <div class="container">
+            <h2 class="section-title">Наша продукция</h2>
+            <p class="section-subtitle">С любовью от пчёл — для вашего здоровья</p>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="https://images.pexels.com/photos/920048/pexels-photo-920048.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Липовый мёд">
+                    <div class="product-info">
+                        <h3>Липовый мёд</h3>
+                        <p>Нежный, ароматный, помогает при простуде.</p>
+                        <div class="price">25 руб / кг</div>
+                        <button class="btn order-btn" data-product="Липовый мёд">Купить</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://images.pexels.com/photos/8618838/pexels-photo-8618838.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Гречишный мёд">
+                    <div class="product-info">
+                        <h3>Гречишный мёд</h3>
+                        <p>Тёмный, насыщенный, чемпион по железу.</p>
+                        <div class="price">25 руб / кг</div>
+                        <button class="btn order-btn" data-product="Гречишный мёд">Купить</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://images.pexels.com/photos/775894/pexels-photo-775894.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Луговой мёд">
+                    <div class="product-info">
+                        <h3>Луговой мёд</h3>
+                        <p>Цветочный букет с 40+ трав.</p>
+                        <div class="price">25 руб / кг</div>
+                        <button class="btn order-btn" data-product="Луговой мёд">Купить</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://images.pexels.com/photos/19261249/pexels-photo-19261249/free-photo-of-close-up-of-bee-on-comb.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Перга">
+                    <div class="product-info">
+                        <h3>Перга</h3>
+                        <p>Пчелиный хлеб — супер-еда для иммунитета.</p>
+                        <div class="price">35 руб / 250г</div>
+                        <button class="btn order-btn" data-product="Перга">Купить</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://images.pexels.com/photos/7283906/pexels-photo-7283906.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Прополис">
+                    <div class="product-info">
+                        <h3>Прополис</h3>
+                        <p>Природный антибиотик и антисептик.</p>
+                        <div class="price">15 руб / 30г</div>
+                        <button class="btn order-btn" data-product="Прополис">Купить</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="https://images.pexels.com/photos/8560805/pexels-photo-8560805.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Вощина">
+                    <div class="product-info">
+                        <h3>Вощина</h3>
+                        <p>Натуральный воск для свечей и бальзамов.</p>
+                        <div class="price">10 руб / 100г</div>
+                        <button class="btn order-btn" data-product="Вощина">Купить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Польза мёда (аккордеон) -->
+    <section id="benefits" class="section" style="background: #FEF2D6;">
+        <div class="container">
+            <h2 class="section-title">Почему мёд — это супер-еда?</h2>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">🍯 Укрепляет иммунитет</div>
+                    <div class="accordion-content"><p>Мёд содержит антиоксиданты и ферменты, которые помогают организму бороться с вирусами и бактериями. Регулярное употребление снижает риск простуд на 30%.</p></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">💪 Придаёт энергию</div>
+                    <div class="accordion-content"><p>Натуральные сахара (глюкоза и фруктоза) дают быстрый заряд бодрости без скачков инсулина. Идеально перед тренировкой или в период стресса.</p></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">💆‍♀️ Красота кожи и волос</div>
+                    <div class="accordion-content"><p>Медовые маски питают, увлажняют и омолаживают. Клеопатра, кстати, принимала молочные ванны с мёдом!</p></div>
+                </div>
+                <div class="accordion-item">
+                    <div class="accordion-header">🌿 Натуральная замена сахару</div>
+                    <div class="accordion-content"><p>Мёд слаще сахара, поэтому его нужно меньше. Он имеет низкий гликемический индекс и богат микроэлементами.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Как заказать и оплатить -->
+    <section id="order" class="section">
+        <div class="container">
+            <h2 class="section-title">Как заказать мёд?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Выберите товар</h3>
+                    <p>Нажмите «Купить» и оставьте заявку</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Подтверждение</h3>
+                    <p>Я позвоню вам за 10 минут, чтобы уточнить детали</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Оплата и доставка</h3>
+                    <p>Наличными при получении или онлайн-картой. Доставка по всему городу — 5 руб. Самовывоз — бесплатно.</p>
+                </div>
+            </div>
+            <div class="form-container" style="margin-top: 50px;">
+                <h3 style="margin-bottom: 20px;">Оформить заказ</h3>
+                <form id="orderForm" method="POST">
+                    <input type="hidden" name="product" id="selectedProduct" value="">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="phone" placeholder="Телефон для связи" required>
+                    </div>
+                    <div class="form-group">
+                        <select id="productSelect" required>
+                            <option value="">Выберите товар</option>
+                            <option value="Липовый мёд">Липовый мёд</option>
+                            <option value="Гречишный мёд">Гречишный мёд</option>
+                            <option value="Луговой мёд">Луговой мёд</option>
+                            <option value="Перга">Перга</option>
+                            <option value="Прополис">Прополис</option>
+                            <option value="Вощина">Вощина</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="address" placeholder="Адрес доставки (необязательно)">
+                    </div>
+                    <button type="submit" class="btn">Отправить заказ</button>
+                </form>
+                <p style="text-align: center; margin-top: 20px;">Или звоните: <strong id="phoneFormPlaceholder">+375 (XX) XXX-XX-XX</strong></p>
+                <p style="text-align: center; font-size: 14px;">Для онлайн-оплаты напишите мне в <a href="#" id="viberPlaceholder">Viber</a> или <a href="#" id="telegramPlaceholder">Telegram</a> – пришлю защищённую ссылку</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Отзывы -->
+    <section class="section" style="background: #FEF2D6;">
+        <div class="container">
+            <h2 class="section-title">Нам доверяют</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="review-text">«Заказываю мёд уже третий год. Очень вкусный, натуральный, чувствуется, что без химии. Ребёнок просит именно этот!»</p>
+                    <p class="review-author">— Елена, Минск</p>
+                </div>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="review-text">«Покупал прополис и пергу. Качество отличное. Пасечник приятный, проконсультировал по приёму. Доставили быстро».</p>
+                    <p class="review-author">— Андрей, Молодечно</p>
+                </div>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="review-text">«Брала подарочный набор родителям. Оформление симпатичное, мёд — пальчики оближешь. Рекомендую!»</p>
+                    <p class="review-author">— Светлана, Витебск</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© <span id="currentYear"></span> Пасека [Ваше Имя] | Натуральный мёд с доставкой</p>
+        <p style="margin-top: 10px;">Сайт создан для удобства покупателей. Принимаем наличные, карты, ЕРИП.</p>
+        <p style="margin-top: 15px;"><a href="#">Политика конфиденциальности</a></p>
+    </div>
+</footer>
+
+<script>
+    // Подстановка текущего года
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Аккордеон
+    const acc = document.querySelectorAll('.accordion-header');
+    acc.forEach(item => {
+        item.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    });
+
+    // Заполнение скрытого поля товара
+    const btns = document.querySelectorAll('.order-btn');
+    const productSelect = document.getElementById('productSelect');
+    const selectedProduct = document.getElementById('selectedProduct');
+    
+    btns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const product = this.getAttribute('data-product');
+            productSelect.value = product;
+            selectedProduct.value = product;
+            document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    
+    productSelect.addEventListener('change', function() {
+        selectedProduct.value = this.value;
+    });
+
+    // Отправка заказа (имитация, здесь нужно настроить реальную отправку на почту / телеграм)
+    const form = document.getElementById('orderForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = {
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            product: formData.get('product'),
+            address: formData.get('address')
+        };
+        console.log('Заказ:', data);
+        alert('Спасибо! Я перезвоню вам в ближайшее время для подтверждения заказа.');
+        form.reset();
+    });
+
+    // ЗДЕСЬ ВЫ МОЖЕТЕ ВСТАВИТЬ СВОИ ДАННЫЕ:
+    // 1. Телефон (заменить +375XXXXXXXXX во всех местах)
+    // 2. Ссылки на Viber, Telegram, WhatsApp
+    // 3. Реквизиты для оплаты (ЕРИП, номер карты) добавить в текст
+    const phoneNumber = '+375291234567'; // <-- ВСТАВЬТЕ СВОЙ НОМЕР
+    document.querySelectorAll('#phonePlaceholder, #phoneFormPlaceholder').forEach(el => {
+        if(el.tagName === 'A') el.href = `tel:${phoneNumber}`;
+        el.textContent = phoneNumber;
+    });
+    
+    // Viber и Telegram (замените ссылки)
+    const viberLink = document.getElementById('viberPlaceholder');
+    const telegramLink = document.getElementById('telegramPlaceholder');
+    // viberLink.href = 'viber://chat?number=+375XXXXXXXXX';  // раскомментировать и вставить номер
+    // telegramLink.href = 'https://t.me/ВАШ_НИК';
+    viberLink.textContent = 'Viber';
+    telegramLink.textContent = 'Telegram';
+    viberLink.href = '#';  // заменить на реальную ссылку
+    telegramLink.href = '#'; // заменить на реальную ссылку
+</script>
+</body>
+</html>
