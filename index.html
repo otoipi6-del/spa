@@ -43,7 +43,6 @@
             padding-bottom: 80px;
             line-height: 1.5;
         }
-        /* Header */
         .header {
             background: var(--bg-nav);
             border-bottom: 1px solid var(--border);
@@ -69,7 +68,6 @@
             color: white;
             font-size: 18px;
         }
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -97,18 +95,11 @@
             background: none;
             min-width: 64px;
         }
-        .nav-item.active {
-            color: var(--accent);
-        }
-        .nav-item .nav-icon {
-            font-size: 20px;
-            line-height: 1;
-        }
-        /* Sections */
+        .nav-item.active { color: var(--accent); }
+        .nav-item .nav-icon { font-size: 20px; line-height: 1; }
         .section { display: none; padding: 16px; animation: fadeIn 0.25s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        /* Cards */
         .card {
             background: var(--bg-card);
             border: none;
@@ -127,10 +118,7 @@
             gap: 8px;
         }
         .card-title .icon { font-size: 18px; }
-        /* Inputs */
-        .input-group {
-            margin-bottom: 14px;
-        }
+        .input-group { margin-bottom: 14px; }
         .input-group label {
             display: block;
             font-size: 12px;
@@ -158,7 +146,6 @@
             box-shadow: 0 0 0 3px var(--accent-soft);
         }
         .input-group input::placeholder { color: var(--text-muted); }
-        /* Result box */
         .result-box {
             background: var(--bg);
             border: none;
@@ -173,11 +160,7 @@
             justify-content: center;
             flex-direction: column;
         }
-        .result-box[onclick]:active {
-            transform: scale(0.98);
-            background: var(--accent-soft);
-        }
-
+        .result-box[onclick]:active { transform: scale(0.98); background: var(--accent-soft); }
         .result-value {
             font-size: 20px;
             font-weight: 400;
@@ -189,7 +172,6 @@
         .result-value.red { color: var(--red); }
         .result-value.orange { color: var(--orange); }
         .result-value.neutral { color: var(--text-bright); }
-        /* Trade cards */
         .trade-card {
             background: var(--bg-card);
             border: none;
@@ -237,7 +219,6 @@
             border: none;
         }
         .trade-grid .input-group label { font-size: 10px; }
-        /* Auto-calculated fields */
         .auto-field {
             background: var(--bg) !important;
             color: var(--text-bright) !important;
@@ -250,7 +231,6 @@
         }
         .auto-field.green { color: var(--green) !important; }
         .auto-field.red { color: var(--red) !important; }
-        /* Add button */
         .btn-add {
             width: 100%;
             padding: 14px;
@@ -270,7 +250,6 @@
         }
         .btn-add:hover { background: rgba(45,122,62,0.18); }
         .btn-add:active { transform: scale(0.98); }
-        /* Summary button */
         .btn-summary {
             width: 100%;
             padding: 14px;
@@ -289,7 +268,6 @@
             margin-bottom: 20px;
         }
         .btn-summary:hover { background: rgba(45,122,62,0.18); }
-        /* Summary modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -327,7 +305,6 @@
             font-size: 24px;
             cursor: pointer;
         }
-        /* Summary table */
         .summary-table {
             width: 100%;
             border-collapse: collapse;
@@ -362,11 +339,9 @@
         }
         .summary-total-label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
         .summary-total-value { font-size: 18px; font-weight: 400; }
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        /* Empty state */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -374,7 +349,6 @@
         }
         .empty-state .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
         .empty-state p { font-size: 14px; }
-        /* Rebalance action text */
         .rebalance-action {
             font-size: 13px;
             font-weight: 600;
@@ -383,14 +357,11 @@
         }
         .rebalance-action.green { color: var(--green); }
         .rebalance-action.red { color: var(--red); }
-        /* Ticker select */
         select option { background: var(--bg-card); color: var(--text-bright); }
-        /* Responsive tweaks */
         @media (min-width: 600px) {
             .trade-grid { grid-template-columns: 1fr 1fr 1fr; }
             .trade-grid .input-group.full { grid-column: 1 / -1; }
         }
-        /* PWA Install prompt */
         .install-banner {
             display: none;
             position: fixed;
@@ -423,11 +394,114 @@
             cursor: pointer;
             padding: 4px;
         }
+        /* Date picker wrapper */
+        .date-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .date-wrapper input[type="text"] {
+            flex: 1;
+            padding-right: 44px !important;
+        }
+        .date-picker-btn {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px;
+            opacity: 0.6;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .native-date-input {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 3;
+            border: none;
+            background: transparent;
+        }
+        /* API price row */
+        .api-price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .api-price-display {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+        }
+        .api-price-display .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .api-price-display .price-value {
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .api-price-display.error { color: var(--red); }
+        .api-price-display.error .live-dot { background: var(--red); animation: none; }
+        .api-price-display.error .price-value { color: var(--red); }
+        .btn-apply-price {
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-apply-price:hover { background: #236b32; }
+        .btn-apply-price:active { transform: scale(0.95); }
+        .btn-apply-price:disabled {
+            background: var(--text-muted);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-refresh-price {
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px;
+            opacity: 0.6;
+        }
+        .btn-refresh-price:active { opacity: 1; transform: scale(0.9); }
     </style>
+<base target="_blank">
 </head>
 <body>
 
-<!-- PWA Install Banner -->
 <div class="install-banner" id="install-banner">
     <span class="install-banner-text">📲 Установите приложение на рабочий стол</span>
     <div style="display:flex;gap:8px;align-items:center;">
@@ -436,22 +510,19 @@
     </div>
 </div>
 
-<!-- Header -->
 <div class="header" id="main-header">
     <div class="header-icon">📊</div>
     <h1 id="page-title">Калькуляторы</h1>
     <div style="width:36px"></div>
 </div>
 
-<!-- ====== КАЛЬКУЛЯТОРЫ ====== -->
 <div id="section-calculators" class="section active">
 
-    <!-- Калькулятор 2: Цена при росте/падении % -->
     <div class="card">
         <div class="card-title"><span class="icon">🎯</span> Цена при росте(+)/падении(-) на указанный %</div>
         <div class="input-group">
             <label>Цена актива</label>
-            <input type="number" id="calc2-price" placeholder="0.00" step="any" oninput="calc2()">
+            <input type="text" inputmode="decimal" id="calc2-price" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc2()">
         </div>
         <div class="input-group">
             <label>Изменение цены на %<br><span style="font-size:11px;color:var(--text-muted);font-weight:400;">(пример: 5% или -3%)</span></label>
@@ -468,16 +539,15 @@
         </div>
     </div>
 
-    <!-- Калькулятор 1: % роста/падения -->
     <div class="card">
         <div class="card-title"><span class="icon">📈</span> % роста(+)/падения(-) цены актива</div>
         <div class="input-group">
             <label>Цена открытия</label>
-            <input type="number" id="calc1-open" placeholder="0.00" step="any" oninput="calc1()">
+            <input type="text" inputmode="decimal" id="calc1-open" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc1()">
         </div>
         <div class="input-group">
             <label>Цена закрытия</label>
-            <input type="number" id="calc1-close" placeholder="0.00" step="any" oninput="calc1()">
+            <input type="text" inputmode="decimal" id="calc1-close" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc1()">
         </div>
         <div class="input-group">
             <label>% изменения цены</label>
@@ -487,16 +557,15 @@
         </div>
     </div>
 
-    <!-- Калькулятор 3: Расчет объема -->
     <div class="card">
         <div class="card-title"><span class="icon">⚖️</span> Расчет объема</div>
         <div class="input-group">
             <label>Сумма сделки (USD)</label>
-            <input type="number" id="calc3-usd" placeholder="0.00" step="any" oninput="calc3()">
+            <input type="text" inputmode="decimal" id="calc3-usd" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc3()">
         </div>
         <div class="input-group">
             <label>Цена актива</label>
-            <input type="number" id="calc3-price" placeholder="0.00" step="any" oninput="calc3()">
+            <input type="text" inputmode="decimal" id="calc3-price" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc3()">
         </div>
         <div class="input-group">
             <label>Количество актива</label>
@@ -506,20 +575,28 @@
         </div>
     </div>
 
-    <!-- Калькулятор 4: Ребалансировка -->
     <div class="card">
         <div class="card-title"><span class="icon">🔄</span> Ребалансировка портфеля (USD / BTC 50/50)</div>
         <div class="input-group">
             <label>Цена BTC (USD)</label>
-            <input type="number" id="calc4-btc-price" placeholder="0.00" step="any" oninput="calc4()">
+            <input type="text" inputmode="decimal" id="calc4-btc-price" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc4()">
+            <div class="api-price-row">
+                <div class="api-price-display" id="btc-display-calc4">
+                    <span class="live-dot"></span>
+                    <span>API: </span>
+                    <span class="price-value" id="btc-price-calc4">—</span>
+                </div>
+                <button class="btn-refresh-price" onclick="fetchBtcPrice()" title="Обновить цену">🔄</button>
+                <button class="btn-apply-price" id="btn-apply-btc-calc4" onclick="applyApiPrice('btc', 'calc4-btc-price', 'btc-price-calc4')" disabled>✓ Применить</button>
+            </div>
         </div>
         <div class="input-group">
             <label>Количество BTC</label>
-            <input type="number" id="calc4-btc-qty" placeholder="0.00000000" step="any" oninput="calc4()">
+            <input type="text" inputmode="decimal" id="calc4-btc-qty" placeholder="0,00000000" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc4()">
         </div>
         <div class="input-group">
             <label>Количество USD</label>
-            <input type="number" id="calc4-usd-qty" placeholder="0.00" step="any" oninput="calc4()">
+            <input type="text" inputmode="decimal" id="calc4-usd-qty" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc4()">
         </div>
         <div class="input-group">
             <label>Действие</label>
@@ -530,28 +607,45 @@
         </div>
     </div>
 
-    <!-- Калькулятор 5: Ребалансировка USD / BTC / GOLD -->
     <div class="card">
         <div class="card-title"><span class="icon">🔄</span> Ребалансировка портфеля (USD / BTC / GOLD 33/33/33)</div>
         <div class="input-group">
             <label>Цена BTC (USD)</label>
-            <input type="number" id="calc5-btc-price" placeholder="0.00" step="any" oninput="calc5()">
+            <input type="text" inputmode="decimal" id="calc5-btc-price" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc5()">
+            <div class="api-price-row">
+                <div class="api-price-display" id="btc-display-calc5">
+                    <span class="live-dot"></span>
+                    <span>API: </span>
+                    <span class="price-value" id="btc-price-calc5">—</span>
+                </div>
+                <button class="btn-refresh-price" onclick="fetchBtcPrice()" title="Обновить цену">🔄</button>
+                <button class="btn-apply-price" id="btn-apply-btc-calc5" onclick="applyApiPrice('btc', 'calc5-btc-price', 'btc-price-calc5')" disabled>✓ Применить</button>
+            </div>
         </div>
         <div class="input-group">
             <label>Цена GOLD (USD за унцию)</label>
-            <input type="number" id="calc5-gold-price" placeholder="0.00" step="any" oninput="calc5()">
+            <input type="text" inputmode="decimal" id="calc5-gold-price" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc5()">
+            <div class="api-price-row">
+                <div class="api-price-display" id="gold-display-calc5">
+                    <span class="live-dot"></span>
+                    <span>API: </span>
+                    <span class="price-value" id="gold-price-calc5">—</span>
+                </div>
+                <button class="btn-refresh-price" onclick="fetchGoldPrice()" title="Обновить цену">🔄</button>
+                <button class="btn-apply-price" id="btn-apply-gold-calc5" onclick="applyApiPrice('gold', 'calc5-gold-price', 'gold-price-calc5')" disabled>✓ Применить</button>
+            </div>
         </div>
         <div class="input-group">
             <label>Количество BTC</label>
-            <input type="number" id="calc5-btc-qty" placeholder="0.00000000" step="any" oninput="calc5()">
+            <input type="text" inputmode="decimal" id="calc5-btc-qty" placeholder="0,00000000" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc5()">
         </div>
         <div class="input-group">
             <label>Количество GOLD (унций)</label>
-            <input type="number" id="calc5-gold-qty" placeholder="0.000" step="any" oninput="calc5()">
+            <input type="text" inputmode="decimal" id="calc5-gold-qty" placeholder="0,000" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc5()">
         </div>
         <div class="input-group">
             <label>Количество USD</label>
-            <input type="number" id="calc5-usd-qty" placeholder="0.00" step="any" oninput="calc5()">
+            <input type="text" inputmode="decimal" id="calc5-usd-qty" placeholder="0,00" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="calc5()">
         </div>
         <div class="input-group">
             <label>Действие</label>
@@ -562,10 +656,8 @@
         </div>
     </div>
 
-
 </div>
 
-<!-- ====== СПОТ ====== -->
 <div id="section-spot" class="section">
     <div id="spot-trades"></div>
     <button class="btn-add" onclick="addTrade('spot')">
@@ -576,7 +668,6 @@
     </button>
 </div>
 
-<!-- ====== ФЬЮЧЕРСЫ ====== -->
 <div id="section-futures" class="section">
     <div id="futures-trades"></div>
     <button class="btn-add" onclick="addTrade('futures')">
@@ -587,7 +678,6 @@
     </button>
 </div>
 
-<!-- ====== BOTTOM NAV ====== -->
 <div class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('calculators')">
         <span class="nav-icon">🧮</span>
@@ -603,7 +693,6 @@
     </button>
 </div>
 
-<!-- ====== SUMMARY MODAL ====== -->
 <div class="modal-overlay" id="summary-modal" onclick="closeSummary(event)">
     <div class="modal" onclick="event.stopPropagation()">
         <div class="modal-header">
@@ -615,7 +704,7 @@
 </div>
 
 <script>
-// ====== PWA INSTALL ======
+
 let deferredPrompt = null;
 const installBanner = document.getElementById('install-banner');
 const installBtn = document.getElementById('install-btn');
@@ -631,9 +720,7 @@ installBtn.addEventListener('click', async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-        hideInstallBanner();
-    }
+    if (outcome === 'accepted') { hideInstallBanner(); }
     deferredPrompt = null;
 });
 
@@ -647,14 +734,144 @@ window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
 });
 
-// ====== STATE ======
+// ====== NUMBER FORMATTING HELPERS ======
+function formatNumber(value, decimals) {
+    if (value === '' || value === null || value === undefined) return '';
+    const num = parseFloat(String(value).replace(/\s/g, '').replace(',', '.'));
+    if (isNaN(num)) return value;
+    return num.toLocaleString('ru-RU', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function parseNumber(value) {
+    if (!value || value === '') return NaN;
+    const cleaned = String(value).replace(/\s/g, '').replace(',', '.');
+    return parseFloat(cleaned);
+}
+
+function formatNumberInput(input) {
+    const val = input.value;
+    if (!val || val === '') return;
+    const num = parseNumber(val);
+    if (!isNaN(num)) {
+        const decimals = input.id.includes('qty') && input.id.includes('btc') ? 8 :
+                         input.id.includes('qty') && input.id.includes('gold') ? 3 :
+                         input.id.includes('qty') ? 2 : 2;
+        input.value = formatNumber(num, decimals);
+    }
+}
+
+function unformatNumberInput(input) {
+    const val = input.value;
+    if (!val || val === '') return;
+    const num = parseNumber(val);
+    if (!isNaN(num)) {
+        input.value = String(num).replace('.', ',');
+    }
+}
+
+function getInputValue(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return NaN;
+    return parseNumber(input.value);
+}
+
+// ====== DATE FORMAT HELPERS ======
+function formatDateToDDMMYY(dateStr) {
+    if (!dateStr) return '';
+    if (/^\d{2}\.\d{2}\.\d{2}$/.test(dateStr)) return dateStr;
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear()).slice(-2);
+    return day + '.' + month + '.' + year;
+}
+
+function parseDDMMYY(dateStr) {
+    if (!dateStr) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    const match = dateStr.match(/^(\d{2})\.(\d{2})\.(\d{2})$/);
+    if (!match) return '';
+    const [_, day, month, yearShort] = match;
+    const year = parseInt(yearShort, 10) < 50 ? '20' + yearShort : '19' + yearShort;
+    return year + '-' + month + '-' + day;
+}
+
+function handleDateInput(input) {
+    let val = input.value.replace(/[^\d]/g, '');
+    if (val.length >= 2) val = val.slice(0, 2) + '.' + val.slice(2);
+    if (val.length >= 5) val = val.slice(0, 5) + '.' + val.slice(5);
+    if (val.length > 8) val = val.slice(0, 8);
+    input.value = val;
+}
+
+function handleDateBlur(input, callback) {
+    const val = input.value.trim();
+    if (!val) { if (callback) callback(''); return; }
+    let cleaned = val.replace(/[^\d]/g, '');
+    let formatted = '';
+    if (cleaned.length === 6) {
+        formatted = cleaned.slice(0, 2) + '.' + cleaned.slice(2, 4) + '.' + cleaned.slice(4, 6);
+    } else if (cleaned.length === 8) {
+        formatted = cleaned.slice(0, 2) + '.' + cleaned.slice(2, 4) + '.' + cleaned.slice(4, 8);
+    } else {
+        formatted = val;
+    }
+    input.value = formatted;
+    if (callback) callback(formatted);
+}
+
+function handleDateKeydown(e, input) {
+    if (e.key === 'Enter') { input.blur(); }
+}
+
+function handleNativeDateChange(nativeInput, type, id, field) {
+    const wrapper = nativeInput.closest('.date-wrapper');
+    const textInput = wrapper.querySelector('.date-text-input');
+    const isoValue = nativeInput.value;
+    if (isoValue) {
+        const formatted = formatDateToDDMMYY(isoValue);
+        textInput.value = formatted;
+        updateTradeDate(type, id, field, formatted);
+    } else {
+        // Clear button was pressed
+        textInput.value = '';
+        updateTrade(type, id, field, '');
+        if (field === 'sellDate') checkCompleted(type, id);
+    }
+}
+
+function updateTradeDate(type, id, field, value) {
+    let val = value.trim();
+    if (!val) { updateTrade(type, id, field, ''); return; }
+    let cleaned = val.replace(/[^\d]/g, '');
+    if (cleaned.length === 6) {
+        val = cleaned.slice(0, 2) + '.' + cleaned.slice(2, 4) + '.' + cleaned.slice(4, 6);
+    } else if (cleaned.length === 8) {
+        val = cleaned.slice(0, 2) + '.' + cleaned.slice(2, 4) + '.' + cleaned.slice(4, 8);
+    }
+    const card = document.getElementById(id);
+    if (card) {
+        const textInputs = card.querySelectorAll('.date-text-input');
+        const idx = field === 'buyDate' ? 0 : 1;
+        if (textInputs[idx]) textInputs[idx].value = val;
+    }
+    updateTrade(type, id, field, val);
+    if (field === 'sellDate') checkCompleted(type, id);
+}
+
 const tickers = ['BTC','ETH','BNB','SOL','LTC','LINK','SUI','DOGE','ZK','ONDO','UNI','TWT'];
 let spotTrades = JSON.parse(localStorage.getItem('spotTrades') || '[]');
 let futuresTrades = JSON.parse(localStorage.getItem('futuresTrades') || '[]');
 let spotCounter = parseInt(localStorage.getItem('spotCounter') || '1');
 let futuresCounter = parseInt(localStorage.getItem('futuresCounter') || '1');
 
-// ====== NAVIGATION ======
+// ====== API PRICE STATE ======
+let apiPrices = {
+    btc: null,
+    gold: null
+};
+
 function switchTab(tab) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -666,10 +883,159 @@ function switchTab(tab) {
     if (tab === 'futures') renderTrades('futures');
 }
 
-// ====== CALCULATORS ======
+// ====== APPLY API PRICE ======
+function applyApiPrice(asset, inputId, priceDisplayId) {
+    const priceDisplay = document.getElementById(priceDisplayId);
+    const input = document.getElementById(inputId);
+    if (!priceDisplay || !input) return;
+
+    const priceText = priceDisplay.textContent.replace(/[$\s]/g, '').replace('(кэш)', '');
+    const price = parseNumber(priceText);
+
+    if (!isNaN(price) && price > 0) {
+        input.value = formatNumber(price, 2);
+        // Trigger calculation
+        if (inputId.includes('calc4')) calc4();
+        if (inputId.includes('calc5')) calc5();
+        // Disable button after apply
+        const btnId = 'btn-apply-' + asset + '-' + inputId.split('-')[0] + inputId.split('-')[2];
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = '✓ Применено';
+            setTimeout(() => { btn.textContent = '✓ Применить'; }, 2000);
+        }
+    }
+}
+
+function enableApplyButton(asset, calcPrefix) {
+    const btnId = 'btn-apply-' + asset + '-' + calcPrefix;
+    const btn = document.getElementById(btnId);
+    if (btn) {
+        btn.disabled = false;
+        btn.textContent = '✓ Применить';
+    }
+}
+
+// ====== API PRICE FETCHING ======
+async function fetchBtcPrice() {
+    const displays = [
+        { priceEl: document.getElementById('btc-price-calc4'), displayEl: document.getElementById('btc-display-calc4'), btnId: 'btn-apply-btc-calc4', inputId: 'calc4-btc-price' },
+        { priceEl: document.getElementById('btc-price-calc5'), displayEl: document.getElementById('btc-display-calc5'), btnId: 'btn-apply-btc-calc5', inputId: 'calc5-btc-price' }
+    ];
+
+    displays.forEach(d => {
+        if (d.displayEl) { d.displayEl.classList.remove('error'); d.displayEl.querySelector('.live-dot').style.animation = 'pulse 1.5s infinite'; }
+        if (d.priceEl) d.priceEl.textContent = 'загрузка...';
+    });
+
+    try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        const price = data.bitcoin.usd;
+        apiPrices.btc = price;
+
+        displays.forEach(d => {
+            if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(price, 2);
+        });
+
+        enableApplyButton('btc', 'calc4');
+        enableApplyButton('btc', 'calc5');
+
+        localStorage.setItem('btcPrice', JSON.stringify({ price, timestamp: Date.now() }));
+    } catch (err) {
+        console.error('BTC price fetch error:', err);
+        try {
+            const response2 = await fetch('https://api.freecryptoapi.com/v1/getData?symbol=BTC');
+            if (response2.ok) {
+                const data2 = await response2.json();
+                const price2 = data2.price;
+                apiPrices.btc = price2;
+                displays.forEach(d => {
+                    if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(price2, 2);
+                });
+                enableApplyButton('btc', 'calc4');
+                enableApplyButton('btc', 'calc5');
+                localStorage.setItem('btcPrice', JSON.stringify({ price: price2, timestamp: Date.now() }));
+                return;
+            }
+        } catch (err2) { console.error('BTC fallback error:', err2); }
+
+        const cached = localStorage.getItem('btcPrice');
+        if (cached) {
+            const cachedData = JSON.parse(cached);
+            apiPrices.btc = cachedData.price;
+            displays.forEach(d => {
+                if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(cachedData.price, 2) + ' (кэш)';
+            });
+            enableApplyButton('btc', 'calc4');
+            enableApplyButton('btc', 'calc5');
+        } else {
+            displays.forEach(d => {
+                if (d.displayEl) {
+                    d.displayEl.classList.add('error');
+                    d.displayEl.querySelector('.price-value').textContent = 'ошибка';
+                    d.displayEl.querySelector('.live-dot').style.animation = 'none';
+                }
+            });
+        }
+    }
+}
+
+async function fetchGoldPrice() {
+    const displayEl = document.getElementById('gold-display-calc5');
+    const priceEl = document.getElementById('gold-price-calc5');
+
+    if (displayEl) { displayEl.classList.remove('error'); displayEl.querySelector('.live-dot').style.animation = 'pulse 1.5s infinite'; }
+    if (priceEl) priceEl.textContent = 'загрузка...';
+
+    try {
+        const response = await fetch('https://www.goldapi.io/api/XAU/USD', { headers: { 'x-access-token': 'goldapi-demo-key' } });
+        if (response.ok) {
+            const data = await response.json();
+            const price = data.price;
+            apiPrices.gold = price;
+            if (priceEl) priceEl.textContent = '$' + formatNumber(price, 2);
+            enableApplyButton('gold', 'calc5');
+            localStorage.setItem('goldPrice', JSON.stringify({ price, timestamp: Date.now() }));
+            return;
+        }
+    } catch (err) { console.error('Gold API error:', err); }
+
+    try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold,tether-gold&vs_currencies=usd');
+        if (response.ok) {
+            const data = await response.json();
+            const price = data['pax-gold']?.usd || data['tether-gold']?.usd;
+            if (price) {
+                apiPrices.gold = price;
+                if (priceEl) priceEl.textContent = '$' + formatNumber(price, 2);
+                enableApplyButton('gold', 'calc5');
+                localStorage.setItem('goldPrice', JSON.stringify({ price, timestamp: Date.now() }));
+                return;
+            }
+        }
+    } catch (err) { console.error('Gold fallback error:', err); }
+
+    const cached = localStorage.getItem('goldPrice');
+    if (cached) {
+        const cachedData = JSON.parse(cached);
+        apiPrices.gold = cachedData.price;
+        if (priceEl) priceEl.textContent = '$' + formatNumber(cachedData.price, 2) + ' (кэш)';
+        enableApplyButton('gold', 'calc5');
+    } else {
+        if (displayEl) {
+            displayEl.classList.add('error');
+            displayEl.querySelector('.price-value').textContent = 'ошибка';
+            displayEl.querySelector('.live-dot').style.animation = 'none';
+        }
+    }
+}
+
 function calc1() {
-    const open = parseFloat(document.getElementById('calc1-open').value);
-    const close = parseFloat(document.getElementById('calc1-close').value);
+    const open = getInputValue('calc1-open');
+    const close = getInputValue('calc1-close');
     const el = document.getElementById('calc1-result');
     if (isNaN(open) || isNaN(close) || open === 0) { el.textContent = '—'; el.className = 'result-value neutral'; return; }
     const res = ((close - open) / open) * 100;
@@ -680,72 +1046,47 @@ function calc1() {
 function stylePercentInput(input) {
     const val = parseFloat(input.value);
     const suffix = document.getElementById('calc2-suffix');
-
     if (input.value === '' || input.value === null) {
         suffix.style.visibility = 'hidden';
-        input.style.color = '';
-        input.style.fontWeight = '';
+        input.style.color = ''; input.style.fontWeight = '';
         return;
     }
-
     suffix.style.visibility = 'visible';
-
-    // Measure text width to position % right after the number
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const style = window.getComputedStyle(input);
     ctx.font = style.fontWeight + ' ' + style.fontSize + ' ' + style.fontFamily;
     const textWidth = ctx.measureText(input.value).width;
-
-    // Position suffix right after the text (14px is left padding)
     suffix.style.left = (14 + textWidth + 2) + 'px';
-
-    if (isNaN(val)) { 
-        input.style.color = ''; 
-        input.style.fontWeight = ''; 
-        suffix.style.color = 'var(--text-muted)';
-        return; 
-    }
-    if (val > 0) { 
-        input.style.color = 'var(--green)'; 
-        input.style.fontWeight = '400';
-        suffix.style.color = 'var(--green)';
-    }
-    else if (val < 0) { 
-        input.style.color = 'var(--red)'; 
-        input.style.fontWeight = '400';
-        suffix.style.color = 'var(--red)';
-    }
-    else { 
-        input.style.color = ''; 
-        input.style.fontWeight = '';
-        suffix.style.color = 'var(--text-muted)';
-    }
+    if (isNaN(val)) { input.style.color = ''; input.style.fontWeight = ''; suffix.style.color = 'var(--text-muted)'; return; }
+    if (val > 0) { input.style.color = 'var(--green)'; input.style.fontWeight = '400'; suffix.style.color = 'var(--green)'; }
+    else if (val < 0) { input.style.color = 'var(--red)'; input.style.fontWeight = '400'; suffix.style.color = 'var(--red)'; }
+    else { input.style.color = ''; input.style.fontWeight = ''; suffix.style.color = 'var(--text-muted)'; }
 }
 
 function calc2() {
-    const price = parseFloat(document.getElementById('calc2-price').value);
+    const price = getInputValue('calc2-price');
     const pct = parseFloat(document.getElementById('calc2-percent').value);
     const el = document.getElementById('calc2-result');
     if (isNaN(price) || isNaN(pct)) { el.textContent = '—'; el.className = 'result-value neutral'; return; }
     const res = price * (1 + pct / 100);
-    el.textContent = res.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 8 });
+    el.textContent = formatNumber(res, 8);
     el.className = 'result-value ' + (pct >= 0 ? 'green' : 'red');
 }
 
 function calc3() {
-    const usd = parseFloat(document.getElementById('calc3-usd').value);
-    const price = parseFloat(document.getElementById('calc3-price').value);
+    const usd = getInputValue('calc3-usd');
+    const price = getInputValue('calc3-price');
     const el = document.getElementById('calc3-result');
     if (isNaN(usd) || isNaN(price) || price === 0) { el.textContent = '—'; return; }
     const res = usd / price;
-    el.textContent = res.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 8 });
+    el.textContent = formatNumber(res, 8);
 }
 
 function calc4() {
-    const btcPrice = parseFloat(document.getElementById('calc4-btc-price').value);
-    const btcQty = parseFloat(document.getElementById('calc4-btc-qty').value);
-    const usdQty = parseFloat(document.getElementById('calc4-usd-qty').value);
+    const btcPrice = getInputValue('calc4-btc-price');
+    const btcQty = getInputValue('calc4-btc-qty');
+    const usdQty = getInputValue('calc4-usd-qty');
     const el = document.getElementById('calc4-result');
     const actionEl = document.getElementById('calc4-action');
     if (isNaN(btcPrice) || isNaN(btcQty) || isNaN(usdQty) || btcPrice === 0) {
@@ -756,17 +1097,17 @@ function calc4() {
     const targetPerAsset = totalPortfolio / 2;
     const btcDiff = (targetPerAsset - btcValue) / btcPrice;
     const absRes = Math.abs(btcDiff);
-    const formattedQty = absRes.toLocaleString('ru-RU', { minimumFractionDigits: 5, maximumFractionDigits: 5 });
+    const formattedQty = formatNumber(absRes, 5);
     if (btcDiff > 0) {
-        el.textContent = targetPerAsset.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value orange';
         actionEl.innerHTML = '<span class="rebalance-action green">+' + formattedQty + ' BTC</span>';
     } else if (btcDiff < 0) {
-        el.textContent = targetPerAsset.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value orange';
         actionEl.innerHTML = '<span class="rebalance-action red">−' + formattedQty + ' BTC</span>';
     } else {
-        el.textContent = targetPerAsset.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value orange';
         actionEl.textContent = 'Портфель сбалансирован';
         actionEl.className = 'rebalance-action';
@@ -774,11 +1115,11 @@ function calc4() {
 }
 
 function calc5() {
-    const btcPrice = parseFloat(document.getElementById('calc5-btc-price').value);
-    const goldPrice = parseFloat(document.getElementById('calc5-gold-price').value);
-    const btcQty = parseFloat(document.getElementById('calc5-btc-qty').value);
-    const goldQty = parseFloat(document.getElementById('calc5-gold-qty').value);
-    const usdQty = parseFloat(document.getElementById('calc5-usd-qty').value);
+    const btcPrice = getInputValue('calc5-btc-price');
+    const goldPrice = getInputValue('calc5-gold-price');
+    const btcQty = getInputValue('calc5-btc-qty');
+    const goldQty = getInputValue('calc5-gold-qty');
+    const usdQty = getInputValue('calc5-usd-qty');
     const el = document.getElementById('calc5-result');
     const actionEl = document.getElementById('calc5-action');
     if (isNaN(btcPrice) || isNaN(goldPrice) || isNaN(btcQty) || isNaN(goldQty) || isNaN(usdQty) || btcPrice === 0 || goldPrice === 0) {
@@ -788,19 +1129,14 @@ function calc5() {
     const goldValue = goldQty * goldPrice;
     const totalPortfolio = usdQty + btcValue + goldValue;
     const targetPerAsset = totalPortfolio / 3;
-
     const btcDiff = (targetPerAsset - btcValue) / btcPrice;
     const goldDiff = (targetPerAsset - goldValue) / goldPrice;
-
     const absBtcDiff = Math.abs(btcDiff);
     const absGoldDiff = Math.abs(goldDiff);
-
-    const fmtBtc = absBtcDiff.toLocaleString('ru-RU', { minimumFractionDigits: 5, maximumFractionDigits: 5 });
-    const fmtGold = absGoldDiff.toLocaleString('ru-RU', { minimumFractionDigits: 5, maximumFractionDigits: 5 });
-
+    const fmtBtc = formatNumber(absBtcDiff, 5);
+    const fmtGold = formatNumber(absGoldDiff, 5);
     let hasAction = false;
     let actionLines = [];
-
     if (Math.abs(btcDiff) > 0.00000001) {
         hasAction = true;
         const colorClass = btcDiff > 0 ? 'green' : 'red';
@@ -813,22 +1149,20 @@ function calc5() {
         const sign = goldDiff > 0 ? '+' : '−';
         actionLines.push('<span class="rebalance-action ' + colorClass + '">' + sign + fmtGold + ' GOLD</span>');
     }
-
     if (!hasAction) {
-        el.textContent = targetPerAsset.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value orange';
         actionEl.textContent = 'Портфель сбалансирован';
         actionEl.className = 'rebalance-action';
     } else {
         const usdAfter = usdQty - btcDiff * btcPrice - goldDiff * goldPrice;
-        el.textContent = usdAfter.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        el.textContent = formatNumber(usdAfter, 2);
         el.className = 'result-value orange';
         actionEl.innerHTML = actionLines.join('<br>');
         actionEl.className = 'rebalance-action';
     }
 }
 
-// ====== TRADES ======
 function getTickerOptions(selected) {
     let html = '<option value="">Выберите...</option>';
     tickers.forEach(t => html += `<option value="${t}" ${t === selected ? 'selected' : ''}>${t}</option>`);
@@ -866,6 +1200,10 @@ function addTrade(type, data = null) {
     const card = document.createElement('div');
     card.className = 'trade-card';
     card.id = id;
+    const buyDateDisplay = formatDateToDDMMYY(tradeData.buyDate);
+    const sellDateDisplay = formatDateToDDMMYY(tradeData.sellDate);
+    const buyDateIso = parseDDMMYY(tradeData.buyDate);
+    const sellDateIso = parseDDMMYY(tradeData.sellDate);
     card.innerHTML = `
         <div class="trade-header">
             <span class="trade-number">#${counter}</span>
@@ -874,7 +1212,11 @@ function addTrade(type, data = null) {
         <div class="trade-grid">
             <div class="input-group">
                 <label>Дата покупки</label>
-                <input type="date" value="${tradeData.buyDate}" onchange="updateTrade('${type}','${id}','buyDate',this.value)">
+                <div class="date-wrapper">
+                    <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                    <button type="button" class="date-picker-btn">📅</button>
+                    <input type="date" class="native-date-input" value="${buyDateIso}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'buyDate')">
+                </div>
             </div>
             <div class="input-group">
                 <label>Тикер</label>
@@ -887,11 +1229,11 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>Цена покупки ($)</label>
-                <input type="number" step="any" placeholder="0.00" value="${tradeData.buyPrice}" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>Сумма покупки ($)</label>
-                <input type="number" step="any" placeholder="0.00" value="${tradeData.buySum}" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>Кол-во актива (авто)</label>
@@ -899,11 +1241,15 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>Дата продажи</label>
-                <input type="date" value="${tradeData.sellDate}" onchange="updateTrade('${type}','${id}','sellDate',this.value); checkCompleted('${type}','${id}')">
+                <div class="date-wrapper">
+                    <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                    <button type="button" class="date-picker-btn">📅</button>
+                    <input type="date" class="native-date-input" value="${sellDateIso}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'sellDate')">
+                </div>
             </div>
             <div class="input-group">
                 <label>Цена продажи ($)</label>
-                <input type="number" step="any" placeholder="0.00" value="${tradeData.sellPrice}" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>Кол-во актива (%)</label>
@@ -954,54 +1300,44 @@ function calcTrade(type, id) {
     const arr = type === 'spot' ? spotTrades : futuresTrades;
     const trade = arr.find(t => t.id === id);
     if (!trade) return;
-
-    const buyPrice = parseFloat(trade.buyPrice);
-    const buySum = parseFloat(trade.buySum);
-    const sellPrice = parseFloat(trade.sellPrice);
+    const buyPrice = parseNumber(trade.buyPrice);
+    const buySum = parseNumber(trade.buySum);
+    const sellPrice = parseNumber(trade.sellPrice);
     const sellPercent = parseFloat(trade.sellPercent);
-
-    // Calculate total amount bought
     let amount = '';
     let amountNum = 0;
     if (!isNaN(buySum) && !isNaN(buyPrice) && buyPrice !== 0) {
         amountNum = buySum / buyPrice;
-        amount = amountNum.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 8 });
+        amount = formatNumber(amountNum, 8);
     }
     const amountEl = document.getElementById(id + '_amount');
     if (amountEl) { amountEl.value = amount; }
     trade.amount = amount;
-
-    // Calculate sell amount based on percentage
     let sellAmount = '';
     let sellAmountNum = 0;
     if (!isNaN(sellPercent) && amountNum > 0) {
         sellAmountNum = amountNum * (sellPercent / 100);
-        sellAmount = sellAmountNum.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 8 });
+        sellAmount = formatNumber(sellAmountNum, 8);
     }
     const sellAmountEl = document.getElementById(id + '_sellAmount');
     if (sellAmountEl) { sellAmountEl.value = sellAmount; }
     trade.sellAmount = sellAmount;
-
-    // Calculate sell sum = sellAmount * sellPrice
     let sellSum = '';
     let sellSumNum = 0;
     if (!isNaN(sellAmountNum) && !isNaN(sellPrice)) {
         sellSumNum = sellAmountNum * sellPrice;
-        sellSum = sellSumNum.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        sellSum = formatNumber(sellSumNum, 2);
     }
     const sellSumEl = document.getElementById(id + '_sellSum');
     if (sellSumEl) { sellSumEl.value = sellSum; }
     trade.sellSum = sellSum;
-
-    // Calculate profit = (sellAmount * sellPrice) - (sellAmount * buyPrice)
-    // = sellSum - (sellAmount * buyPrice)
     let profit = '';
     let profitClass = '';
     let profitNum = 0;
     if (!isNaN(sellSumNum) && !isNaN(sellAmountNum) && !isNaN(buyPrice)) {
         const buyCost = sellAmountNum * buyPrice;
         profitNum = sellSumNum - buyCost;
-        profit = (profitNum >= 0 ? '+' : '') + profitNum.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        profit = (profitNum >= 0 ? '+' : '') + formatNumber(profitNum, 2);
         profitClass = profitNum >= 0 ? 'green' : 'red';
     }
     const profitEl = document.getElementById(id + '_profit');
@@ -1010,8 +1346,6 @@ function calcTrade(type, id) {
         profitEl.className = 'auto-field ' + profitClass;
     }
     trade.profit = profit;
-
-    // Calculate percent = (profit / buyCost) * 100
     let percent = '';
     let percentClass = '';
     if (!isNaN(profitNum) && !isNaN(sellAmountNum) && !isNaN(buyPrice) && (sellAmountNum * buyPrice) !== 0) {
@@ -1026,7 +1360,6 @@ function calcTrade(type, id) {
         percentEl.className = 'auto-field ' + percentClass;
     }
     trade.percent = percent;
-
     localStorage.setItem(type + 'Trades', JSON.stringify(arr));
 }
 
@@ -1060,6 +1393,10 @@ function renderTrades(type) {
             if (type === 'spot') spotCounter = t.num + 1;
             else futuresCounter = t.num + 1;
         }
+        const buyDateDisplay = formatDateToDDMMYY(t.buyDate);
+        const sellDateDisplay = formatDateToDDMMYY(t.sellDate);
+        const buyDateIso = parseDDMMYY(t.buyDate);
+        const sellDateIso = parseDDMMYY(t.sellDate);
         const card = document.createElement('div');
         card.className = 'trade-card';
         card.id = t.id;
@@ -1071,7 +1408,11 @@ function renderTrades(type) {
             <div class="trade-grid">
                 <div class="input-group">
                     <label>Дата покупки</label>
-                    <input type="date" value="${t.buyDate}" onchange="updateTrade('${type}','${t.id}','buyDate',this.value)">
+                    <div class="date-wrapper">
+                        <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                        <button type="button" class="date-picker-btn">📅</button>
+                        <input type="date" class="native-date-input" value="${buyDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'buyDate')">
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>Тикер</label>
@@ -1084,11 +1425,11 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>Цена покупки ($)</label>
-                    <input type="number" step="any" placeholder="0.00" value="${t.buyPrice}" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" placeholder="0,00" value="${t.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>Сумма покупки ($)</label>
-                    <input type="number" step="any" placeholder="0.00" value="${t.buySum}" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" placeholder="0,00" value="${t.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>Кол-во актива (авто)</label>
@@ -1096,11 +1437,15 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>Дата продажи</label>
-                    <input type="date" value="${t.sellDate}" onchange="updateTrade('${type}','${t.id}','sellDate',this.value); checkCompleted('${type}','${t.id}')">
+                    <div class="date-wrapper">
+                        <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                        <button type="button" class="date-picker-btn">📅</button>
+                        <input type="date" class="native-date-input" value="${sellDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'sellDate')">
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>Цена продажи ($)</label>
-                    <input type="number" step="any" placeholder="0.00" value="${t.sellPrice}" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" placeholder="0,00" value="${t.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>Кол-во актива (%)</label>
@@ -1136,7 +1481,6 @@ function checkCompleted(type, id) {
     }
 }
 
-// ====== SUMMARY ======
 let summaryData = JSON.parse(localStorage.getItem('tradeSummary') || '[]');
 
 function showSummary(type) {
@@ -1152,8 +1496,6 @@ function showSummary(type) {
         return;
     }
     let totalProfit = 0;
-    let totalBuyCost = 0;
-    let totalSellSum = 0;
     let html = '<div style="overflow-x:auto;"><table class="summary-table"><thead><tr>';
     html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>Цена покупки</th><th>Кол-во</th><th>Цена продажи</th><th>% продажи</th><th>Сумма продажи</th><th>Прибыль</th><th>%</th>';
     html += '</tr></thead><tbody>';
@@ -1184,7 +1526,7 @@ function showSummary(type) {
     html += '</tbody></table></div>';
     html += `<div class="summary-total">
         <span class="summary-total-label">ИТОГО ПРИБЫЛЬ / УБЫТОК</span>
-        <span class="summary-total-value" style="color:${totalProfit>=0?'var(--green)':'var(--red)'}">${totalProfit>=0?'+':''}${totalProfit.toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})} $</span>
+        <span class="summary-total-value" style="color:${totalProfit>=0?'var(--green)':'var(--red)'}">${totalProfit>=0?'+':''}${formatNumber(totalProfit, 2)} $</span>
     </div>`;
     const summaryEntry = {
         type, date: new Date().toISOString(),
@@ -1215,9 +1557,7 @@ function closeSummary(e) {
     document.getElementById('summary-modal').classList.remove('active');
 }
 
-// ====== INIT ======
 window.addEventListener('DOMContentLoaded', () => {
-    // Initialize percent input styling
     const percentInput = document.getElementById('calc2-percent');
     if (percentInput) stylePercentInput(percentInput);
 
@@ -1229,6 +1569,35 @@ window.addEventListener('DOMContentLoaded', () => {
         const maxNum = Math.max(...futuresTrades.map(t => t.num || 0));
         if (maxNum >= futuresCounter) futuresCounter = maxNum + 1;
     }
+
+    // Load cached prices on startup
+    const cachedBtc = localStorage.getItem('btcPrice');
+    if (cachedBtc) {
+        const data = JSON.parse(cachedBtc);
+        apiPrices.btc = data.price;
+        const displays = [
+            { priceEl: document.getElementById('btc-price-calc4'), btnId: 'btn-apply-btc-calc4' },
+            { priceEl: document.getElementById('btc-price-calc5'), btnId: 'btn-apply-btc-calc5' }
+        ];
+        displays.forEach(d => {
+            if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(data.price, 2);
+            const btn = document.getElementById(d.btnId);
+            if (btn) { btn.disabled = false; }
+        });
+    }
+    const cachedGold = localStorage.getItem('goldPrice');
+    if (cachedGold) {
+        const data = JSON.parse(cachedGold);
+        apiPrices.gold = data.price;
+        const priceEl = document.getElementById('gold-price-calc5');
+        if (priceEl) priceEl.textContent = '$' + formatNumber(data.price, 2);
+        const btn = document.getElementById('btn-apply-gold-calc5');
+        if (btn) { btn.disabled = false; }
+    }
+
+    // Fetch fresh prices
+    fetchBtcPrice();
+    fetchGoldPrice();
 });
 </script>
 
