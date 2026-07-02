@@ -425,7 +425,7 @@
             transform: translateY(-50%);
             width: 36px;
             height: 36px;
-            opacity: 0;
+            opacity: 0.01;
             cursor: pointer;
             z-index: 3;
             border: none;
@@ -498,6 +498,7 @@
         }
         .btn-refresh-price:active { opacity: 1; transform: scale(0.9); }
     </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
@@ -773,6 +774,42 @@ function getInputValue(inputId) {
     const input = document.getElementById(inputId);
     if (!input) return NaN;
     return parseNumber(input.value);
+}
+
+
+// ====== DATE PICKER OPEN ======
+function openDatePicker(wrapper, event) {
+    // Don't open calendar if clicking on the text input (user wants to type)
+    if (event && event.target && event.target.classList.contains('date-text-input')) {
+        return;
+    }
+
+    const dateInput = wrapper.querySelector('.native-date-input');
+    if (!dateInput) return;
+
+    // Try modern showPicker() first (Chrome 99+, Safari 16+, Edge 99+)
+    if (typeof dateInput.showPicker === 'function') {
+        try {
+            dateInput.showPicker();
+            return;
+        } catch (e) {
+            console.log('showPicker failed, trying fallback');
+        }
+    }
+
+    // Fallback: focus the date input (opens calendar in some browsers)
+    dateInput.focus();
+
+    // Additional fallback: simulate mousedown on the date input
+    // This helps in browsers where focus doesn't open the calendar
+    setTimeout(() => {
+        const event = new MouseEvent('mousedown', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        dateInput.dispatchEvent(event);
+    }, 10);
 }
 
 // ====== DATE FORMAT HELPERS ======
@@ -1212,9 +1249,9 @@ function addTrade(type, data = null) {
         <div class="trade-grid">
             <div class="input-group">
                 <label>Дата покупки</label>
-                <div class="date-wrapper">
+                <div class="date-wrapper" onclick="openDatePicker(this, event)">
                     <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
-                    <button type="button" class="date-picker-btn">📅</button>
+                    <button type="button" class="date-picker-btn">&nbsp;</button>
                     <input type="date" class="native-date-input" value="${buyDateIso}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'buyDate')">
                 </div>
             </div>
@@ -1241,9 +1278,9 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>Дата продажи</label>
-                <div class="date-wrapper">
+                <div class="date-wrapper" onclick="openDatePicker(this, event)">
                     <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
-                    <button type="button" class="date-picker-btn">📅</button>
+                    <button type="button" class="date-picker-btn">&nbsp;</button>
                     <input type="date" class="native-date-input" value="${sellDateIso}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'sellDate')">
                 </div>
             </div>
@@ -1408,10 +1445,10 @@ function renderTrades(type) {
             <div class="trade-grid">
                 <div class="input-group">
                     <label>Дата покупки</label>
-                    <div class="date-wrapper">
+                    <div class="date-wrapper" onclick="openDatePicker(this, event)">
                         <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
-                        <button type="button" class="date-picker-btn">📅</button>
-                        <input type="date" class="native-date-input" value="${buyDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'buyDate')">
+                        <button type="button" class="date-picker-btn">&nbsp;</button>
+                            <input type="date" class="native-date-input" value="${buyDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'buyDate')">
                     </div>
                 </div>
                 <div class="input-group">
@@ -1437,10 +1474,10 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>Дата продажи</label>
-                    <div class="date-wrapper">
+                    <div class="date-wrapper" onclick="openDatePicker(this, event)">
                         <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
-                        <button type="button" class="date-picker-btn">📅</button>
-                        <input type="date" class="native-date-input" value="${sellDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'sellDate')">
+                        <button type="button" class="date-picker-btn">&nbsp;</button>
+                            <input type="date" class="native-date-input" value="${sellDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'sellDate')">
                     </div>
                 </div>
                 <div class="input-group">
