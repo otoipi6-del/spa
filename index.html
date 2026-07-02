@@ -394,7 +394,7 @@
             cursor: pointer;
             padding: 4px;
         }
-        /* Date picker wrapper */
+        /* Обертка выбора даты */
         .date-wrapper {
             position: relative;
             display: flex;
@@ -431,7 +431,7 @@
             border: none;
             background: transparent;
         }
-        /* API price row */
+        /* Строка цены API */
         .api-price-row {
             display: flex;
             align-items: center;
@@ -735,7 +735,7 @@ window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
 });
 
-// ====== NUMBER FORMATTING HELPERS ======
+// ====== ПОМОЩНИКИ ФОРМАТИРОВАНИЯ ЧИСЕЛ ======
 function formatNumber(value, decimals) {
     if (value === '' || value === null || value === undefined) return '';
     const num = parseFloat(String(value).replace(/\s/g, '').replace(',', '.'));
@@ -777,9 +777,9 @@ function getInputValue(inputId) {
 }
 
 
-// ====== DATE PICKER OPEN ======
+// ====== ОТКРЫТИЕ КАЛЕНДАРЯ ======
 function openDatePicker(wrapper, event) {
-    // Don't open calendar if clicking on the text input (user wants to type)
+    // Не открывать календарь при клике на текстовое поле (пользователь хочет ввести дату вручную)
     if (event && event.target && event.target.classList.contains('date-text-input')) {
         return;
     }
@@ -787,7 +787,7 @@ function openDatePicker(wrapper, event) {
     const dateInput = wrapper.querySelector('.native-date-input');
     if (!dateInput) return;
 
-    // Try modern showPicker() first (Chrome 99+, Safari 16+, Edge 99+)
+    // Сначала пробуем современный showPicker() (Chrome 99+, Safari 16+, Edge 99+)
     if (typeof dateInput.showPicker === 'function') {
         try {
             dateInput.showPicker();
@@ -797,11 +797,11 @@ function openDatePicker(wrapper, event) {
         }
     }
 
-    // Fallback: focus the date input (opens calendar in some browsers)
+    // Запасной вариант: фокус на поле даты (открывает календарь в некоторых браузерах)
     dateInput.focus();
 
-    // Additional fallback: simulate mousedown on the date input
-    // This helps in browsers where focus doesn't open the calendar
+    // Дополнительный запасной вариант: имитация нажатия мыши на поле даты
+    // Помогает в браузерах, где фокус не открывает календарь
     setTimeout(() => {
         const event = new MouseEvent('mousedown', {
             bubbles: true,
@@ -812,7 +812,7 @@ function openDatePicker(wrapper, event) {
     }, 10);
 }
 
-// ====== DATE FORMAT HELPERS ======
+// ====== ПОМОЩНИКИ ФОРМАТА ДАТЫ ======
 function formatDateToDDMMYY(dateStr) {
     if (!dateStr) return '';
     if (/^\d{2}\.\d{2}\.\d{2}$/.test(dateStr)) return dateStr;
@@ -871,7 +871,7 @@ function handleNativeDateChange(nativeInput, type, id, field) {
         textInput.value = formatted;
         updateTradeDate(type, id, field, formatted);
     } else {
-        // Clear button was pressed
+        // Нажата кнопка очистки
         textInput.value = '';
         updateTrade(type, id, field, '');
         if (field === 'sellDate') checkCompleted(type, id);
@@ -903,7 +903,7 @@ let futuresTrades = JSON.parse(localStorage.getItem('futuresTrades') || '[]');
 let spotCounter = parseInt(localStorage.getItem('spotCounter') || '1');
 let futuresCounter = parseInt(localStorage.getItem('futuresCounter') || '1');
 
-// ====== API PRICE STATE ======
+// ====== СОСТОЯНИЕ ЦЕН API ======
 let apiPrices = {
     btc: null,
     gold: null
@@ -920,7 +920,7 @@ function switchTab(tab) {
     if (tab === 'futures') renderTrades('futures');
 }
 
-// ====== APPLY API PRICE ======
+// ====== ПРИМЕНИТЬ ЦЕНУ API ======
 function applyApiPrice(asset, inputId, priceDisplayId) {
     const priceDisplay = document.getElementById(priceDisplayId);
     const input = document.getElementById(inputId);
@@ -931,10 +931,10 @@ function applyApiPrice(asset, inputId, priceDisplayId) {
 
     if (!isNaN(price) && price > 0) {
         input.value = formatNumber(price, 2);
-        // Trigger calculation
+        // Запустить расчёт
         if (inputId.includes('calc4')) calc4();
         if (inputId.includes('calc5')) calc5();
-        // Disable button after apply
+        // Отключить кнопку после применения
         const btnId = 'btn-apply-' + asset + '-' + inputId.split('-')[0] + inputId.split('-')[2];
         const btn = document.getElementById(btnId);
         if (btn) {
@@ -954,7 +954,7 @@ function enableApplyButton(asset, calcPrefix) {
     }
 }
 
-// ====== API PRICE FETCHING ======
+// ====== ПОЛУЧЕНИЕ ЦЕН API ======
 async function fetchBtcPrice() {
     const displays = [
         { priceEl: document.getElementById('btc-price-calc4'), displayEl: document.getElementById('btc-display-calc4'), btnId: 'btn-apply-btc-calc4', inputId: 'calc4-btc-price' },
@@ -1484,7 +1484,7 @@ function checkCompleted(type, id) {
     const arr = type === 'spot' ? spotTrades : futuresTrades;
     const trade = arr.find(t => t.id === id);
     if (trade && trade.sellDate && trade.sellDate.trim() !== '') {
-        // Trade has sell date - it's completed
+        // Сделка имеет дату продажи — завершена
     }
 }
 
@@ -1577,7 +1577,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (maxNum >= futuresCounter) futuresCounter = maxNum + 1;
     }
 
-    // Load cached prices on startup
+    // Загрузить кэшированные цены при запуске
     const cachedBtc = localStorage.getItem('btcPrice');
     if (cachedBtc) {
         const data = JSON.parse(cachedBtc);
@@ -1602,7 +1602,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (btn) { btn.disabled = false; }
     }
 
-    // Fetch fresh prices
+    // Получить свежие цены
     fetchBtcPrice();
     fetchGoldPrice();
 
