@@ -644,6 +644,7 @@
 </style>
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -863,13 +864,7 @@
                 <span class="quote-weekly" id="quote-brent-weekly">—</span>
                 <span class="quote-monthly" id="quote-brent-monthly">—</span>
             </div>
-            <div class="quote-row" id="quote-sp500">
-                <span class="quote-name">S&P</span>
-                <span class="quote-price" id="quote-sp500-price">—</span>
-                <span class="quote-change" id="quote-sp500-change">—</span>
-                <span class="quote-weekly" id="quote-sp500-weekly">—</span>
-                <span class="quote-monthly" id="quote-sp500-monthly">—</span>
-            </div>
+
         </div>
         <div class="quotes-footer">Изменения рассчитываются к закрытию прошлого дня, недели и месяца</div>
         <div class="quote-update-time" id="quotes-update-time"></div>
@@ -1118,12 +1113,9 @@ let quotesData = {
     eth: { price: null, change: null, prevPrice: null },
     gold: { price: null, change: null, prevPrice: null },
     brent: { price: null, change: null, prevPrice: null },
-    sp500: { price: null, change: null, prevPrice: null }
 };
 
-// ====== FINNHUB API KEY ======
-// Замените на свой ключ с https://finnhub.io/register
-const FINNHUB_API_KEY = 'cnv9b2hr01qgbjs9g0j0cnv9b2hr01qgbjs9g0jg';
+
 
 function updateQuoteDisplay(asset, price, changePercent) {
     const priceEl = document.getElementById('quote-' + asset + '-price');
@@ -1196,19 +1188,6 @@ async function fetchQuotes() {
         }
     } catch (e) { console.error('BRENT quote error:', e); }
 
-    // S&P 500 via Finnhub
-    try {
-        const res = await fetch('https://finnhub.io/api/v1/quote?symbol=^GSPC&token=' + FINNHUB_API_KEY);
-        if (res.ok) {
-            const data = await res.json();
-            const price = data.c;
-            const changePct = data.dp;
-            if (price && changePct !== null) {
-                updateQuoteDisplay('sp500', price, changePct);
-            }
-        }
-    } catch (e) { console.error('S&P 500 quote error:', e); }
-
     updateQuotesTimestamp();
 }
 
@@ -1230,45 +1209,41 @@ async function fetchPeriodChanges() {
         { asset: 'btc', symbol: 'BTCUSDT', api: 'spot' },
         { asset: 'eth', symbol: 'ETHUSDT', api: 'spot' },
         { asset: 'gold', symbol: 'XAUUSDT', api: 'futures' },
-        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' },
-        { asset: 'sp500', symbol: '^GSPC', api: 'finnhub' }
+        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' }
     ];
 
     for (const a of assets) {
         let baseUrl;
         if (a.api === 'futures') baseUrl = 'https://fapi.binance.com/fapi/v1';
-        else if (a.api === 'finnhub') baseUrl = 'https://finnhub.io/api/v1';
         else baseUrl = 'https://api.binance.com/api/v3';
 
         // Weekly (1w klines, limit=2)
-        if (a.api !== 'finnhub') {
-            try {
-                const res = await fetch(baseUrl + '/klines?symbol=' + a.symbol + '&interval=1w&limit=2');
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.length >= 2) {
-                        const prevWeekClose = parseFloat(data[0][4]);
-                        const currentWeekClose = parseFloat(data[1][4]);
-                        const weeklyChange = ((currentWeekClose - prevWeekClose) / prevWeekClose) * 100;
-                        updatePeriodDisplay(a.asset, 'weekly', weeklyChange);
-                    }
+        try {
+            const res = await fetch(baseUrl + '/klines?symbol=' + a.symbol + '&interval=1w&limit=2');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.length >= 2) {
+                    const prevWeekClose = parseFloat(data[0][4]);
+                    const currentWeekClose = parseFloat(data[1][4]);
+                    const weeklyChange = ((currentWeekClose - prevWeekClose) / prevWeekClose) * 100;
+                    updatePeriodDisplay(a.asset, 'weekly', weeklyChange);
                 }
-            } catch (e) { console.error(a.asset + ' weekly error:', e); }
+            }
+        } catch (e) { console.error(a.asset + ' weekly error:', e); }
 
-            // Monthly (1M klines, limit=2)
-            try {
-                const res = await fetch(baseUrl + '/klines?symbol=' + a.symbol + '&interval=1M&limit=2');
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.length >= 2) {
-                        const prevMonthClose = parseFloat(data[0][4]);
-                        const currentMonthClose = parseFloat(data[1][4]);
-                        const monthlyChange = ((currentMonthClose - prevMonthClose) / prevMonthClose) * 100;
-                        updatePeriodDisplay(a.asset, 'monthly', monthlyChange);
-                    }
+        // Monthly (1M klines, limit=2)
+        try {
+            const res = await fetch(baseUrl + '/klines?symbol=' + a.symbol + '&interval=1M&limit=2');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.length >= 2) {
+                    const prevMonthClose = parseFloat(data[0][4]);
+                    const currentMonthClose = parseFloat(data[1][4]);
+                    const monthlyChange = ((currentMonthClose - prevMonthClose) / prevMonthClose) * 100;
+                    updatePeriodDisplay(a.asset, 'monthly', monthlyChange);
                 }
-            } catch (e) { console.error(a.asset + ' monthly error:', e); }
-        }
+            }
+        } catch (e) { console.error(a.asset + ' monthly error:', e); }
     }
 }
 
