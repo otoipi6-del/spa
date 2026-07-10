@@ -512,11 +512,12 @@
             font-size: 15px;
             font-weight: 700;
             color: var(--text-bright);
-            margin-bottom: 14px;
-            padding: 18px 18px 0 18px;
+            margin-bottom: 10px;
+            padding: 14px 18px 0 18px;
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
         }
         .quotes-card-title .icon { font-size: 18px; }
         #quotes-list {
@@ -535,8 +536,8 @@
         .quote-row:not(.quote-header) .quote-weekly,
         .quote-row:not(.quote-header) .quote-monthly {
             border-top: 1px solid var(--border);
-            padding-top: 12px;
-            padding-bottom: 12px;
+            padding-top: 8px;
+            padding-bottom: 8px;
         }
         /* Bottom border for the last data row */
         .quote-row:last-child .quote-name,
@@ -552,8 +553,8 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            padding-bottom: 6px;
-            padding-top: 18px;
+            padding-bottom: 4px;
+            padding-top: 8px;
             text-align: center;
         }
         .quote-header span:first-child {
@@ -622,10 +623,10 @@
             font-size: 11px;
             color: var(--text-muted);
             text-align: center;
-            margin-top: 14px;
+            margin-top: 8px;
             font-weight: 400;
             line-height: 1.5;
-            padding: 0 18px 18px 18px;
+            padding: 0 18px 14px 18px;
         }
         @media (max-width: 380px) {
             #quotes-list { gap: 0 3px; }
@@ -639,8 +640,8 @@
             .quote-row:not(.quote-header) .quote-change,
             .quote-row:not(.quote-header) .quote-weekly,
             .quote-row:not(.quote-header) .quote-monthly {
-                padding-top: 10px;
-                padding-bottom: 10px;
+                padding-top: 6px;
+                padding-bottom: 6px;
             }
             .quote-row:last-child .quote-name,
             .quote-row:last-child .quote-price,
@@ -655,7 +656,7 @@
             font-size: 11px;
             color: var(--text-muted);
             text-align: center;
-            margin-top: 12px;
+            margin-top: 10px;
             font-weight: 500;
             padding: 0 18px;
         }
@@ -862,7 +863,7 @@
 
 <div id="section-quotes" class="section" style="overflow-x:hidden;">
     <div class="quotes-card">
-        <div class="quotes-card-title"><span class="icon">📈</span><span class="live-dot"></span> Котировки активов (USD)</div>
+        <div class="quotes-card-title"><span class="icon">📈</span> Котировки активов (USD)</div>
         <div id="quotes-list">
             <div class="quote-row quote-header">
                 <span></span>
@@ -901,8 +902,8 @@
             </div>
 
         </div>
-        <div class="quotes-footer">Изменения рассчитываются к закрытию прошлого дня, недели и месяца</div>
         <div class="quote-update-time" id="quotes-update-time"></div>
+        <div class="quotes-footer">Изменения рассчитываются к закрытию прошлого дня, недели и месяца</div>
     </div>
 </div>
 
@@ -1186,7 +1187,7 @@ function updateQuotesTimestamp() {
     const el = document.getElementById('quotes-update-time');
     if (el) {
         const now = new Date();
-        el.textContent = 'Обновлено: ' + now.toLocaleTimeString('ru-RU');
+        el.innerHTML = '<span style="display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;margin-right:4px;vertical-align:middle;animation:pulse 1.5s infinite;"></span>Обновлено: ' + now.toLocaleTimeString('ru-RU');
     }
 }
 
