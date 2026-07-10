@@ -521,7 +521,7 @@
         #quotes-list {
             display: grid;
             grid-template-columns: auto 1fr auto auto auto;
-            gap: 0 6px;
+            gap: 0 4px;
             align-items: center;
             width: 100%;
         }
@@ -551,7 +551,8 @@
             font-weight: 400;
             color: var(--text-bright);
             letter-spacing: -0.2px;
-            padding-right: 0;
+            padding: 0;
+            margin: 0;
             text-align: left;
         }
         .quote-price {
@@ -568,9 +569,9 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            text-align: center;
+            text-align: right;
             white-space: nowrap;
-            min-width: 52px;
+            min-width: 44px;
         }
         .quote-change.up { color: var(--green); }
         .quote-change.down { color: var(--red); }
@@ -578,9 +579,9 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            text-align: center;
+            text-align: right;
             white-space: nowrap;
-            min-width: 52px;
+            min-width: 44px;
         }
         .quote-weekly.up { color: var(--green); }
         .quote-weekly.down { color: var(--red); }
@@ -588,9 +589,9 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            text-align: center;
+            text-align: right;
             white-space: nowrap;
-            min-width: 52px;
+            min-width: 44px;
         }
         .quote-monthly.up { color: var(--green); }
         .quote-monthly.down { color: var(--red); }
@@ -604,12 +605,12 @@
             padding: 0 4px;
         }
         @media (max-width: 380px) {
-            #quotes-list { gap: 0 4px; }
+            #quotes-list { gap: 0 3px; }
             .quote-name { font-size: 13px; }
             .quote-price { font-size: 13px; }
-            .quote-change { font-size: 13px; min-width: 48px; }
-            .quote-weekly { font-size: 13px; min-width: 48px; }
-            .quote-monthly { font-size: 13px; min-width: 48px; }
+            .quote-change { font-size: 13px; min-width: 40px; text-align: right; }
+            .quote-weekly { font-size: 13px; min-width: 40px; text-align: right; }
+            .quote-monthly { font-size: 13px; min-width: 40px; text-align: right; }
             .quote-row + .quote-row .quote-name,
             .quote-row + .quote-row .quote-price,
             .quote-row + .quote-row .quote-change,
@@ -1476,11 +1477,11 @@ function calc4() {
     if (btcDiff > 0) {
         el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value neutral';
-        actionEl.innerHTML = '<span class="rebalance-action green" style="font-size:20px;">+' + formattedQty + ' BTC</span>';
+        actionEl.innerHTML = '<span class="rebalance-action green" style="font-size:20px;font-weight:400;">+' + formattedQty + ' BTC</span>';
     } else if (btcDiff < 0) {
         el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value neutral';
-        actionEl.innerHTML = '<span class="rebalance-action red" style="font-size:20px;">−' + formattedQty + ' BTC</span>';
+        actionEl.innerHTML = '<span class="rebalance-action red" style="font-size:20px;font-weight:400;">−' + formattedQty + ' BTC</span>';
     } else {
         el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value neutral';
@@ -1516,13 +1517,13 @@ function calc5() {
         hasAction = true;
         const colorClass = btcDiff > 0 ? 'green' : 'red';
         const sign = btcDiff > 0 ? '+' : '−';
-        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;">' + sign + fmtBtc + ' BTC</span>');
+        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;font-weight:400;">' + sign + fmtBtc + ' BTC</span>');
     }
     if (Math.abs(goldDiff) > 0.0001) {
         hasAction = true;
         const colorClass = goldDiff > 0 ? 'green' : 'red';
         const sign = goldDiff > 0 ? '+' : '−';
-        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;">' + sign + fmtGold + ' GOLD</span>');
+        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;font-weight:400;">' + sign + fmtGold + ' GOLD</span>');
     }
     if (!hasAction) {
         el.textContent = formatNumber(targetPerAsset, 2);
@@ -1978,13 +1979,15 @@ window.addEventListener('DOMContentLoaded', () => {
     initCalcInputs();
     initCalcInputs();
 
-    // Автообновление котировок каждые 60 секунд
+    // Автообновление котировок: Калькуляторы — 30с, Котировки — 15с
     setInterval(() => {
         fetchBtcPrice();
         fetchGoldPrice();
+    }, 30000);
+    setInterval(() => {
         fetchQuotes();
         fetchPeriodChanges();
-    }, 60000);
+    }, 15000);
 });
 </script>
 
