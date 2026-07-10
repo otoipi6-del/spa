@@ -520,8 +520,8 @@
         .quotes-card-title .icon { font-size: 18px; }
         #quotes-list {
             display: grid;
-            grid-template-columns: auto 1fr auto auto auto;
-            gap: 0 4px;
+            grid-template-columns: min-content 1fr minmax(56px, auto) minmax(56px, auto) minmax(56px, auto);
+            gap: 0 3px;
             align-items: center;
             width: 100%;
         }
@@ -554,6 +554,8 @@
             padding: 0;
             margin: 0;
             text-align: left;
+            justify-self: start;
+            align-self: center;
         }
         .quote-price {
             font-size: 14px;
@@ -571,7 +573,7 @@
             color: var(--text-muted);
             text-align: right;
             white-space: nowrap;
-            min-width: 44px;
+            min-width: 56px;
         }
         .quote-change.up { color: var(--green); }
         .quote-change.down { color: var(--red); }
@@ -581,7 +583,7 @@
             color: var(--text-muted);
             text-align: right;
             white-space: nowrap;
-            min-width: 44px;
+            min-width: 56px;
         }
         .quote-weekly.up { color: var(--green); }
         .quote-weekly.down { color: var(--red); }
@@ -591,7 +593,7 @@
             color: var(--text-muted);
             text-align: right;
             white-space: nowrap;
-            min-width: 44px;
+            min-width: 56px;
         }
         .quote-monthly.up { color: var(--green); }
         .quote-monthly.down { color: var(--red); }
@@ -606,11 +608,11 @@
         }
         @media (max-width: 380px) {
             #quotes-list { gap: 0 3px; }
-            .quote-name { font-size: 13px; }
+            .quote-name { font-size: 13px; padding: 0; margin: 0; }
             .quote-price { font-size: 13px; }
-            .quote-change { font-size: 13px; min-width: 40px; text-align: right; }
-            .quote-weekly { font-size: 13px; min-width: 40px; text-align: right; }
-            .quote-monthly { font-size: 13px; min-width: 40px; text-align: right; }
+            .quote-change { font-size: 13px; min-width: 52px; text-align: right; }
+            .quote-weekly { font-size: 13px; min-width: 52px; text-align: right; }
+            .quote-monthly { font-size: 13px; min-width: 52px; text-align: right; }
             .quote-row + .quote-row .quote-name,
             .quote-row + .quote-row .quote-price,
             .quote-row + .quote-row .quote-change,
@@ -834,7 +836,7 @@
         <div class="quotes-card-title"><span class="icon">📈</span><span class="live-dot"></span> Котировки активов (USD)</div>
         <div id="quotes-list">
             <div class="quote-row quote-header">
-                <span>АКТИВ</span>
+                <span></span>
                 <span>Цена</span>
                 <span>Д</span>
                 <span>Н</span>
