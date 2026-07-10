@@ -506,6 +506,7 @@
             padding: 18px;
             margin-bottom: 14px;
             box-shadow: var(--shadow);
+            overflow-x: hidden;
         }
         .quotes-card-title {
             font-size: 15px;
@@ -520,8 +521,9 @@
         #quotes-list {
             display: grid;
             grid-template-columns: auto 1fr auto auto auto;
-            gap: 0 10px;
+            gap: 0 6px;
             align-items: center;
+            width: 100%;
         }
         .quote-row {
             display: contents;
@@ -536,11 +538,11 @@
             padding-bottom: 12px;
         }
         .quote-header span {
-            font-size: 10px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             padding-bottom: 6px;
             text-align: center;
         }
@@ -549,45 +551,46 @@
             font-weight: 400;
             color: var(--text-bright);
             letter-spacing: -0.2px;
-            padding-right: 6px;
+            padding-right: 0;
+            text-align: left;
         }
         .quote-price {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 400;
             color: var(--text-bright);
             font-family: var(--font);
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
             text-align: right;
             white-space: nowrap;
             padding-right: 2px;
         }
         .quote-change {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
             text-align: center;
             white-space: nowrap;
-            min-width: 64px;
+            min-width: 52px;
         }
         .quote-change.up { color: var(--green); }
         .quote-change.down { color: var(--red); }
         .quote-weekly {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
             text-align: center;
             white-space: nowrap;
-            min-width: 64px;
+            min-width: 52px;
         }
         .quote-weekly.up { color: var(--green); }
         .quote-weekly.down { color: var(--red); }
         .quote-monthly {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
             text-align: center;
             white-space: nowrap;
-            min-width: 64px;
+            min-width: 52px;
         }
         .quote-monthly.up { color: var(--green); }
         .quote-monthly.down { color: var(--red); }
@@ -601,12 +604,12 @@
             padding: 0 4px;
         }
         @media (max-width: 380px) {
-            #quotes-list { gap: 0 5px; }
+            #quotes-list { gap: 0 4px; }
             .quote-name { font-size: 13px; }
-            .quote-price { font-size: 14px; }
-            .quote-change { font-size: 11px; min-width: 54px; }
-            .quote-weekly { font-size: 11px; min-width: 54px; }
-            .quote-monthly { font-size: 11px; min-width: 54px; }
+            .quote-price { font-size: 13px; }
+            .quote-change { font-size: 13px; min-width: 48px; }
+            .quote-weekly { font-size: 13px; min-width: 48px; }
+            .quote-monthly { font-size: 13px; min-width: 48px; }
             .quote-row + .quote-row .quote-name,
             .quote-row + .quote-row .quote-price,
             .quote-row + .quote-row .quote-change,
@@ -642,6 +645,7 @@
             margin-right: 4px;
         }
 </style>
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
@@ -824,16 +828,16 @@
 </div>
 
 
-<div id="section-quotes" class="section">
+<div id="section-quotes" class="section" style="overflow-x:hidden;">
     <div class="quotes-card">
         <div class="quotes-card-title"><span class="icon">📈</span><span class="live-dot"></span> Котировки активов (USD)</div>
         <div id="quotes-list">
             <div class="quote-row quote-header">
                 <span>АКТИВ</span>
                 <span>Цена</span>
-                <span>24ч</span>
-                <span>7д</span>
-                <span>1М</span>
+                <span>Д</span>
+                <span>Н</span>
+                <span>М</span>
             </div>
             <div class="quote-row" id="quote-btc">
                 <span class="quote-name">BTC</span>
@@ -1441,8 +1445,8 @@ function calc2() {
     const el = document.getElementById('calc2-result');
     if (isNaN(price) || isNaN(pct)) { el.textContent = '—'; el.className = 'result-value neutral'; return; }
     const res = price * (1 + pct / 100);
-    el.textContent = formatNumber(res, 8);
-    el.className = 'result-value ' + (pct >= 0 ? 'green' : 'red');
+    el.textContent = formatNumber(res, 2);
+    el.className = 'result-value neutral';
 }
 
 function calc3() {
@@ -1471,15 +1475,15 @@ function calc4() {
     const formattedQty = formatNumber(absRes, 5);
     if (btcDiff > 0) {
         el.textContent = formatNumber(targetPerAsset, 2);
-        el.className = 'result-value orange';
-        actionEl.innerHTML = '<span class="rebalance-action green">+' + formattedQty + ' BTC</span>';
+        el.className = 'result-value neutral';
+        actionEl.innerHTML = '<span class="rebalance-action green" style="font-size:20px;">+' + formattedQty + ' BTC</span>';
     } else if (btcDiff < 0) {
         el.textContent = formatNumber(targetPerAsset, 2);
-        el.className = 'result-value orange';
-        actionEl.innerHTML = '<span class="rebalance-action red">−' + formattedQty + ' BTC</span>';
+        el.className = 'result-value neutral';
+        actionEl.innerHTML = '<span class="rebalance-action red" style="font-size:20px;">−' + formattedQty + ' BTC</span>';
     } else {
         el.textContent = formatNumber(targetPerAsset, 2);
-        el.className = 'result-value orange';
+        el.className = 'result-value neutral';
         actionEl.textContent = 'Портфель сбалансирован';
         actionEl.className = 'rebalance-action';
     }
@@ -1512,23 +1516,23 @@ function calc5() {
         hasAction = true;
         const colorClass = btcDiff > 0 ? 'green' : 'red';
         const sign = btcDiff > 0 ? '+' : '−';
-        actionLines.push('<span class="rebalance-action ' + colorClass + '">' + sign + fmtBtc + ' BTC</span>');
+        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;">' + sign + fmtBtc + ' BTC</span>');
     }
     if (Math.abs(goldDiff) > 0.0001) {
         hasAction = true;
         const colorClass = goldDiff > 0 ? 'green' : 'red';
         const sign = goldDiff > 0 ? '+' : '−';
-        actionLines.push('<span class="rebalance-action ' + colorClass + '">' + sign + fmtGold + ' GOLD</span>');
+        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;">' + sign + fmtGold + ' GOLD</span>');
     }
     if (!hasAction) {
         el.textContent = formatNumber(targetPerAsset, 2);
-        el.className = 'result-value orange';
+        el.className = 'result-value neutral';
         actionEl.textContent = 'Портфель сбалансирован';
         actionEl.className = 'rebalance-action';
     } else {
         const usdAfter = usdQty - btcDiff * btcPrice - goldDiff * goldPrice;
         el.textContent = formatNumber(usdAfter, 2);
-        el.className = 'result-value orange';
+        el.className = 'result-value neutral';
         actionEl.innerHTML = actionLines.join('<br>');
         actionEl.className = 'rebalance-action';
     }
