@@ -503,7 +503,7 @@
             background: var(--bg-card);
             border: none;
             border-radius: var(--radius);
-            padding: 18px 18px 18px 0;
+            padding: 18px 18px 18px 4px;
             margin-bottom: 14px;
             box-shadow: var(--shadow);
             overflow-x: hidden;
@@ -529,14 +529,22 @@
         .quote-row {
             display: contents;
         }
-        .quote-row + .quote-row .quote-name,
-        .quote-row + .quote-row .quote-price,
-        .quote-row + .quote-row .quote-change,
-        .quote-row + .quote-row .quote-weekly,
-        .quote-row + .quote-row .quote-monthly {
+        .quote-row:not(.quote-header) .quote-name,
+        .quote-row:not(.quote-header) .quote-price,
+        .quote-row:not(.quote-header) .quote-change,
+        .quote-row:not(.quote-header) .quote-weekly,
+        .quote-row:not(.quote-header) .quote-monthly {
             border-top: 1px solid var(--border);
             padding-top: 12px;
             padding-bottom: 12px;
+        }
+        /* Bottom border for the last data row */
+        .quote-row:last-child .quote-name,
+        .quote-row:last-child .quote-price,
+        .quote-row:last-child .quote-change,
+        .quote-row:last-child .quote-weekly,
+        .quote-row:last-child .quote-monthly {
+            border-bottom: 1px solid var(--border);
         }
         .quote-header span {
             font-size: 14px;
@@ -614,13 +622,20 @@
             .quote-change { font-size: 13px; min-width: 52px; text-align: right; }
             .quote-weekly { font-size: 13px; min-width: 52px; text-align: right; }
             .quote-monthly { font-size: 13px; min-width: 52px; text-align: right; }
-            .quote-row + .quote-row .quote-name,
-            .quote-row + .quote-row .quote-price,
-            .quote-row + .quote-row .quote-change,
-            .quote-row + .quote-row .quote-weekly,
-            .quote-row + .quote-row .quote-monthly {
+            .quote-row:not(.quote-header) .quote-name,
+            .quote-row:not(.quote-header) .quote-price,
+            .quote-row:not(.quote-header) .quote-change,
+            .quote-row:not(.quote-header) .quote-weekly,
+            .quote-row:not(.quote-header) .quote-monthly {
                 padding-top: 10px;
                 padding-bottom: 10px;
+            }
+            .quote-row:last-child .quote-name,
+            .quote-row:last-child .quote-price,
+            .quote-row:last-child .quote-change,
+            .quote-row:last-child .quote-weekly,
+            .quote-row:last-child .quote-monthly {
+                border-bottom: 1px solid var(--border);
             }
         }
 
