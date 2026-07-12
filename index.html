@@ -1224,69 +1224,50 @@ function updateQuotesTimestamp() {
 }
 
 async function fetchQuotes() {
-    try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('btc', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('BTC quote error:', e); }
+    const assets = [
+        { asset: 'btc', symbol: 'BTCUSDT', api: 'spot' },
+        { asset: 'eth', symbol: 'ETHUSDT', api: 'spot' },
+        { asset: 'sol', symbol: 'SOLUSDT', api: 'spot' },
+        { asset: 'link', symbol: 'LINKUSDT', api: 'spot' },
+        { asset: 'uni', symbol: 'UNIUSDT', api: 'spot' },
+        { asset: 'doge', symbol: 'DOGEUSDT', api: 'spot' },
+        { asset: 'gold', symbol: 'XAUUSDT', api: 'futures' },
+        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' }
+    ];
 
-    try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('eth', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('ETH quote error:', e); }
+    for (const a of assets) {
+        let baseUrl;
+        if (a.api === 'futures') baseUrl = 'https://fapi.binance.com/fapi/v1';
+        else baseUrl = 'https://api.binance.com/api/v3';
 
-    try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=SOLUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('sol', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('SOL quote error:', e); }
+        try {
+            // Get current price from ticker
+            const tickerRes = await fetch(baseUrl + '/ticker/24hr?symbol=' + a.symbol);
+            let price = null;
+            if (tickerRes.ok) {
+                const tickerData = await tickerRes.json();
+                price = parseFloat(tickerData.lastPrice);
+            }
 
-    try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=LINKUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('link', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('LINK quote error:', e); }
+            // Get daily change from klines (1d, limit=2) — same logic as weekly/monthly
+            let dailyChange = null;
+            try {
+                const klineRes = await fetch(baseUrl + '/klines?symbol=' + a.symbol + '&interval=1d&limit=2');
+                if (klineRes.ok) {
+                    const klineData = await klineRes.json();
+                    if (klineData.length >= 2) {
+                        const prevDayClose = parseFloat(klineData[0][4]);
+                        const currentDayClose = parseFloat(klineData[1][4]);
+                        dailyChange = ((currentDayClose - prevDayClose) / prevDayClose) * 100;
+                    }
+                }
+            } catch (e) { console.error(a.asset + ' daily kline error:', e); }
 
-    try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=UNIUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('uni', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('UNI quote error:', e); }
-
-    try {
-        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=DOGEUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('doge', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('DOGE quote error:', e); }
-
-    try {
-        const res = await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=XAUUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('gold', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('GOLD quote error:', e); }
-
-    try {
-        const res = await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=BZUSDT');
-        if (res.ok) {
-            const data = await res.json();
-            updateQuoteDisplay('brent', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
-        }
-    } catch (e) { console.error('BRENT quote error:', e); }
+            if (price !== null) {
+                updateQuoteDisplay(a.asset, price, dailyChange !== null ? dailyChange : 0);
+            }
+        } catch (e) { console.error(a.asset + ' quote error:', e); }
+    }
 
     updateQuotesTimestamp();
 }
