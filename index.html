@@ -886,6 +886,34 @@
                 <span class="quote-weekly" id="quote-eth-weekly">—</span>
                 <span class="quote-monthly" id="quote-eth-monthly">—</span>
             </div>
+            <div class="quote-row" id="quote-sol">
+                <span class="quote-name">SOL</span>
+                <span class="quote-price" id="quote-sol-price">—</span>
+                <span class="quote-change" id="quote-sol-change">—</span>
+                <span class="quote-weekly" id="quote-sol-weekly">—</span>
+                <span class="quote-monthly" id="quote-sol-monthly">—</span>
+            </div>
+            <div class="quote-row" id="quote-link">
+                <span class="quote-name">LINK</span>
+                <span class="quote-price" id="quote-link-price">—</span>
+                <span class="quote-change" id="quote-link-change">—</span>
+                <span class="quote-weekly" id="quote-link-weekly">—</span>
+                <span class="quote-monthly" id="quote-link-monthly">—</span>
+            </div>
+            <div class="quote-row" id="quote-uni">
+                <span class="quote-name">UNI</span>
+                <span class="quote-price" id="quote-uni-price">—</span>
+                <span class="quote-change" id="quote-uni-change">—</span>
+                <span class="quote-weekly" id="quote-uni-weekly">—</span>
+                <span class="quote-monthly" id="quote-uni-monthly">—</span>
+            </div>
+            <div class="quote-row" id="quote-doge">
+                <span class="quote-name">DOGE</span>
+                <span class="quote-price" id="quote-doge-price">—</span>
+                <span class="quote-change" id="quote-doge-change">—</span>
+                <span class="quote-weekly" id="quote-doge-weekly">—</span>
+                <span class="quote-monthly" id="quote-doge-monthly">—</span>
+            </div>
             <div class="quote-row" id="quote-gold">
                 <span class="quote-name">GOLD</span>
                 <span class="quote-price" id="quote-gold-price">—</span>
@@ -1147,6 +1175,10 @@ let apiPrices = {
 let quotesData = {
     btc: { price: null, change: null, prevPrice: null },
     eth: { price: null, change: null, prevPrice: null },
+    sol: { price: null, change: null, prevPrice: null },
+    link: { price: null, change: null, prevPrice: null },
+    uni: { price: null, change: null, prevPrice: null },
+    doge: { price: null, change: null, prevPrice: null },
     gold: { price: null, change: null, prevPrice: null },
     brent: { price: null, change: null, prevPrice: null },
 };
@@ -1209,6 +1241,38 @@ async function fetchQuotes() {
     } catch (e) { console.error('ETH quote error:', e); }
 
     try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=SOLUSDT');
+        if (res.ok) {
+            const data = await res.json();
+            updateQuoteDisplay('sol', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
+        }
+    } catch (e) { console.error('SOL quote error:', e); }
+
+    try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=LINKUSDT');
+        if (res.ok) {
+            const data = await res.json();
+            updateQuoteDisplay('link', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
+        }
+    } catch (e) { console.error('LINK quote error:', e); }
+
+    try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=UNIUSDT');
+        if (res.ok) {
+            const data = await res.json();
+            updateQuoteDisplay('uni', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
+        }
+    } catch (e) { console.error('UNI quote error:', e); }
+
+    try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=DOGEUSDT');
+        if (res.ok) {
+            const data = await res.json();
+            updateQuoteDisplay('doge', parseFloat(data.lastPrice), parseFloat(data.priceChangePercent));
+        }
+    } catch (e) { console.error('DOGE quote error:', e); }
+
+    try {
         const res = await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=XAUUSDT');
         if (res.ok) {
             const data = await res.json();
@@ -1244,6 +1308,10 @@ async function fetchPeriodChanges() {
     const assets = [
         { asset: 'btc', symbol: 'BTCUSDT', api: 'spot' },
         { asset: 'eth', symbol: 'ETHUSDT', api: 'spot' },
+        { asset: 'sol', symbol: 'SOLUSDT', api: 'spot' },
+        { asset: 'link', symbol: 'LINKUSDT', api: 'spot' },
+        { asset: 'uni', symbol: 'UNIUSDT', api: 'spot' },
+        { asset: 'doge', symbol: 'DOGEUSDT', api: 'spot' },
         { asset: 'gold', symbol: 'XAUUSDT', api: 'futures' },
         { asset: 'brent', symbol: 'BZUSDT', api: 'futures' }
     ];
