@@ -1345,7 +1345,7 @@ function updateQuoteDisplay(asset, price, changePercent) {
     } else {
         const decimals = asset === 'link' || asset === 'uni' ? 3 : asset === 'doge' || asset === 'copper' ? 4 : asset === 'eur' ? 5 : 2;
         priceEl.textContent = formatNumber(price, decimals);
-        changeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
+        changeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(1) + '%';
         if (changePercent >= 0) {
             changeEl.className = 'quote-change up';
         } else {
@@ -1453,7 +1453,6 @@ async function fetchFredBalance() {
     }
 
     if (!apiKey) {
-        // No API key - show placeholder or cached old data
         if (cachedData) {
             displayFredData(cachedData);
         } else {
@@ -1465,9 +1464,10 @@ async function fetchFredBalance() {
     }
 
     try {
-        // Fetch last 12 weekly observations for monthly calc
-        const url = 'https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=' + apiKey + '&file_type=json&frequency=w&sort_order=desc&limit=12';
-        const res = await fetch(url);
+        // Use CORS proxy for FRED API
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const fredUrl = encodeURIComponent('https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=' + apiKey + '&file_type=json&frequency=w&sort_order=desc&limit=12');
+        const res = await fetch(proxyUrl + fredUrl);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         const obs = data.observations || [];
@@ -1477,15 +1477,22 @@ async function fetchFredBalance() {
             return;
         }
 
-        // obs[0] = most recent, obs[1] = previous week
-        const currentValue = parseFloat(obs[0].value);
-        const prevWeekValue = parseFloat(obs[1].value);
+        // Filter out empty/null values (FRED uses '.' for missing data)
+        const validObs = obs.filter(o => o.value && o.value !== '.');
+        if (validObs.length < 2) {
+            priceEl.textContent = '—';
+            return;
+        }
+
+        // validObs[0] = most recent, validObs[1] = previous week
+        const currentValue = parseFloat(validObs[0].value);
+        const prevWeekValue = parseFloat(validObs[1].value);
         const weeklyChange = ((currentValue - prevWeekValue) / prevWeekValue) * 100;
 
-        // Monthly: compare current with ~4 weeks ago (obs[4])
+        // Monthly: compare current with ~4 weeks ago
         let monthlyChange = null;
-        if (obs.length >= 5) {
-            const monthAgoValue = parseFloat(obs[4].value);
+        if (validObs.length >= 5) {
+            const monthAgoValue = parseFloat(validObs[4].value);
             monthlyChange = ((currentValue - monthAgoValue) / monthAgoValue) * 100;
         }
 
@@ -1499,7 +1506,7 @@ async function fetchFredBalance() {
         localStorage.setItem('fredBalanceData', JSON.stringify(result));
         displayFredData(result);
     } catch (err) {
-        console.error('FED balance fetch error:', err);
+        console.error('FRED balance fetch error:', err);
         if (cachedData) displayFredData(cachedData);
         else {
             priceEl.textContent = '—';
@@ -1521,7 +1528,7 @@ function displayFredData(data) {
     // Weekly change
     if (data.weeklyChange !== null && !isNaN(data.weeklyChange)) {
         const sign = data.weeklyChange >= 0 ? '+' : '';
-        weeklyEl.textContent = sign + data.weeklyChange.toFixed(2) + '%';
+        weeklyEl.textContent = sign + data.weeklyChange.toFixed(1) + '%';
         weeklyEl.className = 'quote-weekly ' + (data.weeklyChange >= 0 ? 'up' : 'down');
     } else {
         weeklyEl.textContent = '—';
@@ -1531,7 +1538,7 @@ function displayFredData(data) {
     // Monthly change
     if (data.monthlyChange !== null && !isNaN(data.monthlyChange)) {
         const sign = data.monthlyChange >= 0 ? '+' : '';
-        monthlyEl.textContent = sign + data.monthlyChange.toFixed(2) + '%';
+        monthlyEl.textContent = sign + data.monthlyChange.toFixed(1) + '%';
         monthlyEl.className = 'quote-monthly ' + (data.monthlyChange >= 0 ? 'up' : 'down');
     } else {
         monthlyEl.textContent = '—';
@@ -1629,7 +1636,7 @@ function updatePeriodDisplay(asset, period, change) {
     const el = document.getElementById('quote-' + asset + '-' + period);
     if (!el) return;
     const sign = change >= 0 ? '+' : '';
-    el.textContent = sign + change.toFixed(2) + '%';
+    el.textContent = sign + change.toFixed(1) + '%';
     el.className = 'quote-' + period + ' ' + (change >= 0 ? 'up' : 'down');
 }
 
