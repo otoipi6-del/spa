@@ -677,6 +677,123 @@
             margin-left: 4px;
             margin-right: 4px;
         }
+
+        /* ====== DARK THEME FOR QUOTES ====== */
+        body.dark-quotes {
+            --bg: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-input: #0f3460;
+            --bg-nav: #1a1a2e;
+            --text: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --text-bright: #ffffff;
+            --border: #2a2a4a;
+            --accent: #4ade80;
+            --accent-soft: rgba(74, 222, 128, 0.15);
+            --green: #4ade80;
+            --green-soft: rgba(74, 222, 128, 0.15);
+            --red: #f87171;
+            --red-soft: rgba(248, 113, 113, 0.15);
+            --orange: #fbbf24;
+        }
+        body.dark-quotes .header {
+            background: #16213e;
+            border-bottom-color: #2a2a4a;
+        }
+        body.dark-quotes .bottom-nav {
+            background: #1a1a2e;
+            border-top-color: #2a2a4a;
+        }
+        body.dark-quotes .install-banner {
+            background: #4ade80;
+        }
+        body.dark-quotes .install-banner-btn {
+            color: #1a1a2e;
+        }
+        body.dark-quotes .trade-card,
+        body.dark-quotes .card {
+            background: #16213e;
+        }
+        body.dark-quotes .input-group input,
+        body.dark-quotes .input-group select {
+            background: #0f3460;
+            color: #ffffff;
+        }
+        body.dark-quotes .result-box {
+            background: #1a1a2e;
+        }
+        body.dark-quotes .auto-field {
+            background: #1a1a2e !important;
+        }
+        body.dark-quotes .summary-table th {
+            background: #0f3460;
+        }
+        body.dark-quotes .summary-table td {
+            border-bottom-color: #2a2a4a;
+        }
+        body.dark-quotes .summary-table tr:hover td {
+            background: #1a1a2e;
+        }
+        body.dark-quotes .summary-total {
+            background: #0f3460;
+        }
+        body.dark-quotes .btn-add {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: #4ade80;
+            color: #4ade80;
+        }
+        body.dark-quotes .btn-summary {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: #4ade80;
+            color: #4ade80;
+        }
+        body.dark-quotes .api-price-display {
+            color: #a0a0a0;
+        }
+        body.dark-quotes .api-price-display .price-value {
+            color: #4ade80;
+        }
+        body.dark-quotes .quotes-footer {
+            color: #a0a0a0;
+        }
+        body.dark-quotes .quote-update-time {
+            color: #a0a0a0;
+        }
+        body.dark-quotes .empty-state {
+            color: #a0a0a0;
+        }
+        body.dark-quotes .modal {
+            background: #16213e;
+        }
+        body.dark-quotes .modal-header h2 {
+            color: #ffffff;
+        }
+        body.dark-quotes .modal-close {
+            color: #a0a0a0;
+        }
+        /* Theme toggle button */
+        .theme-toggle {
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-bright);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+        body.dark-quotes .theme-toggle {
+            background: #0f3460;
+            border-color: #2a2a4a;
+            color: #e0e0e0;
+        }
+
 </style>
 <base target="_blank">
 <base target="_blank">
@@ -695,7 +812,10 @@
 <div class="header" id="main-header">
     <div class="header-icon">📊</div>
     <h1 id="page-title">Калькуляторы</h1>
-    <div style="width:36px"></div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" style="display:none;">
+        <span id="theme-icon">🌙</span>
+        <span id="theme-text">Тёмный</span>
+    </button>
 </div>
 
 <div id="section-calculators" class="section active">
@@ -1280,9 +1400,44 @@ function switchTab(tab) {
     event.currentTarget.classList.add('active');
     const titles = { calculators: 'Калькуляторы', spot: 'Спот', futures: 'Фьючерсы', quotes: 'Котировки' };
     document.getElementById('page-title').textContent = titles[tab];
+
+    // Show/hide theme toggle only on Quotes tab
+    const themeToggle = document.getElementById('theme-toggle');
+    if (tab === 'quotes') {
+        themeToggle.style.display = 'flex';
+    } else {
+        themeToggle.style.display = 'none';
+        // Remove dark theme when leaving quotes tab
+        document.body.classList.remove('dark-quotes');
+        updateThemeToggleUI();
+    }
+
     if (tab === 'spot') renderTrades('spot');
     if (tab === 'futures') renderTrades('futures');
 }
+
+function toggleTheme() {
+    document.body.classList.toggle('dark-quotes');
+    updateThemeToggleUI();
+    localStorage.setItem('quotesDarkTheme', document.body.classList.contains('dark-quotes') ? '1' : '0');
+}
+
+function updateThemeToggleUI() {
+    const isDark = document.body.classList.contains('dark-quotes');
+    const icon = document.getElementById('theme-icon');
+    const text = document.getElementById('theme-text');
+    if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    if (text) text.textContent = isDark ? 'Светлый' : 'Тёмный';
+}
+
+function initTheme() {
+    const saved = localStorage.getItem('quotesDarkTheme');
+    if (saved === '1') {
+        document.body.classList.add('dark-quotes');
+    }
+    updateThemeToggleUI();
+}
+
 
 
 async function fetchPeriodChanges() {
@@ -2015,6 +2170,7 @@ function closeSummary(e) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     const percentInput = document.getElementById('calc2-percent');
     if (percentInput) stylePercentInput(percentInput);
 
