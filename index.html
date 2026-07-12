@@ -679,7 +679,7 @@
         }
 
         /* ====== DARK THEME FOR QUOTES ====== */
-        body.dark-quotes {
+        body.dark {
             --bg: #1a1a2e;
             --bg-card: #16213e;
             --bg-input: #0f3460;
@@ -696,79 +696,79 @@
             --red-soft: rgba(248, 113, 113, 0.15);
             --orange: #fbbf24;
         }
-        body.dark-quotes .header {
+        body.dark .header {
             background: #16213e;
             border-bottom-color: #2a2a4a;
         }
-        body.dark-quotes .bottom-nav {
+        body.dark .bottom-nav {
             background: #1a1a2e;
             border-top-color: #2a2a4a;
         }
-        body.dark-quotes .install-banner {
+        body.dark .install-banner {
             background: #4ade80;
         }
-        body.dark-quotes .install-banner-btn {
+        body.dark .install-banner-btn {
             color: #1a1a2e;
         }
-        body.dark-quotes .trade-card,
-        body.dark-quotes .card {
+        body.dark .trade-card,
+        body.dark .card {
             background: #16213e;
         }
-        body.dark-quotes .input-group input,
-        body.dark-quotes .input-group select {
+        body.dark .input-group input,
+        body.dark .input-group select {
             background: #0f3460;
             color: #ffffff;
         }
-        body.dark-quotes .result-box {
+        body.dark .result-box {
             background: #1a1a2e;
         }
-        body.dark-quotes .auto-field {
+        body.dark .auto-field {
             background: #1a1a2e !important;
         }
-        body.dark-quotes .summary-table th {
+        body.dark .summary-table th {
             background: #0f3460;
         }
-        body.dark-quotes .summary-table td {
+        body.dark .summary-table td {
             border-bottom-color: #2a2a4a;
         }
-        body.dark-quotes .summary-table tr:hover td {
+        body.dark .summary-table tr:hover td {
             background: #1a1a2e;
         }
-        body.dark-quotes .summary-total {
+        body.dark .summary-total {
             background: #0f3460;
         }
-        body.dark-quotes .btn-add {
+        body.dark .btn-add {
             background: rgba(74, 222, 128, 0.1);
             border-color: #4ade80;
             color: #4ade80;
         }
-        body.dark-quotes .btn-summary {
+        body.dark .btn-summary {
             background: rgba(74, 222, 128, 0.1);
             border-color: #4ade80;
             color: #4ade80;
         }
-        body.dark-quotes .api-price-display {
+        body.dark .api-price-display {
             color: #a0a0a0;
         }
-        body.dark-quotes .api-price-display .price-value {
+        body.dark .api-price-display .price-value {
             color: #4ade80;
         }
-        body.dark-quotes .quotes-footer {
+        body.dark .quotes-footer {
             color: #a0a0a0;
         }
-        body.dark-quotes .quote-update-time {
+        body.dark .quote-update-time {
             color: #a0a0a0;
         }
-        body.dark-quotes .empty-state {
+        body.dark .empty-state {
             color: #a0a0a0;
         }
-        body.dark-quotes .modal {
+        body.dark .modal {
             background: #16213e;
         }
-        body.dark-quotes .modal-header h2 {
+        body.dark .modal-header h2 {
             color: #ffffff;
         }
-        body.dark-quotes .modal-close {
+        body.dark .modal-close {
             color: #a0a0a0;
         }
         /* Theme toggle button */
@@ -788,14 +788,13 @@
             white-space: nowrap;
         }
         .theme-toggle:active { transform: scale(0.95); }
-        body.dark-quotes .theme-toggle {
+        body.dark .theme-toggle {
             background: #0f3460;
             border-color: #2a2a4a;
             color: #e0e0e0;
         }
 
 </style>
-<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
@@ -812,7 +811,7 @@
 <div class="header" id="main-header">
     <div class="header-icon">📊</div>
     <h1 id="page-title">Калькуляторы</h1>
-    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" style="display:none;">
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
         <span id="theme-icon">🌙</span>
         <span id="theme-text">Тёмный</span>
     </button>
@@ -830,7 +829,7 @@
             <label>Изменение цены на %<br><span style="font-size:11px;color:var(--text-muted);font-weight:400;">(пример: 5% или -3%)</span></label>
             <div class="percent-field-wrapper" style="position:relative;">
                 <input type="number" id="calc2-percent" placeholder="0" step="any" style="width:100%;padding-right:28px;" oninput="calc2(); stylePercentInput(this); saveCalcInput('calc2-percent')">
-                <span class="percent-suffix" id="calc2-suffix" style="position:absolute;left:calc(14px + var(--input-text-width, 0px));top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--text-muted);white-space:nowrap;">%</span>
+                <span class="percent-suffix" id="calc2-suffix" style="position:absolute;left:calc(14px + 0px);top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--text-muted);white-space:nowrap;">%</span>
             </div>
         </div>
         <div class="input-group">
@@ -1041,12 +1040,33 @@
                 <span class="quote-weekly" id="quote-gold-weekly">—</span>
                 <span class="quote-monthly" id="quote-gold-monthly">—</span>
             </div>
+            <div class="quote-row" id="quote-copper">
+                <span class="quote-name">COPPER</span>
+                <span class="quote-price" id="quote-copper-price">—</span>
+                <span class="quote-change" id="quote-copper-change">—</span>
+                <span class="quote-weekly" id="quote-copper-weekly">—</span>
+                <span class="quote-monthly" id="quote-copper-monthly">—</span>
+            </div>
             <div class="quote-row" id="quote-brent">
                 <span class="quote-name">BRENT</span>
                 <span class="quote-price" id="quote-brent-price">—</span>
                 <span class="quote-change" id="quote-brent-change">—</span>
                 <span class="quote-weekly" id="quote-brent-weekly">—</span>
                 <span class="quote-monthly" id="quote-brent-monthly">—</span>
+            </div>
+            <div class="quote-row" id="quote-eur">
+                <span class="quote-name">EUR</span>
+                <span class="quote-price" id="quote-eur-price">—</span>
+                <span class="quote-change" id="quote-eur-change">—</span>
+                <span class="quote-weekly" id="quote-eur-weekly">—</span>
+                <span class="quote-monthly" id="quote-eur-monthly">—</span>
+            </div>
+            <div class="quote-row" id="quote-fred">
+                <span class="quote-name">FRED</span>
+                <span class="quote-price" id="quote-fred-price">—</span>
+                <span class="quote-change" id="quote-fred-change">—</span>
+                <span class="quote-weekly" id="quote-fred-weekly">—</span>
+                <span class="quote-monthly" id="quote-fred-monthly">—</span>
             </div>
 
         </div>
@@ -1300,7 +1320,10 @@ let quotesData = {
     uni: { price: null, change: null, prevPrice: null },
     doge: { price: null, change: null, prevPrice: null },
     gold: { price: null, change: null, prevPrice: null },
+    copper: { price: null, change: null, prevPrice: null },
     brent: { price: null, change: null, prevPrice: null },
+    eur: { price: null, change: null, prevPrice: null },
+    fred: { price: null, change: null, prevPrice: null },
 };
 
 
@@ -1314,13 +1337,20 @@ function updateQuoteDisplay(asset, price, changePercent) {
     quotesData[asset].price = price;
     quotesData[asset].change = changePercent;
 
-    priceEl.textContent = formatNumber(price, 2);
-    changeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
-
-    if (changePercent >= 0) {
-        changeEl.className = 'quote-change up';
+    if (asset === 'fred') {
+        // FED balance in trillions
+        priceEl.textContent = formatNumber(price / 1000000, 2) + 'T';
+        changeEl.textContent = '—';
+        changeEl.className = 'quote-change';
     } else {
-        changeEl.className = 'quote-change down';
+        const decimals = asset === 'link' || asset === 'uni' ? 3 : asset === 'doge' || asset === 'copper' ? 4 : asset === 'eur' ? 5 : 2;
+        priceEl.textContent = formatNumber(price, decimals);
+        changeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(2) + '%';
+        if (changePercent >= 0) {
+            changeEl.className = 'quote-change up';
+        } else {
+            changeEl.className = 'quote-change down';
+        }
     }
 
     if (prevPrice !== null && price !== prevPrice) {
@@ -1352,8 +1382,13 @@ async function fetchQuotes() {
         { asset: 'uni', symbol: 'UNIUSDT', api: 'spot' },
         { asset: 'doge', symbol: 'DOGEUSDT', api: 'spot' },
         { asset: 'gold', symbol: 'XAUUSDT', api: 'futures' },
-        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' }
+        { asset: 'copper', symbol: 'COPPERUSDT', api: 'futures' },
+        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' },
+        { asset: 'eur', symbol: 'EURUSDT', api: 'spot' }
     ];
+
+    // Fetch FED balance sheet data
+    fetchFredBalance();
 
     for (const a of assets) {
         let baseUrl;
@@ -1392,6 +1427,118 @@ async function fetchQuotes() {
     updateQuotesTimestamp();
 }
 
+// ====== FED BALANCE SHEET ======
+// Uses FRED API (series WALCL) - free API key required
+// Users can set their key via localStorage: localStorage.setItem('fredApiKey', 'YOUR_KEY')
+// Without key, shows cached or placeholder data
+async function fetchFredBalance() {
+    const priceEl = document.getElementById('quote-fred-price');
+    const weeklyEl = document.getElementById('quote-fred-weekly');
+    const monthlyEl = document.getElementById('quote-fred-monthly');
+    if (!priceEl || !weeklyEl || !monthlyEl) return;
+
+    const apiKey = localStorage.getItem('fredApiKey') || 'fd7a13313303fa59cecde821e340bda1';
+
+    // Try to get cached data first
+    const cached = localStorage.getItem('fredBalanceData');
+    let cachedData = null;
+    if (cached) {
+        try { cachedData = JSON.parse(cached); } catch (e) {}
+    }
+
+    // Use cached data if less than 24h old
+    if (cachedData && (Date.now() - cachedData.timestamp < 24 * 60 * 60 * 1000)) {
+        displayFredData(cachedData);
+        return;
+    }
+
+    if (!apiKey) {
+        // No API key - show placeholder or cached old data
+        if (cachedData) {
+            displayFredData(cachedData);
+        } else {
+            priceEl.textContent = '—';
+            weeklyEl.textContent = '—';
+            monthlyEl.textContent = '—';
+        }
+        return;
+    }
+
+    try {
+        // Fetch last 12 weekly observations for monthly calc
+        const url = 'https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=' + apiKey + '&file_type=json&frequency=w&sort_order=desc&limit=12';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const obs = data.observations || [];
+
+        if (obs.length < 2) {
+            priceEl.textContent = '—';
+            return;
+        }
+
+        // obs[0] = most recent, obs[1] = previous week
+        const currentValue = parseFloat(obs[0].value);
+        const prevWeekValue = parseFloat(obs[1].value);
+        const weeklyChange = ((currentValue - prevWeekValue) / prevWeekValue) * 100;
+
+        // Monthly: compare current with ~4 weeks ago (obs[4])
+        let monthlyChange = null;
+        if (obs.length >= 5) {
+            const monthAgoValue = parseFloat(obs[4].value);
+            monthlyChange = ((currentValue - monthAgoValue) / monthAgoValue) * 100;
+        }
+
+        const result = {
+            value: currentValue,
+            weeklyChange: weeklyChange,
+            monthlyChange: monthlyChange,
+            timestamp: Date.now()
+        };
+
+        localStorage.setItem('fredBalanceData', JSON.stringify(result));
+        displayFredData(result);
+    } catch (err) {
+        console.error('FED balance fetch error:', err);
+        if (cachedData) displayFredData(cachedData);
+        else {
+            priceEl.textContent = '—';
+            weeklyEl.textContent = '—';
+            monthlyEl.textContent = '—';
+        }
+    }
+}
+
+function displayFredData(data) {
+    const priceEl = document.getElementById('quote-fred-price');
+    const weeklyEl = document.getElementById('quote-fred-weekly');
+    const monthlyEl = document.getElementById('quote-fred-monthly');
+    if (!priceEl || !weeklyEl || !monthlyEl) return;
+
+    // Price in trillions
+    priceEl.textContent = formatNumber(data.value / 1000000, 2) + 'T';
+
+    // Weekly change
+    if (data.weeklyChange !== null && !isNaN(data.weeklyChange)) {
+        const sign = data.weeklyChange >= 0 ? '+' : '';
+        weeklyEl.textContent = sign + data.weeklyChange.toFixed(2) + '%';
+        weeklyEl.className = 'quote-weekly ' + (data.weeklyChange >= 0 ? 'up' : 'down');
+    } else {
+        weeklyEl.textContent = '—';
+        weeklyEl.className = 'quote-weekly';
+    }
+
+    // Monthly change
+    if (data.monthlyChange !== null && !isNaN(data.monthlyChange)) {
+        const sign = data.monthlyChange >= 0 ? '+' : '';
+        monthlyEl.textContent = sign + data.monthlyChange.toFixed(2) + '%';
+        monthlyEl.className = 'quote-monthly ' + (data.monthlyChange >= 0 ? 'up' : 'down');
+    } else {
+        monthlyEl.textContent = '—';
+        monthlyEl.className = 'quote-monthly';
+    }
+}
+
 
 function switchTab(tab) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1401,29 +1548,18 @@ function switchTab(tab) {
     const titles = { calculators: 'Калькуляторы', spot: 'Спот', futures: 'Фьючерсы', quotes: 'Котировки' };
     document.getElementById('page-title').textContent = titles[tab];
 
-    // Show/hide theme toggle only on Quotes tab
-    const themeToggle = document.getElementById('theme-toggle');
-    if (tab === 'quotes') {
-        themeToggle.style.display = 'flex';
-    } else {
-        themeToggle.style.display = 'none';
-        // Remove dark theme when leaving quotes tab
-        document.body.classList.remove('dark-quotes');
-        updateThemeToggleUI();
-    }
-
     if (tab === 'spot') renderTrades('spot');
     if (tab === 'futures') renderTrades('futures');
 }
 
 function toggleTheme() {
-    document.body.classList.toggle('dark-quotes');
+    document.body.classList.toggle('dark');
     updateThemeToggleUI();
-    localStorage.setItem('quotesDarkTheme', document.body.classList.contains('dark-quotes') ? '1' : '0');
+    localStorage.setItem('darkTheme', document.body.classList.contains('dark') ? '1' : '0');
 }
 
 function updateThemeToggleUI() {
-    const isDark = document.body.classList.contains('dark-quotes');
+    const isDark = document.body.classList.contains('dark');
     const icon = document.getElementById('theme-icon');
     const text = document.getElementById('theme-text');
     if (icon) icon.textContent = isDark ? '☀️' : '🌙';
@@ -1431,9 +1567,9 @@ function updateThemeToggleUI() {
 }
 
 function initTheme() {
-    const saved = localStorage.getItem('quotesDarkTheme');
+    const saved = localStorage.getItem('darkTheme');
     if (saved === '1') {
-        document.body.classList.add('dark-quotes');
+        document.body.classList.add('dark');
     }
     updateThemeToggleUI();
 }
@@ -1449,7 +1585,9 @@ async function fetchPeriodChanges() {
         { asset: 'uni', symbol: 'UNIUSDT', api: 'spot' },
         { asset: 'doge', symbol: 'DOGEUSDT', api: 'spot' },
         { asset: 'gold', symbol: 'XAUUSDT', api: 'futures' },
-        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' }
+        { asset: 'copper', symbol: 'COPPERUSDT', api: 'futures' },
+        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' },
+        { asset: 'eur', symbol: 'EURUSDT', api: 'spot' }
     ];
 
     for (const a of assets) {
@@ -2213,7 +2351,6 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchGoldPrice();
     fetchQuotes();
     fetchPeriodChanges();
-    initCalcInputs();
     initCalcInputs();
 
     // Автообновление котировок: Калькуляторы — 30с, Котировки — 15с
