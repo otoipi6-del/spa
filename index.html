@@ -797,6 +797,7 @@
 </style>
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -1342,7 +1343,7 @@ function updateQuoteDisplay(asset, price, changePercent) {
         changeEl.textContent = '—';
         changeEl.className = 'quote-change';
     } else {
-        const decimals = asset === 'link' || asset === 'uni' ? 3 : asset === 'doge' || asset === 'copper' ? 4 : asset === 'eur' ? 5 : 2;
+        const decimals = asset === 'btc' || asset === 'eth' || asset === 'gold' ? 1 : asset === 'copper' ? 2 : asset === 'doge' ? 4 : asset === 'eur' ? 5 : 2;
         priceEl.textContent = formatNumber(price, decimals);
         changeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent.toFixed(1) + '%';
         if (changePercent >= 0) {
