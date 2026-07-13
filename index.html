@@ -773,25 +773,27 @@
         }
         /* Theme toggle button */
         .theme-toggle {
-            background: var(--bg-input);
-            border: 1.5px solid var(--border);
+            background: #2a2a4a;
+            border: 1.5px solid #3a3a5a;
             border-radius: 20px;
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: 600;
+            padding: 6px 10px;
+            font-size: 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: var(--text-bright);
+            justify-content: center;
+            color: #e0e0e0;
             transition: all 0.2s;
             white-space: nowrap;
+            min-width: 36px;
+            min-height: 36px;
         }
         .theme-toggle:active { transform: scale(0.95); }
+        /* Dark mode: sun icon = light tinted background */
         body.dark .theme-toggle {
-            background: #0f3460;
-            border-color: #2a2a4a;
-            color: #e0e0e0;
+            background: #f5e6c8;
+            border-color: #c4b896;
+            color: #b8860b;
         }
 
 </style>
@@ -814,7 +816,6 @@
     <h1 id="page-title">Калькуляторы</h1>
     <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
         <span id="theme-icon">🌙</span>
-        <span id="theme-text">Тёмный</span>
     </button>
 </div>
 
@@ -1353,12 +1354,18 @@ function updateQuoteDisplay(asset, price, changePercent) {
         }
     }
 
+    // Flash only on actual price change during scheduled updates
     if (prevPrice !== null && price !== prevPrice) {
+        // Clear any pending flash reset to prevent overlapping transitions
+        if (priceEl._flashTimeout) {
+            clearTimeout(priceEl._flashTimeout);
+        }
         priceEl.style.transition = 'none';
         priceEl.style.color = price > prevPrice ? 'var(--green)' : 'var(--red)';
-        setTimeout(() => {
+        priceEl._flashTimeout = setTimeout(() => {
             priceEl.style.transition = 'color 1.5s ease';
             priceEl.style.color = '';
+            priceEl._flashTimeout = null;
         }, 50);
     }
 
@@ -1387,10 +1394,11 @@ async function fetchQuotes() {
         { asset: 'eur', symbol: 'EURUSDT', api: 'spot' }
     ];
 
-    // Fetch FED balance sheet data
+    // Fetch FED balance sheet data (independent, can run in parallel)
     fetchFredBalance();
 
-    for (const a of assets) {
+    // Fetch all assets in parallel, then update DOM all at once
+    const results = await Promise.all(assets.map(async (a) => {
         let baseUrl;
         if (a.api === 'futures') baseUrl = 'https://fapi.binance.com/fapi/v1';
         else baseUrl = 'https://api.binance.com/api/v3';
@@ -1404,7 +1412,7 @@ async function fetchQuotes() {
                 price = parseFloat(tickerData.lastPrice);
             }
 
-            // Get daily change from klines (1d, limit=2) — same logic as weekly/monthly
+            // Get daily change from klines (1d, limit=2)
             let dailyChange = null;
             try {
                 const klineRes = await fetch(baseUrl + '/klines?symbol=' + a.symbol + '&interval=1d&limit=2');
@@ -1418,11 +1426,19 @@ async function fetchQuotes() {
                 }
             } catch (e) { console.error(a.asset + ' daily kline error:', e); }
 
-            if (price !== null) {
-                updateQuoteDisplay(a.asset, price, dailyChange !== null ? dailyChange : 0);
-            }
-        } catch (e) { console.error(a.asset + ' quote error:', e); }
-    }
+            return { asset: a.asset, price, dailyChange };
+        } catch (e) {
+            console.error(a.asset + ' quote error:', e);
+            return { asset: a.asset, price: null, dailyChange: null };
+        }
+    }));
+
+    // Update all DOM elements at once — flashes will be synchronized
+    results.forEach(r => {
+        if (r.price !== null) {
+            updateQuoteDisplay(r.asset, r.price, r.dailyChange !== null ? r.dailyChange : 0);
+        }
+    });
 
     updateQuotesTimestamp();
 }
@@ -1568,9 +1584,7 @@ function toggleTheme() {
 function updateThemeToggleUI() {
     const isDark = document.body.classList.contains('dark');
     const icon = document.getElementById('theme-icon');
-    const text = document.getElementById('theme-text');
     if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-    if (text) text.textContent = isDark ? 'Светлый' : 'Тёмный';
 }
 
 function initTheme() {
@@ -1597,10 +1611,14 @@ async function fetchPeriodChanges() {
         { asset: 'eur', symbol: 'EURUSDT', api: 'spot' }
     ];
 
-    for (const a of assets) {
+    // Fetch all weekly and monthly data in parallel
+    const results = await Promise.all(assets.map(async (a) => {
         let baseUrl;
         if (a.api === 'futures') baseUrl = 'https://fapi.binance.com/fapi/v1';
         else baseUrl = 'https://api.binance.com/api/v3';
+
+        let weeklyChange = null;
+        let monthlyChange = null;
 
         // Weekly (1w klines, limit=2)
         try {
@@ -1610,8 +1628,7 @@ async function fetchPeriodChanges() {
                 if (data.length >= 2) {
                     const prevWeekClose = parseFloat(data[0][4]);
                     const currentWeekClose = parseFloat(data[1][4]);
-                    const weeklyChange = ((currentWeekClose - prevWeekClose) / prevWeekClose) * 100;
-                    updatePeriodDisplay(a.asset, 'weekly', weeklyChange);
+                    weeklyChange = ((currentWeekClose - prevWeekClose) / prevWeekClose) * 100;
                 }
             }
         } catch (e) { console.error(a.asset + ' weekly error:', e); }
@@ -1624,12 +1641,19 @@ async function fetchPeriodChanges() {
                 if (data.length >= 2) {
                     const prevMonthClose = parseFloat(data[0][4]);
                     const currentMonthClose = parseFloat(data[1][4]);
-                    const monthlyChange = ((currentMonthClose - prevMonthClose) / prevMonthClose) * 100;
-                    updatePeriodDisplay(a.asset, 'monthly', monthlyChange);
+                    monthlyChange = ((currentMonthClose - prevMonthClose) / prevMonthClose) * 100;
                 }
             }
         } catch (e) { console.error(a.asset + ' monthly error:', e); }
-    }
+
+        return { asset: a.asset, weeklyChange, monthlyChange };
+    }));
+
+    // Update all DOM elements at once
+    results.forEach(r => {
+        if (r.weeklyChange !== null) updatePeriodDisplay(r.asset, 'weekly', r.weeklyChange);
+        if (r.monthlyChange !== null) updatePeriodDisplay(r.asset, 'monthly', r.monthlyChange);
+    });
 }
 
 function updatePeriodDisplay(asset, period, change) {
