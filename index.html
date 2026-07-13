@@ -522,10 +522,12 @@
         .quotes-card-title .icon { font-size: 18px; }
         #quotes-list {
             display: grid;
-            grid-template-columns: min-content 1fr repeat(3, 64px);
-            gap: 0 8px;
+            grid-template-columns: min-content auto repeat(3, 64px);
+            gap: 0 6px;
             align-items: center;
             width: 100%;
+            justify-content: end;
+            padding-right: 8px;
         }
         .quote-row {
             display: contents;
@@ -574,6 +576,7 @@
             text-align: left;
             justify-self: start;
             align-self: center;
+            min-width: 50px;
         }
         .quote-price {
             font-size: 14px;
@@ -583,7 +586,7 @@
             letter-spacing: -0.3px;
             text-align: right;
             white-space: nowrap;
-            padding-right: 4px;
+            padding-right: 2px;
         }
         .quote-change {
             font-size: 14px;
@@ -625,9 +628,9 @@
             padding: 0 18px 14px 18px;
         }
         @media (max-width: 380px) {
-            #quotes-list { gap: 0 4px; grid-template-columns: min-content 1fr repeat(3, 56px); }
+            #quotes-list { gap: 0 3px; grid-template-columns: min-content auto repeat(3, 56px); justify-content: end; padding-right: 6px; }
             .quote-name { font-size: 13px; padding: 0 0 0 6px; margin: 0; }
-            .quote-price { font-size: 13px; padding-right: 2px; }
+            .quote-price { font-size: 13px; padding-right: 1px; }
             .quote-change { font-size: 13px; width: 56px; text-align: center; }
             .quote-weekly { font-size: 13px; width: 56px; text-align: center; }
             .quote-monthly { font-size: 13px; width: 56px; text-align: center; }
