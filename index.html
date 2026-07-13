@@ -522,12 +522,10 @@
         .quotes-card-title .icon { font-size: 18px; }
         #quotes-list {
             display: grid;
-            grid-template-columns: min-content auto repeat(3, 64px);
-            gap: 0 6px;
+            grid-template-columns: min-content 1fr minmax(56px, auto) minmax(56px, auto) minmax(56px, auto);
+            gap: 0 3px;
             align-items: center;
             width: 100%;
-            justify-content: end;
-            padding-right: 8px;
         }
         .quote-row {
             display: contents;
@@ -566,6 +564,9 @@
         .quote-header span:nth-child(2) {
             text-align: right;
         }
+        .quote-header span:last-child {
+            padding-right: 8px;
+        }
         .quote-name {
             font-size: 14px;
             font-weight: 400;
@@ -576,7 +577,6 @@
             text-align: left;
             justify-self: start;
             align-self: center;
-            min-width: 50px;
         }
         .quote-price {
             font-size: 14px;
@@ -592,9 +592,9 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            text-align: center;
+            text-align: right;
             white-space: nowrap;
-            width: 64px;
+            min-width: 56px;
         }
         .quote-change.up { color: var(--green); }
         .quote-change.down { color: var(--red); }
@@ -602,9 +602,9 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            text-align: center;
+            text-align: right;
             white-space: nowrap;
-            width: 64px;
+            min-width: 56px;
         }
         .quote-weekly.up { color: var(--green); }
         .quote-weekly.down { color: var(--red); }
@@ -612,9 +612,10 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--text-muted);
-            text-align: center;
+            text-align: right;
             white-space: nowrap;
-            width: 64px;
+            min-width: 56px;
+            padding-right: 8px;
         }
         .quote-monthly.up { color: var(--green); }
         .quote-monthly.down { color: var(--red); }
@@ -628,12 +629,12 @@
             padding: 0 18px 14px 18px;
         }
         @media (max-width: 380px) {
-            #quotes-list { gap: 0 3px; grid-template-columns: min-content auto repeat(3, 56px); justify-content: end; padding-right: 6px; }
+            #quotes-list { gap: 0 3px; }
             .quote-name { font-size: 13px; padding: 0 0 0 6px; margin: 0; }
-            .quote-price { font-size: 13px; padding-right: 1px; }
-            .quote-change { font-size: 13px; width: 56px; text-align: center; }
-            .quote-weekly { font-size: 13px; width: 56px; text-align: center; }
-            .quote-monthly { font-size: 13px; width: 56px; text-align: center; }
+            .quote-price { font-size: 13px; }
+            .quote-change { font-size: 13px; min-width: 52px; text-align: right; }
+            .quote-weekly { font-size: 13px; min-width: 52px; text-align: right; }
+            .quote-monthly { font-size: 13px; min-width: 52px; text-align: right; padding-right: 6px; }
             .quote-row:not(.quote-header) .quote-name,
             .quote-row:not(.quote-header) .quote-price,
             .quote-row:not(.quote-header) .quote-change,
@@ -675,7 +676,9 @@
             display: inline-block;
             margin-left: 4px;
             margin-right: 4px;
-        } FOR QUOTES ====== */
+        }
+
+        /* ====== DARK THEME FOR QUOTES ====== */
         body.dark {
             --bg: #1a1a2e;
             --bg-card: #16213e;
@@ -792,7 +795,6 @@
         }
 
 </style>
-<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
