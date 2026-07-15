@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="theme-color" content="#0b0e1a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="OKX Liquidation" />
+    
+    <title>OKX Калькулятор ликвидации</title>
+    
+    <!-- ——— Иконки для PWA ——— -->
+    <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23141826'/%3E%3Ctext x='256' y='340' text-anchor='middle' font-size='280' font-weight='bold' font-family='Arial' fill='%23f0b90b'%3E⚡%3C/text%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23141826'/%3E%3Ctext x='256' y='340' text-anchor='middle' font-size='280' font-weight='bold' font-family='Arial' fill='%23f0b90b'%3E⚡%3C/text%3E%3C/svg%3E" />
+    
+    <style>
+        /* ——— Базовые переменные ——— */
+        :root {
+            --bg-primary: #0b0e1a;
+            --bg-secondary: #141826;
+            --bg-card: #101526;
+            --bg-input: #1e243b;
+            --bg-table: #1a2036;
+            --border-color: #2a2f45;
+            --border-light: #262d44;
+            --text-primary: #e0e4f0;
+            --text-secondary: #8a92b0;
+            --text-muted: #6e78a0;
+            --text-table: #a8b2d4;
+            --gold: #f0b90b;
+            --gold-light: #f5d654;
+            --green: #6fcf97;
+            --red: #f28b8b;
+            --shadow: rgba(0, 0, 0, 0.7);
+            --btn-bg: #2d3657;
+            --btn-hover: #3a456a;
+            --mmr-bg: #1d243d;
+            --input-border: #313a58;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* ——— Светлая тема ——— */
+        [data-theme="light"] {
+            --bg-primary: #f0f2f8;
+            --bg-secondary: #ffffff;
+            --bg-card: #f8f9fe;
+            --bg-input: #ffffff;
+            --bg-table: #eef0f7;
+            --border-color: #d0d5e0;
+            --border-light: #dce0e8;
+            --text-primary: #1a1e2e;
+            --text-secondary: #4a5270;
+            --text-muted: #6a7290;
+            --text-table: #3a4260;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --btn-bg: #e0e4f0;
+            --btn-hover: #d0d4e0;
+            --mmr-bg: #eef0f7;
+            --input-border: #c0c8d8;
+        }
+
+        /* ——— Стили ——— */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 16px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: calc(16px + var(--safe-bottom));
+        }
+        .app {
+            max-width: 950px;
+            width: 100%;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 20px 20px 28px;
+            box-shadow: 0 12px 40px var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: background 0.3s, border 0.3s, box-shadow 0.3s;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .theme-toggle {
+            background: var(--btn-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 30px;
+            padding: 6px 14px;
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            touch-action: manipulation;
+        }
+        .theme-toggle:hover {
+            background: var(--btn-hover);
+        }
+        .sub {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 12px;
+            transition: color 0.3s, border 0.3s;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            margin-bottom: 14px;
+            align-items: flex-end;
+        }
+        .field {
+            flex: 1 1 140px;
+            min-width: 110px;
+        }
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+            letter-spacing: 0.2px;
+            transition: color 0.3s;
+        }
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 9px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: 0.2s, background 0.3s, color 0.3s, border 0.3s;
+            touch-action: manipulation;
+        }
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.15);
+        }
+        .field input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .field input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: var(--btn-bg);
+            color: var(--text-primary);
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .btn:active {
+            transform: scale(0.96);
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: #0b0e1a;
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            transform: scale(1.02);
+        }
+        .btn-danger {
+            background: #dc3c4c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #e85a68;
+        }
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+        .btn-success {
+            background: #2d8f5a;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #3aad6e;
+        }
+        .btn-install {
+            background: #4a7cf7;
+            color: white;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            animation: pulse-install 2s infinite;
+        }
+        .btn-install.show {
+            display: inline-flex;
+        }
+        @keyframes pulse-install {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .table-wrap {
+            overflow-x: auto;
+            margin: 16px 0 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            transition: border 0.3s;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 420px;
+        }
+        th {
+            background: var(--bg-table);
+            color: var(--text-table);
+            font-weight: 500;
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.3s, color 0.3s, border 0.3s;
+            font-size: 12px;
+        }
+        td {
+            padding: 8px 8px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+            transition: border 0.3s;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        td input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 13px;
+            padding: 4px 0;
+            touch-action: manipulation;
+        }
+        td input:focus {
+            outline: none;
+        }
+        td select {
+            background: var(--bg-table);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            color: var(--text-primary);
+            padding: 3px 6px;
+            font-size: 12px;
+            touch-action: manipulation;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-long {
+            background: #1b6b4a;
+            color: #7be0b0;
+        }
+        .badge-short {
+            background: #6b2a3a;
+            color: #f08a9a;
+        }
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 16px 0 10px;
+            background: var(--bg-card);
+            padding: 16px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            transition: background 0.3s, border 0.3s;
+        }
+        .result-item {
+            text-align: center;
+        }
+        .result-item .label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .result-item .value {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 2px;
+            word-break: break-all;
+        }
+        .value.green {
+            color: var(--green);
+        }
+        .value.red {
+            color: var(--red);
+        }
+        .value.gold {
+            color: var(--gold);
+        }
+        .value.muted {
+            color: var(--text-muted);
+        }
+        .hint {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 10px;
+            transition: color 0.3s;
+            line-height: 1.5;
+        }
+        .mmr-info {
+            background: var(--mmr-bg);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            border-left: 4px solid var(--gold);
+            transition: background 0.3s;
+        }
+        .mmr-info strong {
+            color: var(--gold);
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .pwa-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: background 0.3s, border 0.3s;
+        }
+        .pwa-banner.show {
+            display: flex;
+        }
+        .pwa-banner span {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .pwa-banner .btn {
+            flex-shrink: 0;
+        }
+        @media (max-width: 500px) {
+            .app {
+                padding: 14px 14px 20px;
+                border-radius: 16px;
+            }
+            h1 {
+                font-size: 19px;
+            }
+            .field {
+                flex: 1 1 100%;
+                min-width: 80px;
+            }
+            .field input,
+            .field select {
+                font-size: 16px; /* чтобы не было зума на iOS */
+                padding: 10px 12px;
+            }
+            .result-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                padding: 12px;
+                gap: 8px;
+            }
+            .result-item .value {
+                font-size: 17px;
+            }
+            .result-item .label {
+                font-size: 10px;
+            }
+            .header-controls .btn {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            .btn {
+                font-size: 13px;
+                padding: 8px 14px;
+            }
+            .theme-toggle {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+            .mmr-info {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .pwa-banner {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px 14px;
+            }
+        }
+        @media (max-width: 400px) {
+            .result-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+    <!-- ——— PWA баннер для установки ——— -->
+    <div class="pwa-banner" id="pwaBanner">
+        <span>📱 Установите приложение на домашний экран для быстрого доступа</span>
+        <button class="btn btn-primary" id="installBtn" style="white-space:nowrap;">➕ Установить</button>
+    </div>
+
+    <div class="header">
+        <h1>⚡ OKX Liquidation</h1>
+        <div class="header-controls">
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+                <span id="themeIcon">🌙</span> <span id="themeLabel">Тёмная</span>
+            </button>
+            <button class="btn btn-sm btn-success" onclick="saveData()">💾</button>
+            <button class="btn btn-sm" onclick="loadData()" style="background:var(--btn-bg);">📂</button>
+        </div>
+    </div>
+
+    <div class="sub">Кросс-маржа · Общий депозит · MMR по OKX</div>
+
+    <!-- ——— Ввод депозита ——— -->
+    <div class="row">
+        <div class="field" style="flex: 0 0 200px;">
+            <label>💰 Депозит (USDT)</label>
+            <input type="number" id="deposit" value="155" step="0.01" min="0" />
+        </div>
+        <div class="field" style="flex: 0 0 170px;">
+            <label>📊 Текущая цена</label>
+            <input type="number" id="currentPrice" value="2200" step="0.01" min="0" />
+        </div>
+        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 4px;">
+            <button class="btn btn-primary" onclick="addRow()">➕ Добавить</button>
+            <button class="btn btn-sm" style="background:var(--btn-bg);" onclick="clearAll()">🗑</button>
+        </div>
+    </div>
+
+    <!-- ——— Таблица позиций ——— -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:30px;">#</th>
+                    <th>Объем</th>
+                    <th>Цена</th>
+                    <th>Напр.</th>
+                    <th style="width:40px;"></th>
+                </tr>
+            </thead>
+            <tbody id="positionsBody">
+                <!-- Строки добавляются через JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ——— Кнопка расчёта ——— -->
+    <button class="btn btn-primary" onclick="calc()" style="width:100%; padding:12px; margin: 4px 0 10px; font-size:15px;">
+        📐 Рассчитать
+    </button>
+
+    <!-- ——— Результаты ——— -->
+    <div id="results">
+        <div class="result-grid">
+            <div class="result-item">
+                <div class="label">Нетто-объем</div>
+                <div class="value gold" id="netVolume">0</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Средняя цена</div>
+                <div class="value gold" id="avgPrice">0</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Liquidation LONG</div>
+                <div class="value red" id="liqLong">—</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Liquidation SHORT</div>
+                <div class="value green" id="liqShort">—</div>
+            </div>
+            <div class="result-item">
+                <div class="label">До ликв. LONG</div>
+                <div class="value red" id="pctLong">—</div>
+            </div>
+            <div class="result-item">
+                <div class="label">До ликв. SHORT</div>
+                <div class="value green" id="pctShort">—</div>
+            </div>
+        </div>
+        <div class="mmr-info" id="mmrDisplay">
+            <strong>MMR:</strong> <span id="mmrValue">0.5%</span> &nbsp;·&nbsp; по объему OKX
+        </div>
+        <div class="hint" id="hintText">
+            💡 Добавьте позиции. LONG и SHORT считаются с разными знаками.
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ============================================================
+    //  1. PWA — УСТАНОВКА НА ДОМАШНИЙ ЭКРАН
+    // ============================================================
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('pwaBanner').classList.add('show');
+        document.querySelector('.btn-install')?.classList.add('show');
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const result = await deferredPrompt.userChoice;
+            if (result.outcome === 'accepted') {
+                document.getElementById('pwaBanner').classList.remove('show');
+            }
+            deferredPrompt = null;
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        document.getElementById('pwaBanner').classList.remove('show');
+    });
+
+    // ============================================================
+    //  2. MMR (OKX)
+    // ============================================================
+    function getMMR(volume) {
+        const absV = Math.abs(volume);
+        if (absV <= 100000) return 0.005;
+        if (absV <= 500000) return 0.010;
+        if (absV <= 1000000) return 0.015;
+        if (absV <= 2000000) return 0.020;
+        if (absV <= 5000000) return 0.025;
+        return 0.030;
+    }
+
+    // ============================================================
+    //  3. ТЕМА
+    // ============================================================
+    function getStoredTheme() {
+        return localStorage.getItem('liquidation_theme') || 'dark';
+    }
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = document.getElementById('themeIcon');
+        const label = document.getElementById('themeLabel');
+        if (theme === 'light') {
+            icon.textContent = '☀️';
+            label.textContent = 'Светлая';
+            document.querySelector('meta[name="theme-color"]').content = '#f0f2f8';
+        } else {
+            icon.textContent = '🌙';
+            label.textContent = 'Тёмная';
+            document.querySelector('meta[name="theme-color"]').content = '#0b0e1a';
+        }
+        localStorage.setItem('liquidation_theme', theme);
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+    }
+
+    // ============================================================
+    //  4. РАБОТА С ПОЗИЦИЯМИ
+    // ============================================================
+    let rowCounter = 0;
+
+    function addRow(volume, price, side) {
+        const tbody = document.getElementById('positionsBody');
+        const tr = document.createElement('tr');
+        const idx = ++rowCounter;
+
+        const vol = volume !== undefined ? volume : 100;
+        const pr = price !== undefined ? price : 2200;
+        const sd = side !== undefined ? side : 'LONG';
+
+        tr.id = `row-${idx}`;
+        tr.innerHTML = `
+            <td style="text-align:center; color:var(--text-muted); font-size:12px;">${idx}</td>
+            <td><input type="number" class="pos-vol" value="${vol}" step="0.01" min="0.01" /></td>
+            <td><input type="number" class="pos-price" value="${pr}" step="0.01" min="0.01" /></td>
+            <td>
+                <select class="pos-side">
+                    <option value="LONG" ${sd === 'LONG' ? 'selected' : ''}>LONG</option>
+                    <option value="SHORT" ${sd === 'SHORT' ? 'selected' : ''}>SHORT</option>
+                </select>
+            </td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeRow('${tr.id}')" style="padding:1px 8px; font-size:14px;">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+        calc();
+    }
+
+    function removeRow(id) {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+        calc();
+    }
+
+    function clearAll() {
+        document.getElementById('positionsBody').innerHTML = '';
+        rowCounter = 0;
+        calc();
+    }
+
+    // ============================================================
+    //  5. СБОР ДАННЫХ ИЗ ТАБЛИЦЫ
+    // ============================================================
+    function getPositionsData() {
+        const rows = document.querySelectorAll('#positionsBody tr');
+        const positions = [];
+        rows.forEach(tr => {
+            const volInput = tr.querySelector('.pos-vol');
+            const priceInput = tr.querySelector('.pos-price');
+            const sideSelect = tr.querySelector('.pos-side');
+            if (!volInput || !priceInput || !sideSelect) return;
+            const vol = parseFloat(volInput.value) || 0;
+            const price = parseFloat(priceInput.value) || 0;
+            const side = sideSelect.value;
+            if (vol > 0 && price > 0) {
+                positions.push({ volume: vol, price: price, side: side });
+            }
+        });
+        return positions;
+    }
+
+    // ============================================================
+    //  6. ОСНОВНОЙ РАСЧЁТ
+    // ============================================================
+    function calc() {
+        const deposit = parseFloat(document.getElementById('deposit').value) || 0;
+        const current = parseFloat(document.getElementById('currentPrice').value) || 0;
+
+        const positions = getPositionsData();
+        let totalLong = 0;
+        let totalShort = 0;
+        let sumPriceVolume = 0;
+        let totalAbsVolume = 0;
+
+        positions.forEach(p => {
+            if (p.side === 'LONG') totalLong += p.volume;
+            else totalShort += p.volume;
+            sumPriceVolume += p.volume * p.price;
+            totalAbsVolume += p.volume;
+        });
+
+        const netVolume = totalLong - totalShort;
+        const absNet = Math.abs(netVolume);
+        const avgPrice = totalAbsVolume > 0 ? sumPriceVolume / totalAbsVolume : 0;
+
+        const mmr = getMMR(totalAbsVolume);
+        document.getElementById('mmrValue').textContent = (mmr * 100).toFixed(2) + '%';
+
+        let liqLong = null;
+        let liqShort = null;
+        let pctLong = null;
+        let pctShort = null;
+
+        if (absNet > 0 && avgPrice > 0 && deposit > 0) {
+            liqLong = Math.max(avgPrice * (1 - deposit / absNet + mmr), 0.01);
+            liqShort = Math.max(avgPrice * (1 + deposit / absNet - mmr), 0.01);
+
+            if (current > 0) {
+                pctLong = (current - liqLong) / current * 100;
+                pctShort = (liqShort - current) / current * 100;
+            }
+        }
+
+        // Вывод
+        document.getElementById('netVolume').textContent = absNet > 0 ? absNet.toFixed(2) : '0';
+        document.getElementById('avgPrice').textContent = avgPrice > 0 ? avgPrice.toFixed(4) : '—';
+
+        const elLong = document.getElementById('liqLong');
+        const elShort = document.getElementById('liqShort');
+        const elPctLong = document.getElementById('pctLong');
+        const elPctShort = document.getElementById('pctShort');
+
+        if (liqLong !== null && liqLong > 0) {
+            elLong.textContent = '$ ' + liqLong.toFixed(2);
+            elLong.className = 'value red';
+        } else {
+            elLong.textContent = '∞';
+            elLong.className = 'value muted';
+        }
+
+        if (liqShort !== null && liqShort > 0) {
+            elShort.textContent = '$ ' + liqShort.toFixed(2);
+            elShort.className = 'value green';
+        } else {
+            elShort.textContent = '∞';
+            elShort.className = 'value muted';
+        }
+
+        if (pctLong !== null && current > 0 && liqLong !== null && liqLong > 0) {
+            elPctLong.textContent = pctLong.toFixed(2) + '% ↓';
+            elPctLong.className = 'value ' + (pctLong < 5 ? 'red' : 'gold');
+        } else {
+            elPctLong.textContent = '—';
+            elPctLong.className = 'value muted';
+        }
+
+        if (pctShort !== null && current > 0 && liqShort !== null && liqShort > 0) {
+            elPctShort.textContent = pctShort.toFixed(2) + '% ↑';
+            elPctShort.className = 'value ' + (pctShort < 5 ? 'red' : 'gold');
+        } else {
+            elPctShort.textContent = '—';
+            elPctShort.className = 'value muted';
+        }
+
+        const hint = document.getElementById('hintText');
+        if (absNet === 0 && totalAbsVolume > 0) {
+            hint.innerHTML = '⚠️ LONG = SHORT → чистый объём = 0. Ликвидация невозможна (полный хедж).';
+        } else if (totalAbsVolume === 0) {
+            hint.innerHTML = '💡 Добавьте хотя бы одну позицию.';
+        } else if (deposit <= 0) {
+            hint.innerHTML = '⚠️ Укажите депозит > 0.';
+        } else {
+            hint.innerHTML = '✅ Формула: цена ликв. = средняя × (1 − депозит / нетто-объём ± MMR).';
+        }
+    }
+
+    // ============================================================
+    //  7. LOCALSTORAGE — СОХРАНЕНИЕ / ЗАГРУЗКА
+    // ============================================================
+    function saveData() {
+        const deposit = document.getElementById('deposit').value;
+        const currentPrice = document.getElementById('currentPrice').value;
+        const positions = getPositionsData();
+
+        const data = {
+            deposit: deposit,
+            currentPrice: currentPrice,
+            positions: positions,
+            theme: document.documentElement.getAttribute('data-theme') || 'dark'
+        };
+
+        localStorage.setItem('liquidation_data', JSON.stringify(data));
+        const btn = event?.target || document.querySelector('.btn-success');
+        if (btn) {
+            const orig = btn.textContent;
+            btn.textContent = '✅';
+            setTimeout(() => btn.textContent = orig, 1200);
+        }
+    }
+
+    function loadData() {
+        const raw = localStorage.getItem('liquidation_data');
+        if (!raw) {
+            alert('Нет сохранённых данных.');
+            return;
+        }
+        try {
+            const data = JSON.parse(raw);
+
+            document.getElementById('deposit').value = data.deposit || 155;
+            document.getElementById('currentPrice').value = data.currentPrice || 2200;
+
+            document.getElementById('positionsBody').innerHTML = '';
+            rowCounter = 0;
+
+            if (data.positions && data.positions.length > 0) {
+                data.positions.forEach(p => {
+                    addRow(p.volume, p.price, p.side);
+                });
+            } else {
+                addRow(100, 2065, 'LONG');
+                addRow(100, 2179, 'LONG');
+                addRow(100, 2295, 'LONG');
+                addRow(100, 2295, 'LONG');
+            }
+
+            if (data.theme) {
+                applyTheme(data.theme);
+            }
+
+            calc();
+
+            const btn = event?.target || document.querySelector('[onclick="loadData()"]');
+            if (btn) {
+                const orig = btn.textContent;
+                btn.textContent = '✅';
+                setTimeout(() => btn.textContent = orig, 1200);
+            }
+
+        } catch (e) {
+            alert('Ошибка: ' + e.message);
+        }
+    }
+
+    // ============================================================
+    //  8. АВТО-ПЕРЕСЧЁТ
+    // ============================================================
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.pos-vol') || e.target.closest('.pos-price') ||
+            e.target.closest('#deposit') || e.target.closest('#currentPrice')) {
+            calc();
+        }
+    });
+    document.addEventListener('change', function(e) {
+        if (e.target.closest('.pos-side')) calc();
+    });
+
+    // ============================================================
+    //  9. ИНИЦИАЛИЗАЦИЯ
+    // ============================================================
+    window.onload = function() {
+        const savedTheme = getStoredTheme();
+        applyTheme(savedTheme);
+
+        const raw = localStorage.getItem('liquidation_data');
+        if (raw) {
+            try {
+                const data = JSON.parse(raw);
+                document.getElementById('deposit').value = data.deposit || 155;
+                document.getElementById('currentPrice').value = data.currentPrice || 2200;
+
+                document.getElementById('positionsBody').innerHTML = '';
+                rowCounter = 0;
+
+                if (data.positions && data.positions.length > 0) {
+                    data.positions.forEach(p => {
+                        addRow(p.volume, p.price, p.side);
+                    });
+                } else {
+                    addRow(100, 2065, 'LONG');
+                    addRow(100, 2179, 'LONG');
+                    addRow(100, 2295, 'LONG');
+                    addRow(100, 2295, 'LONG');
+                }
+
+                calc();
+                return;
+            } catch (e) { /* игнорируем */ }
+        }
+
+        document.getElementById('positionsBody').innerHTML = '';
+        rowCounter = 0;
+        addRow(100, 2065, 'LONG');
+        addRow(100, 2179, 'LONG');
+        addRow(100, 2295, 'LONG');
+        addRow(100, 2295, 'LONG');
+        calc();
+    };
+</script>
+
+</body>
+</html>
