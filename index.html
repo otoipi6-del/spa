@@ -357,6 +357,7 @@
         }
         .rebalance-action.green { color: var(--green); }
         .rebalance-action.red { color: var(--red); }
+        .rebalance-action-large { font-size: 20px; font-weight: 400; }
         select option { background: var(--bg-card); color: var(--text-bright); }
         @media (min-width: 600px) {
             .trade-grid { grid-template-columns: 1fr 1fr 1fr; }
@@ -643,13 +644,6 @@
                 padding-top: 6px;
                 padding-bottom: 6px;
             }
-            .quote-row:last-child .quote-name,
-            .quote-row:last-child .quote-price,
-            .quote-row:last-child .quote-change,
-            .quote-row:last-child .quote-weekly,
-            .quote-row:last-child .quote-monthly {
-                border-bottom: 1px solid var(--border);
-            }
         }
 
         .quote-update-time {
@@ -801,6 +795,16 @@
             min-height: 36px;
         }
         .theme-toggle:active { transform: scale(0.95); }
+        .update-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+            animation: pulse 1.5s infinite;
+        }
         /* Dark mode: sun icon = light tinted background */
         body.dark .theme-toggle {
             background: #f5e6c8;
@@ -843,6 +847,8 @@
             margin-bottom: 0;
         }
         .liq-del-btn:active { transform: scale(0.95); }
+        .liq-mix-long { color: var(--red); }
+        .liq-mix-short { color: var(--green); }
         .liq-dir-long { color: var(--green); font-weight: 700; }
         .liq-dir-short { color: var(--red); font-weight: 700; }
         @media (max-width: 380px) {
@@ -859,7 +865,6 @@
         }
 
 </style>
-<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
@@ -1295,9 +1300,7 @@ function openDatePicker(wrapper, event) {
         try {
             dateInput.showPicker();
             return;
-        } catch (e) {
-            console.log('showPicker failed, trying fallback');
-        }
+        } catch (e) {}
     }
 
     // Запасной вариант: фокус на поле даты (открывает календарь в некоторых браузерах)
@@ -1477,7 +1480,7 @@ function updateQuotesTimestamp() {
     const el = document.getElementById('quotes-update-time');
     if (el) {
         const now = new Date();
-        el.innerHTML = '<span style="display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;margin-right:4px;vertical-align:middle;animation:pulse 1.5s infinite;"></span>Обновлено: ' + now.toLocaleTimeString('ru-RU');
+        el.innerHTML = '<span class="update-dot"></span>Обновлено: ' + now.toLocaleTimeString('ru-RU');
     }
 }
 
@@ -1525,12 +1528,10 @@ async function fetchQuotes() {
                         dailyChange = ((currentDayClose - prevDayClose) / prevDayClose) * 100;
                     }
                 }
-            } catch (e) { console.error(a.asset + ' daily kline error:', e); }
+            } catch (e) {}
 
             return { asset: a.asset, price, dailyChange };
-        } catch (e) {
-            console.error(a.asset + ' quote error:', e);
-            return { asset: a.asset, price: null, dailyChange: null };
+        } catch (e) {return { asset: a.asset, price: null, dailyChange: null };
         }
     }));
 
@@ -1622,9 +1623,7 @@ async function fetchFredBalance() {
 
         localStorage.setItem('fredBalanceData', JSON.stringify(result));
         displayFredData(result);
-    } catch (err) {
-        console.error('FRED balance fetch error:', err);
-        if (cachedData) displayFredData(cachedData);
+    } catch (err) {if (cachedData) displayFredData(cachedData);
         else {
             priceEl.textContent = '—';
             weeklyEl.textContent = '—';
@@ -1732,7 +1731,7 @@ async function fetchPeriodChanges() {
                     weeklyChange = ((currentWeekClose - prevWeekClose) / prevWeekClose) * 100;
                 }
             }
-        } catch (e) { console.error(a.asset + ' weekly error:', e); }
+        } catch (e) {}
 
         // Monthly (1M klines, limit=2)
         try {
@@ -1745,7 +1744,7 @@ async function fetchPeriodChanges() {
                     monthlyChange = ((currentMonthClose - prevMonthClose) / prevMonthClose) * 100;
                 }
             }
-        } catch (e) { console.error(a.asset + ' monthly error:', e); }
+        } catch (e) {}
 
         return { asset: a.asset, weeklyChange, monthlyChange };
     }));
@@ -1826,10 +1825,7 @@ async function fetchBtcPrice() {
         enableApplyButton('btc', 'calc5');
 
         localStorage.setItem('btcPrice', JSON.stringify({ price, timestamp: Date.now() }));
-    } catch (err) {
-        console.error('BTC price fetch error:', err);
-
-        const cached = localStorage.getItem('btcPrice');
+    } catch (err) {const cached = localStorage.getItem('btcPrice');
         if (cached) {
             const cachedData = JSON.parse(cached);
             apiPrices.btc = cachedData.price;
@@ -1866,10 +1862,7 @@ async function fetchGoldPrice() {
         if (priceEl) priceEl.textContent = '$' + formatNumber(price, 2);
         enableApplyButton('gold', 'calc5');
         localStorage.setItem('goldPrice', JSON.stringify({ price, timestamp: Date.now() }));
-    } catch (err) {
-        console.error('Gold price fetch error:', err);
-
-        const cached = localStorage.getItem('goldPrice');
+    } catch (err) {const cached = localStorage.getItem('goldPrice');
         if (cached) {
             const cachedData = JSON.parse(cached);
             apiPrices.gold = cachedData.price;
@@ -1983,11 +1976,11 @@ function calc4() {
     if (btcDiff > 0) {
         el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value neutral';
-        actionEl.innerHTML = '<span class="rebalance-action green" style="font-size:20px;font-weight:400;">+' + formattedQty + ' BTC</span>';
+        actionEl.innerHTML = '<span class="rebalance-action green rebalance-action-large">+' + formattedQty + ' BTC</span>';
     } else if (btcDiff < 0) {
         el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value neutral';
-        actionEl.innerHTML = '<span class="rebalance-action red" style="font-size:20px;font-weight:400;">−' + formattedQty + ' BTC</span>';
+        actionEl.innerHTML = '<span class="rebalance-action red rebalance-action-large">−' + formattedQty + ' BTC</span>';
     } else {
         el.textContent = formatNumber(targetPerAsset, 2);
         el.className = 'result-value neutral';
@@ -2023,13 +2016,13 @@ function calc5() {
         hasAction = true;
         const colorClass = btcDiff > 0 ? 'green' : 'red';
         const sign = btcDiff > 0 ? '+' : '−';
-        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;font-weight:400;">' + sign + fmtBtc + ' BTC</span>');
+        actionLines.push('<span class="rebalance-action ' + colorClass + ' rebalance-action-large">' + sign + fmtBtc + ' BTC</span>');
     }
     if (Math.abs(goldDiff) > 0.0001) {
         hasAction = true;
         const colorClass = goldDiff > 0 ? 'green' : 'red';
         const sign = goldDiff > 0 ? '+' : '−';
-        actionLines.push('<span class="rebalance-action ' + colorClass + '" style="font-size:20px;font-weight:400;">' + sign + fmtGold + ' GOLD</span>');
+        actionLines.push('<span class="rebalance-action ' + colorClass + ' rebalance-action-large">' + sign + fmtGold + ' GOLD</span>');
     }
     if (!hasAction) {
         el.textContent = formatNumber(targetPerAsset, 2);
@@ -2391,6 +2384,13 @@ function checkCompleted(type, id) {
 
 let summaryData = JSON.parse(localStorage.getItem('tradeSummary') || '[]');
 
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function showSummary(type) {
     const arr = type === 'spot' ? spotTrades : futuresTrades;
     const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
@@ -2399,7 +2399,11 @@ function showSummary(type) {
     const title = document.getElementById('modal-title');
     title.textContent = (type === 'spot' ? 'Спот' : 'Фьючерсы') + ' — Сводная ведомость';
     if (completed.length === 0) {
-        content.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>Нет завершенных сделок. Укажите дату продажи и % продажи.</p></div>';
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'empty-state';
+        emptyDiv.innerHTML = '<div class="icon">📋</div><p>Нет завершенных сделок. Укажите дату продажи и % продажи.</p>';
+        content.innerHTML = '';
+        content.appendChild(emptyDiv);
         modal.classList.add('active');
         return;
     }
@@ -2419,16 +2423,16 @@ function showSummary(type) {
         const sellSum = t.sellSum || '—';
         html += `<tr>
             <td>#${t.num}</td>
-            <td>${t.sellDate}</td>
-            <td><b>${t.ticker || '—'}</b></td>
-            <td>${t.type || '—'}</td>
-            <td>$${buyPrice}</td>
-            <td>${amount}</td>
-            <td>$${sellPrice}</td>
-            <td>${sellPercent}%</td>
-            <td>$${sellSum}</td>
-            <td style="color:${p>=0?'var(--green)':'var(--red)'};font-weight:700;">${t.profit}</td>
-            <td style="color:${pct.startsWith('+')?'var(--green)':pct.startsWith('-')?'var(--red)':'inherit'};font-weight:700;">${pct}</td>
+            <td>${escapeHtml(t.sellDate)}</td>
+            <td><b>${escapeHtml(t.ticker) || '—'}</b></td>
+            <td>${escapeHtml(t.type) || '—'}</td>
+            <td>$${escapeHtml(buyPrice)}</td>
+            <td>${escapeHtml(amount)}</td>
+            <td>$${escapeHtml(sellPrice)}</td>
+            <td>${escapeHtml(sellPercent)}%</td>
+            <td>$${escapeHtml(sellSum)}</td>
+            <td style="color:${p>=0?'var(--green)':'var(--red)'};font-weight:700;">${escapeHtml(t.profit)}</td>
+            <td style="color:${pct.startsWith('+')?'var(--green)':pct.startsWith('-')?'var(--red)':'inherit'};font-weight:700;">${escapeHtml(pct)}</td>
         </tr>`;
     });
     html += '</tbody></table></div>';
@@ -2525,12 +2529,18 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     calcLiquidation();
 
+    // Cleanup intervals on page unload
+    window.addEventListener('beforeunload', () => {
+        clearInterval(priceInterval);
+        clearInterval(quotesInterval);
+    });
+
     // Автообновление котировок: Калькуляторы — 30с, Котировки — 15с
-    setInterval(() => {
+    const priceInterval = setInterval(() => {
         fetchBtcPrice();
         fetchGoldPrice();
     }, 30000);
-    setInterval(() => {
+    const quotesInterval = setInterval(() => {
         fetchQuotes();
         fetchPeriodChanges();
     }, 15000);
@@ -2759,14 +2769,12 @@ function calcLiquidation() {
             const liqL = avgPrice * (1 - dep / totalVolume + LIQ_MMR);
             const liqS = avgPrice * (1 + dep / totalVolume - LIQ_MMR);
             if (liqPriceEl) {
-                liqPriceEl.innerHTML = '<span style="color:var(--red)">' + formatNumber(liqL, 2) + ' $</span> / <span style="color:var(--green)">' + formatNumber(liqS, 2) + ' $</span>';
+                liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + ' $</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + ' $</span>';
                 liqPriceEl.className = 'result-value';
             }
             if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
         }
-    } catch (e) {
-        console.error('calcLiquidation error:', e);
-    }
+    } catch (e) {}
 }
 
 </script>
