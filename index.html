@@ -782,10 +782,12 @@
             color: #ffffff;
         }
         body.dark .liq-del-btn {
-            background: rgba(248, 113, 113, 0.15);
-            border-color: #f87171;
+            background: none;
+            border: none;
             color: #f87171;
+            opacity: 0.7;
         }
+        body.dark .liq-del-btn:hover { opacity: 1; }
 
 /* Theme toggle button */
         .theme-toggle {
@@ -826,7 +828,7 @@
         /* ====== ЛИКВИДАЦИЯ ====== */
         .liq-position-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 80px 36px;
+            grid-template-columns: 1fr 1.5fr 60px 36px;
             gap: 8px;
             align-items: end;
             margin-bottom: 10px;
@@ -842,25 +844,35 @@
             margin-bottom: 4px;
         }
         .liq-del-btn {
-            background: var(--red-soft);
-            border: 1.5px solid var(--red);
+            background: none;
+            border: none;
             color: var(--red);
-            border-radius: var(--radius-sm);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            opacity: 0.7;
             width: 36px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            cursor: pointer;
             transition: all 0.2s;
             margin-bottom: 0;
         }
+        .liq-del-btn:hover { opacity: 1; }
         .liq-del-btn:active { transform: scale(0.95); }
         .liq-mix-long { color: var(--red); }
         .liq-mix-short { color: var(--green); }
+        #liq-card .input-group:last-of-type {
+            margin-bottom: 0;
+        }
         .liq-dir-long { color: var(--green); font-weight: 700; }
         .liq-dir-short { color: var(--red); font-weight: 700; }
+        .liq-position-row .liq-dir {
+            min-width: 0;
+            padding-left: 4px;
+            padding-right: 4px;
+        }
         @media (max-width: 380px) {
             .liq-position-row {
                 grid-template-columns: 1fr 1fr 70px 32px;
@@ -953,7 +965,8 @@
                 <div class="result-value neutral" id="calc3-result">—</div>
             </div>
         </div>
-    
+    </div>
+
     <div class="card" id="liq-card">
         <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
         <div class="input-group">
@@ -968,7 +981,7 @@
             </button>
         </div>
         <div class="input-group">
-            <label>Средневзвешенная цена входа</label>
+            <label>Средняя цена входа</label>
             <div class="result-box">
                 <div class="result-value neutral" id="liq-avg-price">—</div>
             </div>
