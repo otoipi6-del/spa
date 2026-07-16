@@ -771,7 +771,19 @@
         body.dark .modal-close {
             color: #a0a0a0;
         }
-        /* Theme toggle button */
+        
+        body.dark .liq-position-row .input-group input,
+        body.dark .liq-position-row .input-group select {
+            background: #0f3460;
+            color: #ffffff;
+        }
+        body.dark .liq-del-btn {
+            background: rgba(248, 113, 113, 0.15);
+            border-color: #f87171;
+            color: #f87171;
+        }
+
+/* Theme toggle button */
         .theme-toggle {
             background: #2a2a4a;
             border: 1.5px solid #3a3a5a;
@@ -794,6 +806,56 @@
             background: #f5e6c8;
             border-color: #c4b896;
             color: #b8860b;
+        }
+
+
+        /* ====== ЛИКВИДАЦИЯ ====== */
+        .liq-position-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 80px 36px;
+            gap: 8px;
+            align-items: end;
+            margin-bottom: 10px;
+        }
+        .liq-position-row .input-group { margin-bottom: 0; }
+        .liq-position-row .input-group input,
+        .liq-position-row .input-group select {
+            padding: 10px 10px;
+            font-size: 16px;
+        }
+        .liq-position-row .input-group label {
+            font-size: 9px;
+            margin-bottom: 4px;
+        }
+        .liq-del-btn {
+            background: var(--red-soft);
+            border: 1.5px solid var(--red);
+            color: var(--red);
+            border-radius: var(--radius-sm);
+            width: 36px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0;
+        }
+        .liq-del-btn:active { transform: scale(0.95); }
+        .liq-dir-long { color: var(--green); font-weight: 700; }
+        .liq-dir-short { color: var(--red); font-weight: 700; }
+        @media (max-width: 380px) {
+            .liq-position-row {
+                grid-template-columns: 1fr 1fr 70px 32px;
+                gap: 6px;
+            }
+            .liq-position-row .input-group input,
+            .liq-position-row .input-group select {
+                padding: 8px 8px;
+                font-size: 14px;
+            }
+            .liq-del-btn { width: 32px; height: 36px; font-size: 14px; }
         }
 
 </style>
@@ -845,11 +907,11 @@
     <div class="card">
         <div class="card-title"><span class="icon">📈</span> % роста(+)/падения(-) цены актива</div>
         <div class="input-group">
-            <label>Цена открытия</label>
+            <label>Цена входа</label>
             <input type="text" inputmode="decimal" id="calc1-open" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-open')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-open')">
         </div>
         <div class="input-group">
-            <label>Цена закрытия</label>
+            <label>Цена выхода</label>
             <input type="text" inputmode="decimal" id="calc1-close" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-close')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-close')">
         </div>
         <div class="input-group">
@@ -861,9 +923,9 @@
     </div>
 
     <div class="card">
-        <div class="card-title"><span class="icon">⚖️</span> Расчет объема</div>
+        <div class="card-title"><span class="icon">⚖️</span> Расчет количества актива</div>
         <div class="input-group">
-            <label>Сумма сделки (USD)</label>
+            <label>Объем позиции (USD)</label>
             <input type="text" inputmode="decimal" id="calc3-usd" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc3-usd')" onfocus="unformatNumberInput(this)" oninput="calc3(); saveCalcInput('calc3-usd')">
         </div>
         <div class="input-group">
@@ -876,7 +938,46 @@
                 <div class="result-value neutral" id="calc3-result">—</div>
             </div>
         </div>
+    
+    <div class="card" id="liq-card">
+        <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
+        <div class="input-group">
+            <label>Общий депозит ($)</label>
+            <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0,00">
+        </div>
+        <div class="input-group">
+            <label>Позиции</label>
+            <div id="liq-positions"></div>
+            <button class="btn-add" onclick="addLiqPosition()" style="margin-top:10px;margin-bottom:0;">
+                <span>➕</span> Добавить позицию
+            </button>
+        </div>
+        <div class="input-group">
+            <label>Средневзвешенная цена входа</label>
+            <div class="result-box">
+                <div class="result-value neutral" id="liq-avg-price">—</div>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Общий объём позиций</label>
+            <div class="result-box">
+                <div class="result-value neutral" id="liq-total-volume">—</div>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Цена ликвидации</label>
+            <div class="result-box">
+                <div class="result-value" id="liq-price">—</div>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>% до ликвидации</label>
+            <div class="result-box">
+                <div class="result-value orange" id="liq-pct">—</div>
+            </div>
+        </div>
     </div>
+</div>
 
     <div class="card">
         <div class="card-title"><span class="icon">🔄</span> Ребалансировка портфеля (USD / BTC 50/50)</div>
@@ -1965,6 +2066,32 @@ function getSellPercentOptions(selected) {
     return html;
 }
 
+function getTradeLabel(type, key) {
+    const labels = {
+        spot: {
+            buyDate: 'Дата покупки',
+            buyPrice: 'Цена покупки ($)',
+            buySum: 'Сумма покупки ($)',
+            sellDate: 'Дата продажи',
+            sellPercent: 'Кол-во актива (%)',
+            sellAmount: 'Кол-во продажи (авто)',
+            sellSum: 'Сумма продажи ($) (авто)',
+            sellPrice: 'Цена продажи ($)'
+        },
+        futures: {
+            buyDate: 'Дата входа',
+            buyPrice: 'Цена входа ($)',
+            buySum: 'Объем позиции ($)',
+            sellDate: 'Дата выхода',
+            sellPercent: 'Объем позиции (%)',
+            sellAmount: 'Кол-во актива (авто)',
+            sellSum: 'Объем позиции ($) (авто)',
+            sellPrice: 'Цена выхода ($)'
+        }
+    };
+    return labels[type] && labels[type][key] ? labels[type][key] : key;
+}
+
 function addTrade(type, data = null) {
     const container = document.getElementById(type + '-trades');
     const counter = type === 'spot' ? spotCounter++ : futuresCounter++;
@@ -1992,7 +2119,7 @@ function addTrade(type, data = null) {
         </div>
         <div class="trade-grid">
             <div class="input-group">
-                <label>Дата покупки</label>
+                <label>${getTradeLabel(type, 'buyDate')}</label>
                 <div class="date-wrapper" onclick="openDatePicker(this, event)">
                     <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                     <button type="button" class="date-picker-btn">&nbsp;</button>
@@ -2009,11 +2136,11 @@ function addTrade(type, data = null) {
                 <select onchange="updateTrade('${type}','${id}','type',this.value)">${getTypeOptions(tradeData.type)}</select>
             </div>
             <div class="input-group">
-                <label>Цена покупки ($)</label>
+                <label>${getTradeLabel(type, 'buyPrice')}</label>
                 <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
-                <label>Сумма покупки ($)</label>
+                <label>${getTradeLabel(type, 'buySum')}</label>
                 <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
@@ -2021,7 +2148,7 @@ function addTrade(type, data = null) {
                 <input type="text" class="auto-field" id="${id}_amount" value="${tradeData.amount}" readonly placeholder="-">
             </div>
             <div class="input-group">
-                <label>Дата продажи</label>
+                <label>${getTradeLabel(type, 'sellDate')}</label>
                 <div class="date-wrapper" onclick="openDatePicker(this, event)">
                     <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                     <button type="button" class="date-picker-btn">&nbsp;</button>
@@ -2029,19 +2156,19 @@ function addTrade(type, data = null) {
                 </div>
             </div>
             <div class="input-group">
-                <label>Цена продажи ($)</label>
+                <label>${getTradeLabel(type, 'sellPrice')}</label>
                 <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
-                <label>Кол-во актива (%)</label>
+                <label>${getTradeLabel(type, 'sellPercent')}</label>
                 <select id="${id}_sellPercent" onchange="updateTrade('${type}','${id}','sellPercent',this.value); calcTrade('${type}','${id}')">${getSellPercentOptions(tradeData.sellPercent)}</select>
             </div>
             <div class="input-group">
-                <label>Кол-во продажи (авто)</label>
+                <label>${getTradeLabel(type, 'sellAmount')}</label>
                 <input type="text" class="auto-field" id="${id}_sellAmount" value="${tradeData.sellAmount}" readonly placeholder="-">
             </div>
             <div class="input-group">
-                <label>Сумма продажи ($) (авто)</label>
+                <label>${getTradeLabel(type, 'sellSum')}</label>
                 <input type="text" class="auto-field" id="${id}_sellSum" value="${tradeData.sellSum}" readonly placeholder="-">
             </div>
             <div class="input-group">
@@ -2188,7 +2315,7 @@ function renderTrades(type) {
             </div>
             <div class="trade-grid">
                 <div class="input-group">
-                    <label>Дата покупки</label>
+                    <label>${getTradeLabel(type, 'buyDate')}</label>
                     <div class="date-wrapper" onclick="openDatePicker(this, event)">
                         <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                         <button type="button" class="date-picker-btn">&nbsp;</button>
@@ -2205,11 +2332,11 @@ function renderTrades(type) {
                     <select onchange="updateTrade('${type}','${t.id}','type',this.value)">${getTypeOptions(t.type)}</select>
                 </div>
                 <div class="input-group">
-                    <label>Цена покупки ($)</label>
+                    <label>${getTradeLabel(type, 'buyPrice')}</label>
                     <input type="text" inputmode="decimal" placeholder="0,00" value="${t.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
-                    <label>Сумма покупки ($)</label>
+                    <label>${getTradeLabel(type, 'buySum')}</label>
                     <input type="text" inputmode="decimal" placeholder="0,00" value="${t.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
@@ -2217,7 +2344,7 @@ function renderTrades(type) {
                     <input type="text" class="auto-field" id="${t.id}_amount" value="${t.amount}" readonly placeholder="-">
                 </div>
                 <div class="input-group">
-                    <label>Дата продажи</label>
+                    <label>${getTradeLabel(type, 'sellDate')}</label>
                     <div class="date-wrapper" onclick="openDatePicker(this, event)">
                         <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                         <button type="button" class="date-picker-btn">&nbsp;</button>
@@ -2225,19 +2352,19 @@ function renderTrades(type) {
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Цена продажи ($)</label>
+                    <label>${getTradeLabel(type, 'sellPrice')}</label>
                     <input type="text" inputmode="decimal" placeholder="0,00" value="${t.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
-                    <label>Кол-во актива (%)</label>
+                    <label>${getTradeLabel(type, 'sellPercent')}</label>
                     <select id="${t.id}_sellPercent" onchange="updateTrade('${type}','${t.id}','sellPercent',this.value); calcTrade('${type}','${t.id}')">${getSellPercentOptions(t.sellPercent)}</select>
                 </div>
                 <div class="input-group">
-                    <label>Кол-во продажи (авто)</label>
+                    <label>${getTradeLabel(type, 'sellAmount')}</label>
                     <input type="text" class="auto-field" id="${t.id}_sellAmount" value="${t.sellAmount}" readonly placeholder="-">
                 </div>
                 <div class="input-group">
-                    <label>Сумма продажи ($) (авто)</label>
+                    <label>${getTradeLabel(type, 'sellSum')}</label>
                     <input type="text" class="auto-field" id="${t.id}_sellSum" value="${t.sellSum}" readonly placeholder="-">
                 </div>
                 <div class="input-group">
@@ -2278,7 +2405,7 @@ function showSummary(type) {
     }
     let totalProfit = 0;
     let html = '<div style="overflow-x:auto;"><table class="summary-table"><thead><tr>';
-    html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>Цена покупки</th><th>Кол-во</th><th>Цена продажи</th><th>% продажи</th><th>Сумма продажи</th><th>Прибыль</th><th>%</th>';
+    html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th>';
     html += '</tr></thead><tbody>';
     completed.forEach(t => {
         const p = parseFloat(t.profit.replace(/[+\s]/g, '').replace(',', '.'));
@@ -2383,6 +2510,20 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchQuotes();
     fetchPeriodChanges();
     initCalcInputs();
+    loadLiqData();
+    // Setup deposit input listener
+    const liqDep = document.getElementById('liq-deposit');
+    if (liqDep) {
+        liqDep.addEventListener('input', function() {
+            calcLiquidation();
+            saveLiqData();
+        });
+        liqDep.addEventListener('keyup', function() {
+            calcLiquidation();
+            saveLiqData();
+        });
+    }
+    calcLiquidation();
 
     // Автообновление котировок: Калькуляторы — 30с, Котировки — 15с
     setInterval(() => {
@@ -2394,6 +2535,240 @@ window.addEventListener('DOMContentLoaded', () => {
         fetchPeriodChanges();
     }, 15000);
 });
+
+// ====== ЛИКВИДАЦИЯ ======
+let liqPositions = [];
+let liqCounter = 1;
+const LIQ_MMR = 0.005; // 0.5%
+let liqListenersAttached = false;
+
+function initLiqData() {
+    try {
+        const rawPos = localStorage.getItem('liqPositions');
+        if (rawPos) liqPositions = JSON.parse(rawPos);
+        else liqPositions = [];
+    } catch (e) { liqPositions = []; }
+    try {
+        const rawCnt = localStorage.getItem('liqCounter');
+        if (rawCnt) liqCounter = parseInt(rawCnt);
+        else liqCounter = 1;
+    } catch (e) { liqCounter = 1; }
+}
+
+function getLiqDirOptions(selected) {
+    let html = '<option value="">—</option>';
+    html += '<option value="LONG"' + (selected === 'LONG' ? ' selected' : '') + '>LONG</option>';
+    html += '<option value="SHORT"' + (selected === 'SHORT' ? ' selected' : '') + '>SHORT</option>';
+    return html;
+}
+
+function addLiqPosition(data) {
+    const container = document.getElementById('liq-positions');
+    if (!container) return;
+    const id = 'liq_pos_' + liqCounter++;
+    const posData = data || { id: id, volume: '', entryPrice: '', direction: '' };
+    if (!data) {
+        liqPositions.push(posData);
+        saveLiqData();
+    }
+
+    const row = document.createElement('div');
+    row.className = 'liq-position-row';
+    row.id = posData.id;
+    row.dataset.posId = posData.id;
+
+    row.innerHTML = `
+        <div class="input-group">
+            <label>Объём ($)</label>
+            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.volume || ''}" class="liq-vol" data-field="volume">
+        </div>
+        <div class="input-group">
+            <label>Цена входа ($)</label>
+            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price" data-field="entryPrice">
+        </div>
+        <div class="input-group">
+            <label>Напр.</label>
+            <select class="liq-dir" data-field="direction">${getLiqDirOptions(posData.direction)}</select>
+        </div>
+        <button class="liq-del-btn" data-action="delete">🗑️</button>
+    `;
+
+    container.appendChild(row);
+
+    const dirSelect = row.querySelector('.liq-dir');
+    if (posData.direction) updateLiqDirStyle(dirSelect);
+
+    // Attach event listeners via delegation if not already done
+    if (!liqListenersAttached) {
+        attachLiqListeners();
+        liqListenersAttached = true;
+    }
+}
+
+function attachLiqListeners() {
+    const container = document.getElementById('liq-positions');
+    if (!container) return;
+
+    // Handle input events on volume and price fields
+    container.addEventListener('input', function(e) {
+        const target = e.target;
+        if (target.tagName === 'INPUT' && (target.classList.contains('liq-vol') || target.classList.contains('liq-price'))) {
+            const row = target.closest('.liq-position-row');
+            if (!row) return;
+            const id = row.dataset.posId;
+            const field = target.dataset.field;
+            updateLiqPosition(id, field, target.value);
+            calcLiquidation();
+            saveLiqData();
+        }
+    });
+
+    // Handle change events on direction select
+    container.addEventListener('change', function(e) {
+        const target = e.target;
+        if (target.tagName === 'SELECT' && target.classList.contains('liq-dir')) {
+            const row = target.closest('.liq-position-row');
+            if (!row) return;
+            const id = row.dataset.posId;
+            updateLiqPosition(id, 'direction', target.value);
+            updateLiqDirStyle(target);
+            calcLiquidation();
+            saveLiqData();
+        }
+    });
+
+    // Handle click on delete buttons
+    container.addEventListener('click', function(e) {
+        const target = e.target.closest('[data-action="delete"]');
+        if (target) {
+            const row = target.closest('.liq-position-row');
+            if (row) deleteLiqPosition(row.dataset.posId);
+        }
+    });
+}
+
+function updateLiqDirStyle(select) {
+    select.className = 'liq-dir';
+    if (select.value === 'LONG') select.classList.add('liq-dir-long');
+    else if (select.value === 'SHORT') select.classList.add('liq-dir-short');
+}
+
+function updateLiqPosition(id, field, value) {
+    const pos = liqPositions.find(p => p.id === id);
+    if (pos) pos[field] = value;
+}
+
+function deleteLiqPosition(id) {
+    const idx = liqPositions.findIndex(p => p.id === id);
+    if (idx > -1) liqPositions.splice(idx, 1);
+    const row = document.getElementById(id);
+    if (row) row.remove();
+    saveLiqData();
+    calcLiquidation();
+}
+
+function saveLiqData() {
+    const deposit = document.getElementById('liq-deposit');
+    if (deposit) localStorage.setItem('liq_deposit', deposit.value);
+    localStorage.setItem('liqPositions', JSON.stringify(liqPositions));
+    localStorage.setItem('liqCounter', liqCounter);
+}
+
+function loadLiqData() {
+    initLiqData();
+    const deposit = localStorage.getItem('liq_deposit');
+    if (deposit !== null) {
+        const el = document.getElementById('liq-deposit');
+        if (el) el.value = deposit;
+    }
+    // Fix liqCounter to be max of existing ids + 1
+    let maxNum = 0;
+    liqPositions.forEach(function(p) {
+        if (p.id) {
+            const num = parseInt(p.id.replace('liq_pos_', ''));
+            if (!isNaN(num) && num > maxNum) maxNum = num;
+        }
+    });
+    if (maxNum >= liqCounter) liqCounter = maxNum + 1;
+
+    const container = document.getElementById('liq-positions');
+    if (container) {
+        container.innerHTML = '';
+        liqPositions.forEach(function(p) { addLiqPosition(p); });
+    }
+}
+
+function calcLiquidation() {
+    try {
+        const depositInput = document.getElementById('liq-deposit');
+        const deposit = depositInput ? parseNumber(depositInput.value) : NaN;
+        const avgEl = document.getElementById('liq-avg-price');
+        const totalVolEl = document.getElementById('liq-total-volume');
+        const liqPriceEl = document.getElementById('liq-price');
+        const liqPctEl = document.getElementById('liq-pct');
+
+        if (!avgEl) return;
+
+        let totalVolume = 0;
+        let weightedSum = 0;
+        let hasData = false;
+        let dir = null; // null, 'LONG', 'SHORT', 'MIX'
+
+        liqPositions.forEach(function(pos) {
+            const vol = parseNumber(pos.volume);
+            const price = parseNumber(pos.entryPrice);
+            if (!isNaN(vol) && !isNaN(price) && vol > 0 && price > 0) {
+                totalVolume += vol;
+                weightedSum += vol * price;
+                hasData = true;
+                if (dir === null) dir = pos.direction;
+                else if (dir !== pos.direction) dir = 'MIX';
+            }
+        });
+
+        if (!hasData || totalVolume === 0) {
+            avgEl.textContent = '—';
+            if (totalVolEl) totalVolEl.textContent = '—';
+            if (liqPriceEl) { liqPriceEl.textContent = '—'; liqPriceEl.className = 'result-value'; }
+            if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
+            return;
+        }
+
+        const avgPrice = weightedSum / totalVolume;
+        const dep = isNaN(deposit) ? 0 : deposit;
+
+        avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
+        if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 2) + ' $';
+
+        // ЕСЛИ направление LONG → формула LONG
+        if (dir === 'LONG') {
+            const liq = avgPrice * (1 - dep / totalVolume + LIQ_MMR);
+            const pct = ((avgPrice - liq) / avgPrice) * 100;
+            if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value red'; }
+            if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+        }
+        // ЕСЛИ направление SHORT → формула SHORT
+        else if (dir === 'SHORT') {
+            const liq = avgPrice * (1 + dep / totalVolume - LIQ_MMR);
+            const pct = ((liq - avgPrice) / avgPrice) * 100;
+            if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value green'; }
+            if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+        }
+        // ЕСЛИ MIX → показываем оба
+        else {
+            const liqL = avgPrice * (1 - dep / totalVolume + LIQ_MMR);
+            const liqS = avgPrice * (1 + dep / totalVolume - LIQ_MMR);
+            if (liqPriceEl) {
+                liqPriceEl.innerHTML = '<span style="color:var(--red)">' + formatNumber(liqL, 2) + ' $</span> / <span style="color:var(--green)">' + formatNumber(liqS, 2) + ' $</span>';
+                liqPriceEl.className = 'result-value';
+            }
+            if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
+        }
+    } catch (e) {
+        console.error('calcLiquidation error:', e);
+    }
+}
+
 </script>
 
 </body>
