@@ -889,7 +889,6 @@
 </style>
 <base target="_blank">
 <base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -950,7 +949,25 @@
         </div>
     </div>
 
-     <div class="card" id="liq-card">
+    <div class="card">
+        <div class="card-title"><span class="icon">⚖️</span> Расчет количества актива</div>
+        <div class="input-group">
+            <label>Объем позиции (USD)</label>
+            <input type="text" inputmode="decimal" id="calc3-usd" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc3-usd')" onfocus="unformatNumberInput(this)" oninput="calc3(); saveCalcInput('calc3-usd')">
+        </div>
+        <div class="input-group">
+            <label>Цена актива</label>
+            <input type="text" inputmode="decimal" id="calc3-price" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc3-price')" onfocus="unformatNumberInput(this)" oninput="calc3(); saveCalcInput('calc3-price')">
+        </div>
+        <div class="input-group">
+            <label>Количество актива</label>
+            <div class="result-box">
+                <div class="result-value neutral" id="calc3-result">—</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="liq-card">
         <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
         <div class="input-group">
             <label>Общий депозит ($)</label>
