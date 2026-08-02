@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#e8dcc8" id="theme-color-meta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -87,7 +87,6 @@
             justify-content: space-around;
             padding: 6px 0 10px;
             z-index: 100;
-            backdrop-filter: blur(20px);
         }
         .nav-item {
             display: flex;
@@ -107,7 +106,7 @@
         }
         .nav-item.active { color: var(--accent); }
         .nav-item .nav-icon { font-size: 20px; line-height: 1; }
-        .section { display: none; padding: 16px; animation: fadeIn 0.25s ease; }
+        .section { display: none; padding: 16px; padding-bottom: 90px; animation: fadeIn 0.25s ease; }
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .card {
@@ -886,6 +885,13 @@
             .liq-del-btn { width: 32px; height: 36px; font-size: 14px; }
         }
 
+
+/* iOS PWA input fix */
+input, textarea, select {
+    -webkit-user-select: text;
+    user-select: text;
+    touch-action: manipulation;
+}
 </style>
 <base target="_blank">
 <base target="_blank">
