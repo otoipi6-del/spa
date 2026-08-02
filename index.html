@@ -888,8 +888,6 @@
 
 </style>
 <base target="_blank">
-<base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -903,13 +901,13 @@
 
 <div class="header" id="main-header">
     <div class="header-icon">📊</div>
-    <h1 id="page-title">Котировки</h1>
+    <h1 id="page-title">Калькуляторы</h1>
     <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
         <span id="theme-icon">🌙</span>
     </button>
 </div>
 
-<div id="section-calculators" class="section">
+<div id="section-calculators" class="section active">
 
     <div class="card">
         <div class="card-title"><span class="icon">🎯</span> Цена при росте(+)/падении(-) на указанный %</div>
@@ -950,7 +948,25 @@
         </div>
     </div>
 
-     <div class="card" id="liq-card">
+    <div class="card">
+        <div class="card-title"><span class="icon">⚖️</span> Расчет количества актива</div>
+        <div class="input-group">
+            <label>Объем позиции (USD)</label>
+            <input type="text" inputmode="decimal" id="calc3-usd" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc3-usd')" onfocus="unformatNumberInput(this)" oninput="calc3(); saveCalcInput('calc3-usd')">
+        </div>
+        <div class="input-group">
+            <label>Цена актива</label>
+            <input type="text" inputmode="decimal" id="calc3-price" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc3-price')" onfocus="unformatNumberInput(this)" oninput="calc3(); saveCalcInput('calc3-price')">
+        </div>
+        <div class="input-group">
+            <label>Количество актива</label>
+            <div class="result-box">
+                <div class="result-value neutral" id="calc3-result">—</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="liq-card">
         <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
         <div class="input-group">
             <label>Общий депозит ($)</label>
@@ -1093,7 +1109,7 @@
 </div>
 
 
-<div id="section-quotes" class="section active" style="overflow-x:hidden;">
+<div id="section-quotes" class="section" style="overflow-x:hidden;">
     <div class="quotes-card">
         <div class="quotes-card-title"><span class="icon">📈</span> Котировки активов (USD)</div>
         <div id="quotes-list">
@@ -1189,13 +1205,13 @@
 
 
 <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('quotes')">
-        <span class="nav-icon">🔄</span>
-        <span>Котировки</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('calculators')">
+    <button class="nav-item active" onclick="switchTab('calculators')">
         <span class="nav-icon">🧮</span>
         <span>Калькуляторы</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('quotes')">
+        <span class="nav-icon">🔄</span>
+        <span>Котировки</span>
     </button>
     <button class="nav-item" onclick="switchTab('spot')">
         <span class="nav-icon">💰</span>
