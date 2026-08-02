@@ -890,6 +890,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -920,8 +921,9 @@
         <div class="input-group">
             <label>Изменение цены на %<br><span style="font-size:11px;color:var(--text-muted);font-weight:400;">(пример: 5% или -3%)</span></label>
             <div class="percent-field-wrapper" style="position:relative;">
-                <input type="number" id="calc2-percent" placeholder="0" step="any" style="width:100%;padding-right:28px;" oninput="calc2(); stylePercentInput(this); saveCalcInput('calc2-percent')">
-                <span class="percent-suffix" id="calc2-suffix" style="position:absolute;left:calc(14px + 0px);top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--text-muted);white-space:nowrap;">%</span>
+                <span id="calc2-prefix" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--green);white-space:nowrap;visibility:hidden;">+</span>
+                <input type="number" id="calc2-percent" placeholder="0" step="any" style="width:100%;padding-right:28px;padding-left:22px;" oninput="calc2(); stylePercentInput(this); saveCalcInput('calc2-percent')">
+                <span class="percent-suffix" id="calc2-suffix" style="position:absolute;left:calc(14px + 22px);top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--text-muted);white-space:nowrap;">%</span>
             </div>
         </div>
         <div class="input-group">
@@ -1930,8 +1932,10 @@ function calc1() {
 function stylePercentInput(input) {
     const val = parseFloat(input.value);
     const suffix = document.getElementById('calc2-suffix');
+    const prefix = document.getElementById('calc2-prefix');
     if (input.value === '' || input.value === null) {
         suffix.style.visibility = 'hidden';
+        prefix.style.visibility = 'hidden';
         input.style.color = ''; input.style.fontWeight = '';
         return;
     }
@@ -1941,11 +1945,11 @@ function stylePercentInput(input) {
     const style = window.getComputedStyle(input);
     ctx.font = style.fontWeight + ' ' + style.fontSize + ' ' + style.fontFamily;
     const textWidth = ctx.measureText(input.value).width;
-    suffix.style.left = (14 + textWidth + 2) + 'px';
-    if (isNaN(val)) { input.style.color = ''; input.style.fontWeight = ''; suffix.style.color = 'var(--text-muted)'; return; }
-    if (val > 0) { input.style.color = 'var(--green)'; input.style.fontWeight = '400'; suffix.style.color = 'var(--green)'; }
-    else if (val < 0) { input.style.color = 'var(--red)'; input.style.fontWeight = '400'; suffix.style.color = 'var(--red)'; }
-    else { input.style.color = ''; input.style.fontWeight = ''; suffix.style.color = 'var(--text-muted)'; }
+    suffix.style.left = (14 + 22 + textWidth + 2) + 'px';
+    if (isNaN(val)) { input.style.color = ''; input.style.fontWeight = ''; suffix.style.color = 'var(--text-muted)'; prefix.style.visibility = 'hidden'; return; }
+    if (val > 0) { input.style.color = 'var(--green)'; input.style.fontWeight = '400'; suffix.style.color = 'var(--green)'; prefix.style.visibility = 'visible'; }
+    else if (val < 0) { input.style.color = 'var(--red)'; input.style.fontWeight = '400'; suffix.style.color = 'var(--red)'; prefix.style.visibility = 'hidden'; }
+    else { input.style.color = ''; input.style.fontWeight = ''; suffix.style.color = 'var(--text-muted)'; prefix.style.visibility = 'hidden'; }
 }
 
 function calc2() {
