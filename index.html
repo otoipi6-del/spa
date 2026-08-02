@@ -890,6 +890,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -920,7 +921,7 @@
         <div class="input-group">
             <label>Изменение цены на %<br><span style="font-size:11px;color:var(--text-muted);font-weight:400;">(пример: 5% или -3%)</span></label>
             <div class="percent-field-wrapper" style="position:relative;">
-                <input type="number" id="calc2-percent" placeholder="0" step="any" style="width:100%;padding-right:28px;" oninput="calc2(); stylePercentInput(this); saveCalcInput('calc2-percent')">
+                <input type="text" inputmode="decimal" id="calc2-percent" placeholder="0" style="width:100%;padding-right:28px;" onfocus="unformatPercentInput(this)" onblur="formatPercentInput(this); saveCalcInput('calc2-percent')" oninput="calc2(); stylePercentInput(this); saveCalcInput('calc2-percent')">
                 <span class="percent-suffix" id="calc2-suffix" style="position:absolute;left:calc(14px + 0px);top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--text-muted);white-space:nowrap;">%</span>
             </div>
         </div>
@@ -1275,6 +1276,24 @@ function formatNumberInput(input) {
 }
 
 function unformatNumberInput(input) {
+    const val = input.value;
+    if (!val || val === '') return;
+    const num = parseNumber(val);
+    if (!isNaN(num)) {
+        input.value = String(num).replace('.', ',');
+    }
+}
+
+function formatPercentInput(input) {
+    const val = input.value;
+    if (!val || val === '') return;
+    const num = parseNumber(val);
+    if (!isNaN(num)) {
+        input.value = (num >= 0 ? '+' : '') + String(num).replace('.', ',') + '%';
+    }
+}
+
+function unformatPercentInput(input) {
     const val = input.value;
     if (!val || val === '') return;
     const num = parseNumber(val);
@@ -1950,7 +1969,7 @@ function stylePercentInput(input) {
 
 function calc2() {
     const price = getInputValue('calc2-price');
-    const pct = parseFloat(document.getElementById('calc2-percent').value);
+    const pct = parseNumber(document.getElementById('calc2-percent').value);
     const el = document.getElementById('calc2-result');
     if (isNaN(price) || isNaN(pct)) { el.textContent = '—'; el.className = 'result-value neutral'; return; }
     const res = price * (1 + pct / 100);
@@ -2481,7 +2500,7 @@ function closeSummary(e) {
 window.addEventListener('DOMContentLoaded', () => {
     initTheme();
     const percentInput = document.getElementById('calc2-percent');
-    if (percentInput) stylePercentInput(percentInput);
+    if (percentInput) { stylePercentInput(percentInput); formatPercentInput(percentInput); }
 
     if (spotTrades.length > 0) {
         const maxNum = Math.max(...spotTrades.map(t => t.num || 0));
