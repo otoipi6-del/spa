@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#e8dcc8" id="theme-color-meta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -138,7 +138,21 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .input-group input, .input-group select {
+        .input-group input {
+            width: 100%;
+            background: var(--bg-input);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            font-size: 20px;
+            color: var(--text-bright);
+            font-family: var(--font);
+            transition: all 0.2s;
+            -webkit-user-select: text;
+            user-select: text;
+            touch-action: manipulation;
+        }
+        .input-group select {
             width: 100%;
             background: var(--bg-input);
             border: none;
@@ -222,7 +236,16 @@
         }
         .trade-grid .input-group { margin-bottom: 0; }
         .trade-grid .input-group.full { grid-column: 1 / -1; }
-        .trade-grid .input-group input, .trade-grid .input-group select {
+        .trade-grid .input-group input {
+            padding: 10px 12px;
+            font-size: 20px;
+            font-family: var(--font);
+            border: none;
+            -webkit-user-select: text;
+            user-select: text;
+            touch-action: manipulation;
+        }
+        .trade-grid .input-group select {
             padding: 10px 12px;
             font-size: 20px;
             font-family: var(--font);
@@ -887,6 +910,7 @@
         }
 
 </style>
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
