@@ -888,6 +888,7 @@
 
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -949,19 +950,21 @@
     </div>
 
     <div class="card">
-        <div class="card-title"><span class="icon">⚖️</span> Расчет количества актива</div>
+        <div class="card-title"><span class="icon">⚖️</span> Риск менеджмент</div>
         <div class="input-group">
-            <label>Объем позиции (USD)</label>
-            <input type="text" inputmode="decimal" id="calc3-usd" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc3-usd')" onfocus="unformatNumberInput(this)" oninput="calc3(); saveCalcInput('calc3-usd')">
+            <label>ДЕПОЗИТ (USD)</label>
+            <input type="text" inputmode="numeric" id="risk-deposit" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('risk-deposit')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); saveCalcInput('risk-deposit')">
         </div>
         <div class="input-group">
-            <label>Цена актива</label>
-            <input type="text" inputmode="decimal" id="calc3-price" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc3-price')" onfocus="unformatNumberInput(this)" oninput="calc3(); saveCalcInput('calc3-price')">
-        </div>
-        <div class="input-group">
-            <label>Количество актива</label>
+            <label>ОБЩИЙ ОБЪЕМ ПОЗИЦИЙ</label>
             <div class="result-box">
-                <div class="result-value neutral" id="calc3-result">—</div>
+                <div class="result-value neutral" id="risk-total">—</div>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>МИНИМАЛЬНЫЙ РАЗМЕР ДЕПОЗИТА ПРИ ОТКРЫТИИ 5-ой ПОЗИЦИИ</label>
+            <div class="result-box">
+                <div class="result-value neutral" id="risk-min">—</div>
             </div>
         </div>
     </div>
@@ -1925,12 +1928,12 @@ function initCalcInputs() {
     const calcInputs = [
         'calc1-open', 'calc1-close',
         'calc2-price', 'calc2-percent',
-        'calc3-usd', 'calc3-price',
+        'risk-deposit',
         'calc4-btc-price', 'calc4-btc-qty', 'calc4-usd-qty',
         'calc5-btc-price', 'calc5-gold-price', 'calc5-btc-qty', 'calc5-gold-qty', 'calc5-usd-qty'
     ];
     calcInputs.forEach(id => loadCalcInput(id));
-    calc1(); calc2(); calc3(); calc4(); calc5();
+    calc1(); calc2(); calcRisk(); calc4(); calc5();
 }
 
 function calc1() {
@@ -1981,6 +1984,19 @@ function calc3() {
     if (isNaN(usd) || isNaN(price) || price === 0) { el.textContent = '—'; return; }
     const res = usd / price;
     el.textContent = formatNumber(res, 8);
+}
+
+function calcRisk() {
+    const deposit = getInputValue('risk-deposit');
+    const totalEl = document.getElementById('risk-total');
+    const minEl = document.getElementById('risk-min');
+    if (isNaN(deposit) || deposit === 0) {
+        totalEl.textContent = '—';
+        minEl.textContent = '—';
+        return;
+    }
+    totalEl.textContent = formatNumber(deposit * 2.5, 2);
+    minEl.textContent = formatNumber(deposit * 0.45, 2);
 }
 
 function calc4() {
