@@ -2315,6 +2315,12 @@ function deleteTrade(type, id) {
     }
     document.getElementById(id).remove();
 }
+function deleteSummaryTrade(type, id) {
+    if (!confirm('Удалить позицию из сводной ведомости?')) return;
+    summaryArchive = summaryArchive.filter(t => !(t.id === id && t.archiveType === type));
+    localStorage.setItem('tradeSummaryArchive', JSON.stringify(summaryArchive));
+    showSummary(type);
+}
 
 function renderTrades(type) {
     const container = document.getElementById(type + '-trades');
