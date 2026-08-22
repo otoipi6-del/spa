@@ -2424,6 +2424,7 @@ function checkCompleted(type, id) {
 }
 
 let summaryData = JSON.parse(localStorage.getItem('tradeSummary') || '[]');
+let summaryArchive = JSON.parse(localStorage.getItem('tradeSummaryArchive') || '[]');
 
 function escapeHtml(text) {
     if (!text) return '';
@@ -2435,11 +2436,19 @@ function escapeHtml(text) {
 function showSummary(type) {
     const arr = type === 'spot' ? spotTrades : futuresTrades;
     const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
+    // Add completed trades to archive (avoid duplicates by id)
+    completed.forEach(t => {
+        if (!summaryArchive.some(a => a.id === t.id && a.archiveType === type)) {
+            summaryArchive.push({...t, archiveType: type});
+        }
+    });
+    localStorage.setItem('tradeSummaryArchive', JSON.stringify(summaryArchive));
     const modal = document.getElementById('summary-modal');
     const content = document.getElementById('modal-content');
     const title = document.getElementById('modal-title');
     title.textContent = (type === 'spot' ? 'Спот' : 'Фьючерсы') + ' — Сводная ведомость';
-    if (completed.length === 0) {
+    const display = summaryArchive.filter(t => t.archiveType === type);
+    if (display.length === 0) {
         const emptyDiv = document.createElement('div');
         emptyDiv.className = 'empty-state';
         emptyDiv.innerHTML = '<div class="icon">📋</div><p>Нет завершенных сделок. Укажите дату продажи и % продажи.</p>';
@@ -2450,9 +2459,9 @@ function showSummary(type) {
     }
     let totalProfit = 0;
     let html = '<div style="overflow-x:auto;"><table class="summary-table"><thead><tr>';
-    html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th>';
+    html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th><th>Действие</th>';
     html += '</tr></thead><tbody>';
-    completed.forEach(t => {
+    display.forEach(t => {
         const p = parseFloat(t.profit.replace(/[+\s]/g, '').replace(',', '.'));
         totalProfit += p;
         const pct = t.percent || '';
@@ -2474,6 +2483,7 @@ function showSummary(type) {
             <td>$${escapeHtml(sellSum)}</td>
             <td style="color:${p>=0?'var(--green)':'var(--red)'};font-weight:700;">${escapeHtml(t.profit)}</td>
             <td style="color:${pct.startsWith('+')?'var(--green)':pct.startsWith('-')?'var(--red)':'inherit'};font-weight:700;">${escapeHtml(pct)}</td>
+            <td><button class="trade-delete" onclick="deleteSummaryTrade('${type}','${t.id}')" title="Удалить из сводной ведомости" style="position:static;display:inline-block;margin:0;">🗑️</button></td>
         </tr>`;
     });
     html += '</tbody></table></div>';
