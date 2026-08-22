@@ -2317,8 +2317,10 @@ function deleteTrade(type, id) {
 }
 function deleteSummaryTrade(type, id) {
     if (!confirm('Удалить позицию из сводной ведомости?')) return;
-    summaryArchive = summaryArchive.filter(t => !(t.id === id && t.archiveType === type));
+    summaryArchive = summaryArchive.filter(t => !(String(t.id) === String(id) && t.archiveType === type));
+    if (!summaryRemoved.includes(id)) summaryRemoved.push(id);
     localStorage.setItem('tradeSummaryArchive', JSON.stringify(summaryArchive));
+    localStorage.setItem('tradeSummaryRemoved', JSON.stringify(summaryRemoved));
     showSummary(type);
 }
 
@@ -2431,6 +2433,7 @@ function checkCompleted(type, id) {
 
 let summaryData = JSON.parse(localStorage.getItem('tradeSummary') || '[]');
 let summaryArchive = JSON.parse(localStorage.getItem('tradeSummaryArchive') || '[]');
+let summaryRemoved = JSON.parse(localStorage.getItem('tradeSummaryRemoved') || '[]');
 
 function escapeHtml(text) {
     if (!text) return '';
@@ -2442,9 +2445,9 @@ function escapeHtml(text) {
 function showSummary(type) {
     const arr = type === 'spot' ? spotTrades : futuresTrades;
     const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
-    // Add completed trades to archive (avoid duplicates by id)
+    // Add completed trades to archive (avoid duplicates and removed)
     completed.forEach(t => {
-        if (!summaryArchive.some(a => a.id === t.id && a.archiveType === type)) {
+        if (!summaryRemoved.includes(t.id) && !summaryArchive.some(a => String(a.id) === String(t.id) && a.archiveType === type)) {
             summaryArchive.push({...t, archiveType: type});
         }
     });
@@ -2512,13 +2515,16 @@ function showSummary(type) {
 }
 
 function clearCompleted(type) {
-    if (!confirm('Очистить завершенные сделки? Данные перенесены в сводку.')) return;
+    if (!confirm('Очистить сводную ведомость?')) return;
     const arr = type === 'spot' ? spotTrades : futuresTrades;
-    const remaining = arr.filter(t => !t.sellDate || t.sellDate.trim() === '');
-    if (type === 'spot') { spotTrades = remaining; localStorage.setItem('spotTrades', JSON.stringify(spotTrades)); }
-    else { futuresTrades = remaining; localStorage.setItem('futuresTrades', JSON.stringify(futuresTrades)); }
-    closeSummary();
-    renderTrades(type);
+    const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
+    completed.forEach(t => {
+        if (!summaryRemoved.includes(t.id)) summaryRemoved.push(t.id);
+    });
+    summaryArchive = summaryArchive.filter(t => t.archiveType !== type);
+    localStorage.setItem('tradeSummaryArchive', JSON.stringify(summaryArchive));
+    localStorage.setItem('tradeSummaryRemoved', JSON.stringify(summaryRemoved));
+    showSummary(type);
 }
 
 function closeSummary(e) {
