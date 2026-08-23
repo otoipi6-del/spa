@@ -931,6 +931,7 @@
         body.dark .grid-del-btn:hover { opacity: 1; }
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -993,9 +994,15 @@
 
     <div class="card">
         <div class="card-title"><span class="icon">⚖️</span> Риск менеджмент</div>
-        <div class="input-group">
-            <label>ДЕПОЗИТ (USD)</label>
-            <input type="text" inputmode="numeric" id="risk-deposit" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('risk-deposit')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); saveCalcInput('risk-deposit')">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+                <label>ДЕПОЗИТ (USD)</label>
+                <input type="text" inputmode="numeric" id="risk-deposit" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('risk-deposit')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); saveCalcInput('risk-deposit')">
+            </div>
+            <div class="input-group">
+                <label>ПЛЕЧО</label>
+                <input type="text" inputmode="decimal" id="risk-leverage" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('risk-leverage')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); saveCalcInput('risk-leverage')">
+            </div>
         </div>
         <div class="input-group">
             <label>ОБЩИЙ ОБЪЕМ ПОЗИЦИЙ</label>
@@ -1076,6 +1083,18 @@
             <label>% до ликвидации</label>
             <div class="result-box">
                 <div class="result-value orange" id="liq-pct">—</div>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+                <label>ПЛЕЧО</label>
+                <input type="text" inputmode="numeric" id="liq-leverage" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('liq-leverage')" onfocus="unformatNumberInput(this)" oninput="calcLiquidation(); saveCalcInput('liq-leverage')">
+            </div>
+            <div class="input-group">
+                <label>% ДО ЛИКВИДАЦИИ</label>
+                <div class="result-box">
+                    <div class="result-value orange" id="liq-leverage-pct">—</div>
+                </div>
             </div>
         </div>
     </div>
@@ -2060,14 +2079,15 @@ function calc3() {
 
 function calcRisk() {
     const deposit = getInputValue('risk-deposit');
+    const leverage = getInputValue('risk-leverage');
     const totalEl = document.getElementById('risk-total');
     const minEl = document.getElementById('risk-min');
-    if (isNaN(deposit) || deposit === 0) {
+    if (isNaN(deposit) || deposit === 0 || isNaN(leverage) || leverage === 0) {
         totalEl.textContent = '—';
         minEl.textContent = '—';
         return;
     }
-    totalEl.textContent = formatNumber(deposit * 2.5, 2);
+    totalEl.textContent = formatNumber(deposit * leverage, 2);
     minEl.textContent = formatNumber(deposit * 0.45, 2);
 }
 
@@ -2910,7 +2930,21 @@ function calcLiquidation() {
             }
             if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
         }
-    } catch (e) {}
+    } catch (e) {} finally {
+        // Расчёт % до ликвидации от плеча
+        const leverageInput = document.getElementById('liq-leverage');
+        const leveragePctEl = document.getElementById('liq-leverage-pct');
+        if (leverageInput && leveragePctEl) {
+            const leverage = parseNumber(leverageInput.value);
+            if (!isNaN(leverage) && leverage > 0) {
+                leveragePctEl.textContent = formatNumber((1 / leverage) * 100, 1) + '%';
+                leveragePctEl.className = 'result-value orange';
+            } else {
+                leveragePctEl.textContent = '—';
+                leveragePctEl.className = 'result-value orange';
+            }
+        }
+    }
 }
 
 
