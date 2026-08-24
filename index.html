@@ -1065,18 +1065,23 @@
             <label>ЭКСТРЕМУМ</label>
             <input type="text" inputmode="decimal" id="grid-extremum" placeholder="0" onblur="formatNumberInput(this); saveGridData()" onfocus="unformatNumberInput(this)" oninput="calcGrid(); saveGridData()">
         </div>
+        <div class="grid-header" style="margin-bottom:4px;">
+            <div class="trade-grid" style="align-items:end;">
+                <div class="input-group" style="margin-bottom:0;"><label>%</label></div>
+                <div class="input-group" style="margin-bottom:0;"><label>РЕЗУЛЬТАТ</label></div>
+                <div style="width:44px;"></div>
+            </div>
+        </div>
         <div id="grid-rows">
             <div class="grid-row" data-index="0">
                 <div class="trade-grid" style="margin-bottom:8px;align-items:end;">
                     <div class="input-group" style="margin-bottom:0;">
-                        <label>%</label>
                         <div class="percent-wrap">
                             <input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()">
                             <span class="percent-suffix">%</span>
                         </div>
                     </div>
                     <div class="input-group" style="margin-bottom:0;">
-                        <label>РЕЗУЛЬТАТ</label>
                         <div class="result-box">
                             <div class="result-value neutral grid-result">—</div>
                         </div>
@@ -2960,15 +2965,12 @@ function addLiqPosition(data) {
 
     row.innerHTML = `
         <div class="input-group">
-            <label>Объём ($)</label>
             <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.volume || ''}" class="liq-vol" data-field="volume">
         </div>
         <div class="input-group">
-            <label>Цена входа ($)</label>
             <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price" data-field="entryPrice">
         </div>
         <div class="input-group">
-            <label>Напр.</label>
             <select class="liq-dir" data-field="direction">${getLiqDirOptions(posData.direction)}</select>
         </div>
         <button class="liq-del-btn" data-action="delete">🗑️</button>
@@ -3076,6 +3078,16 @@ function loadLiqData() {
     const container = document.getElementById('liq-positions');
     if (container) {
         container.innerHTML = '';
+        const header = document.createElement('div');
+        header.className = 'liq-position-row';
+        header.style.marginBottom = '4px';
+        header.innerHTML = `
+            <div class="input-group"><label>Объём ($)</label></div>
+            <div class="input-group"><label>Цена входа ($)</label></div>
+            <div class="input-group"><label>Напр.</label></div>
+            <div style="width:44px;"></div>
+        `;
+        container.appendChild(header);
         liqPositions.forEach(function(p) { addLiqPosition(p); });
     }
 }
@@ -3212,7 +3224,7 @@ function addGridRow() {
     const row = document.createElement('div');
     row.className = 'grid-row';
     row.dataset.index = index;
-    row.innerHTML = '<div class="trade-grid" style="margin-bottom:8px;align-items:end;"><div class="input-group" style="margin-bottom:0;"><label>%</label><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><label>РЕЗУЛЬТАТ</label><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
+    row.innerHTML = '<div class="trade-grid" style="margin-bottom:8px;align-items:end;"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
     container.appendChild(row);
     saveGridData();
 }
@@ -3252,7 +3264,7 @@ function loadGridData() {
             const row = document.createElement('div');
             row.className = 'grid-row';
             row.dataset.index = i;
-            row.innerHTML = '<div class="trade-grid" style="margin-bottom:8px;align-items:end;"><div class="input-group" style="margin-bottom:0;"><label>%</label><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" value="' + escapeHtml(p) + '" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><label>РЕЗУЛЬТАТ</label><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
+            row.innerHTML = '<div class="trade-grid" style="margin-bottom:8px;align-items:end;"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" value="' + escapeHtml(p) + '" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
             container.appendChild(row);
         });
     }
