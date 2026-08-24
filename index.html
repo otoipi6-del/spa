@@ -931,7 +931,6 @@
         body.dark .grid-del-btn:hover { opacity: 1; }
 </style>
 <base target="_blank">
-<base target="_blank">
 </head>
 <body>
 
@@ -1016,6 +1015,18 @@
                 <div class="result-value neutral" id="risk-min">—</div>
             </div>
         </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; margin-top: 4px;">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ПЛЕЧО</label>
+                <input type="text" inputmode="decimal" id="risk-liq-leverage" placeholder="0,0" onblur="formatNumberInput(this); saveCalcInput('risk-liq-leverage'); calcLeverageLiq()" onfocus="unformatNumberInput(this)" oninput="calcLeverageLiq(); saveCalcInput('risk-liq-leverage')" onchange="calcLeverageLiq()">
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>% ДО ЛИКВИДАЦИИ</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="risk-liq-pct">—</div>
+                </div>
+            </div>
+        </div>
     </div>
 
         <div class="card" id="grid-card">
@@ -1083,18 +1094,6 @@
             <label>% до ликвидации</label>
             <div class="result-box">
                 <div class="result-value orange" id="liq-pct">—</div>
-            </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="input-group">
-                <label>ПЛЕЧО</label>
-                <input type="text" inputmode="numeric" id="liq-leverage" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('liq-leverage')" onfocus="unformatNumberInput(this)" oninput="calcLiquidation(); saveCalcInput('liq-leverage')">
-            </div>
-            <div class="input-group">
-                <label>% ДО ЛИКВИДАЦИИ</label>
-                <div class="result-box">
-                    <div class="result-value orange" id="liq-leverage-pct">—</div>
-                </div>
             </div>
         </div>
     </div>
@@ -2021,10 +2020,11 @@ function initCalcInputs() {
         'calc2-price', 'calc2-percent',
         'risk-deposit',
         'calc4-btc-price', 'calc4-btc-qty', 'calc4-usd-qty',
-        'calc5-btc-price', 'calc5-gold-price', 'calc5-btc-qty', 'calc5-gold-qty', 'calc5-usd-qty'
+        'calc5-btc-price', 'calc5-gold-price', 'calc5-btc-qty', 'calc5-gold-qty', 'calc5-usd-qty',
+        'risk-liq-leverage'
     ];
     calcInputs.forEach(id => loadCalcInput(id));
-    calc1(); calc2(); calcRisk(); calc4(); calc5();
+    calc1(); calc2(); calcRisk(); calc4(); calc5(); calcLeverageLiq();
 }
 
 function calc1() {
@@ -2090,6 +2090,24 @@ function calcRisk() {
     totalEl.textContent = formatNumber(deposit * leverage, 2);
     minEl.textContent = formatNumber(deposit * 0.45, 2);
 }
+function calcLeverageLiq() {
+    const input = document.getElementById('risk-liq-leverage');
+    const resultEl = document.getElementById('risk-liq-pct');
+    if (!input || !resultEl) return;
+    const raw = input.value;
+    if (!raw || raw === '') {
+        resultEl.textContent = '—';
+        return;
+    }
+    const leverage = parseNumber(raw);
+    if (isNaN(leverage) || leverage === 0) {
+        resultEl.textContent = '—';
+        return;
+    }
+    const pct = (1 / leverage) * 100;
+    resultEl.textContent = Math.round(pct) + '%';
+}
+
 
 function calc4() {
     const btcPrice = getInputValue('calc4-btc-price');
