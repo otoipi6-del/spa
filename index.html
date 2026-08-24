@@ -551,18 +551,21 @@
             padding-bottom: 8px;
         }
         .extremum-input {
-            background: transparent;
+            width: 100%;
+            background: var(--bg-input);
             border: none;
-            outline: none;
-            font-family: inherit;
+            border-radius: var(--radius-sm);
+            padding: 6px 8px;
             font-size: 0.85rem;
             font-weight: 500;
-            color: var(--text-primary);
+            color: var(--text-bright);
+            font-family: var(--font);
             text-align: right;
-            padding: 2px 4px;
-            width: 100%;
-            min-width: 0;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
             -moz-appearance: textfield;
+            min-width: 0;
         }
         .extremum-input::-webkit-outer-spin-button,
         .extremum-input::-webkit-inner-spin-button {
@@ -570,12 +573,11 @@
             margin: 0;
         }
         .extremum-input::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.5;
+            color: var(--text-muted);
         }
         .extremum-input:focus {
-            background: rgba(0,0,0,0.03);
-            border-radius: 4px;
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent-soft);
         }
         /* Bottom border for the last data row */
         .quote-row:last-child .quote-name,
@@ -1334,70 +1336,70 @@
             </div>
             <div class="quote-row" id="quote-btc-retrace">
                 <span class="quote-name">BTC</span>
-                <input type="number" class="extremum-input" id="quote-btc-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-btc-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-btc-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-eth-retrace">
                 <span class="quote-name">ETH</span>
-                <input type="number" class="extremum-input" id="quote-eth-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-eth-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-eth-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-sol-retrace">
                 <span class="quote-name">SOL</span>
-                <input type="number" class="extremum-input" id="quote-sol-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-sol-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-sol-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-link-retrace">
                 <span class="quote-name">LINK</span>
-                <input type="number" class="extremum-input" id="quote-link-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-link-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-link-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-uni-retrace">
                 <span class="quote-name">UNI</span>
-                <input type="number" class="extremum-input" id="quote-uni-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-uni-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-uni-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-doge-retrace">
                 <span class="quote-name">DOGE</span>
-                <input type="number" class="extremum-input" id="quote-doge-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-doge-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-doge-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-brent-retrace">
                 <span class="quote-name">BRENT</span>
-                <input type="number" class="extremum-input" id="quote-brent-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-brent-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-brent-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-copper-retrace">
                 <span class="quote-name">COPPER</span>
-                <input type="number" class="extremum-input" id="quote-copper-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-copper-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-copper-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-gold-retrace">
                 <span class="quote-name">GOLD</span>
-                <input type="number" class="extremum-input" id="quote-gold-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-gold-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-gold-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-eur-retrace">
                 <span class="quote-name">EUR</span>
-                <input type="number" class="extremum-input" id="quote-eur-retrace-extremum" placeholder="—" step="any">
+                <input type="number" class="extremum-input" id="quote-eur-retrace-extremum" placeholder="0,00" step="any">
                 <span class="quote-change" id="quote-eur-retrace-change">—</span>
                 <span class="quote-weekly">—</span>
                 <span class="quote-monthly">—</span>
