@@ -531,13 +531,20 @@
             white-space: nowrap;
         }
         .quotes-card-title .icon { font-size: 18px; }
-        #quotes-list, #quotes-list-retrace {
-            display: grid;
-            grid-template-columns: min-content 1fr minmax(56px, auto) minmax(56px, auto) minmax(56px, auto);
-            gap: 0 3px;
-            align-items: center;
-            width: 100%;
-        }
+        #quotes-list {
+    display: grid;
+    grid-template-columns: min-content minmax(68px, 90px) minmax(68px, 90px) minmax(68px, 90px) minmax(68px, 90px);
+    gap: 0 3px;
+    align-items: center;
+    width: 100%;
+}
+#quotes-list-retrace {
+    display: grid;
+    grid-template-columns: min-content minmax(68px, 90px) minmax(68px, 90px) minmax(68px, 90px) minmax(68px, 90px);
+    gap: 0 3px;
+    align-items: center;
+    width: 100%;
+}
         .quote-row {
             display: contents;
         }
@@ -1005,13 +1012,15 @@
 
     <div class="card">
         <div class="card-title"><span class="icon">📈</span> % роста(+)/падения(-) цены актива</div>
-        <div class="input-group">
-            <label>Цена входа</label>
-            <input type="text" inputmode="decimal" id="calc1-open" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-open')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-open')">
-        </div>
-        <div class="input-group">
-            <label>Цена выхода</label>
-            <input type="text" inputmode="decimal" id="calc1-close" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-close')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-close')">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="input-group">
+                <label>Цена входа</label>
+                <input type="text" inputmode="decimal" id="calc1-open" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-open')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-open')">
+            </div>
+            <div class="input-group">
+                <label>Цена выхода</label>
+                <input type="text" inputmode="decimal" id="calc1-close" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-close')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-close')">
+            </div>
         </div>
         <div class="input-group">
             <label>% изменения цены</label>
@@ -1747,14 +1756,14 @@ function calculateRetrace(asset) {
     const changeEl = document.getElementById('quote-' + asset + '-retrace-change');
     if (!priceEl || !extremumEl || !changeEl) return;
 
-    // Parse price: remove spaces, replace comma-decimal with dot
-    const priceText = priceEl.textContent.replace(/\s/g, '').replace(/,/g, '.');
+    // Parse price: remove ALL non-numeric chars except dot/comma/minus, then comma→dot
+    const priceText = priceEl.textContent.replace(/[^0-9.,-]/g, '').replace(/,/g, '.');
     const price = parseFloat(priceText);
-    // Parse extremum: replace comma-decimal with dot
-    const extremumText = (extremumEl.value || '').replace(/,/g, '.');
+    // Parse extremum: same cleanup
+    const extremumText = (extremumEl.value || '').replace(/[^0-9.,-]/g, '').replace(/,/g, '.');
     const extremum = parseFloat(extremumText);
 
-    if (!price || !extremum || extremum === 0) {
+    if (isNaN(price) || isNaN(extremum) || extremum === 0) {
         changeEl.textContent = '—';
         changeEl.className = 'quote-change';
         return;
@@ -1765,7 +1774,6 @@ function calculateRetrace(asset) {
     changeEl.textContent = sign + retrace.toFixed(2) + '%';
     changeEl.className = 'quote-change ' + (retrace >= 0 ? 'up' : 'down');
 }
-
 function initRetraceInputs() {
     const data = loadExtremums();
     const assets = ['btc', 'eth', 'sol', 'link', 'uni', 'doge', 'brent', 'copper', 'gold', 'eur'];
