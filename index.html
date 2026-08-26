@@ -528,15 +528,13 @@
         .quotes-card-title .icon { font-size: 18px; }
         #quotes-list {
     display: grid;
-    grid-template-columns: min-content minmax(56px, 1fr) minmax(36px, auto) minmax(36px, auto) minmax(36px, auto);
-    gap: 0 3px;
+    grid-template-columns: min-content auto minmax(36px, auto) minmax(36px, auto) minmax(36px, auto);
     align-items: center;
     width: 100%;
 }
 #quotes-list-retrace {
     display: grid;
-    grid-template-columns: min-content minmax(68px, 90px) minmax(36px, auto) minmax(36px, auto) minmax(36px, auto);
-    gap: 0 3px;
+    grid-template-columns: min-content auto minmax(36px, auto) minmax(36px, auto) minmax(36px, auto);
     align-items: center;
     width: 100%;
 }
@@ -672,8 +670,8 @@
             padding: 0 18px 14px 18px;
         }
         @media (max-width: 380px) {
-            #quotes-list, #quotes-list-retrace { gap: 0 3px; }
-            .quote-name { font-size: 13px; padding: 0 0 0 6px; margin: 0; }
+            #quotes-list, #quotes-list-retrace { gap: 0 1px; }
+            .quote-name { font-size: 13px; padding: 0 4px 0 6px; margin: 0; }
             .quote-price { font-size: 13px; }
             .quote-change { font-size: 13px; min-width: 36px; text-align: right; }
             .quote-weekly { font-size: 13px; min-width: 36px; text-align: right; }
