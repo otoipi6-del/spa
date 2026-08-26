@@ -361,8 +361,12 @@
         .rebalance-action-large { font-size: 20px; font-weight: 400; }
         select option { background: var(--bg-card); color: var(--text-bright); }
         @media (min-width: 600px) {
-            .trade-grid { grid-template-columns: 1fr 1fr 1fr; }
-            .trade-grid .input-group.full { grid-column: 1 / -1; }
+            .trade-grid { 
+            grid-template-columns: minmax(100px, 1fr) minmax(130px, 1.5fr) minmax(85px, 0.75fr); 
+            gap: 8px; 
+            align-items: end; 
+        }
+            
         }
         .install-banner {
             display: none;
@@ -916,7 +920,7 @@
 
 
 .grid-row { margin-bottom: 4px; }
-.trade-grid { display: grid; grid-template-columns: minmax(110px, 1fr) 1fr auto; gap: 8px; align-items: end; }
+
 .percent-wrap { display: inline-flex; align-items: center; white-space: nowrap; gap: 0px; }
 .percent-wrap input { width: auto; min-width: 30px; max-width: 70px; text-align: left; padding-right: 1px; }
         .trade-grid .input-group .percent-wrap input,
@@ -958,7 +962,8 @@
         }
         body.dark .grid-del-btn:hover { opacity: 1; }
 </style>
-    </head>
+    <base target="_blank">
+</head>
 <body>
 
 <div class="install-banner" id="install-banner">
