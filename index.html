@@ -919,17 +919,28 @@
 
 .grid-row { margin-bottom: 4px; }
 
-.percent-wrap { display: inline-flex; align-items: center; white-space: nowrap; gap: 0px; }
-.percent-wrap input { width: auto; min-width: 30px; max-width: 70px; text-align: left; padding-right: 1px; }
+.grid-row .trade-grid {
+    grid-template-columns: 1fr 1fr 44px;
+    gap: 8px;
+    align-items: end;
+    margin-bottom: 8px;
+}
+
+.percent-wrap { display: flex; align-items: center; position: relative; width: 100%; white-space: nowrap; }
+.percent-wrap input { width: 100%; min-width: 0; max-width: none; text-align: left; padding-right: 24px !important; }
         .trade-grid .input-group .percent-wrap input,
         .trade-grid .input-group .percent-wrap .grid-percent {
-            padding: 10px 4px 10px 12px;
-            min-width: 85px;
+            padding: 10px 24px 10px 12px;
+            min-width: 0;
             font-size: 22px;
         }
 .percent-suffix {
-    font-size: 13px;
-    font-weight: 600;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    font-weight: 400;
     pointer-events: none;
     margin-left: 0;
 }
@@ -1076,7 +1087,7 @@
         </div>
         <div id="grid-rows">
             <div class="grid-row" data-index="0">
-                <div class="trade-grid" style="margin-bottom:8px;align-items:end;">
+                <div class="trade-grid">
                     <div class="input-group" style="margin-bottom:0;">
                         <div class="percent-wrap">
                             <input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()">
@@ -3225,7 +3236,7 @@ function addGridRow() {
     const row = document.createElement('div');
     row.className = 'grid-row';
     row.dataset.index = index;
-    row.innerHTML = '<div class="trade-grid" style="margin-bottom:8px;align-items:end;"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
+    row.innerHTML = '<div class="trade-grid"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
     container.appendChild(row);
     saveGridData();
 }
@@ -3265,7 +3276,7 @@ function loadGridData() {
             const row = document.createElement('div');
             row.className = 'grid-row';
             row.dataset.index = i;
-            row.innerHTML = '<div class="trade-grid" style="margin-bottom:8px;align-items:end;"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" value="' + escapeHtml(p) + '" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
+            row.innerHTML = '<div class="trade-grid"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" value="' + escapeHtml(p) + '" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
             container.appendChild(row);
         });
     }
