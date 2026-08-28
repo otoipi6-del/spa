@@ -995,6 +995,7 @@
 </style>
     <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -1132,9 +1133,17 @@
     </div>
 <div class="card" id="liq-card">
         <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
-        <div class="input-group">
-            <label>Общий депозит ($)</label>
-            <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0,00">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end;">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ДЕПОЗИТ ($)</label>
+                <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0,00">
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ПЛЕЧО</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="liq-leverage-display">—</div>
+                </div>
+            </div>
         </div>
         <div class="input-group">
             <label>Позиции</label>
@@ -3150,13 +3159,16 @@ function calcLiquidation() {
         const totalVolEl = document.getElementById('liq-total-volume');
         const liqPriceEl = document.getElementById('liq-price');
         const liqPctEl = document.getElementById('liq-pct');
+        const leverageDisplayEl = document.getElementById('liq-leverage-display');
 
         if (!avgEl) return;
 
         let totalVolume = 0;
         let weightedSum = 0;
         let hasData = false;
-        let dir = null; // null, 'LONG', 'SHORT', 'MIX'
+        let dir = null;
+        let firstPrice = null;
+        let positionCount = 0;
 
         liqPositions.forEach(function(pos) {
             const vol = parseNumber(pos.volume);
@@ -3165,8 +3177,10 @@ function calcLiquidation() {
                 totalVolume += vol;
                 weightedSum += vol * price;
                 hasData = true;
+                positionCount++;
                 if (dir === null) dir = pos.direction;
                 else if (dir !== pos.direction) dir = 'MIX';
+                if (firstPrice === null) firstPrice = price;
             }
         });
 
@@ -3175,6 +3189,7 @@ function calcLiquidation() {
             if (totalVolEl) totalVolEl.textContent = '—';
             if (liqPriceEl) { liqPriceEl.textContent = '—'; liqPriceEl.className = 'result-value'; }
             if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
+            if (leverageDisplayEl) leverageDisplayEl.textContent = '—';
             return;
         }
 
@@ -3184,44 +3199,75 @@ function calcLiquidation() {
         avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
         if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 2) + ' $';
 
-        // ЕСЛИ направление LONG → формула LONG
-        if (dir === 'LONG') {
-            const liq = avgPrice * (1 - dep / totalVolume + LIQ_MMR);
-            const pct = ((avgPrice - liq) / avgPrice) * 100;
-            if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value red'; }
-            if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
-        }
-        // ЕСЛИ направление SHORT → формула SHORT
-        else if (dir === 'SHORT') {
-            const liq = avgPrice * (1 + dep / totalVolume - LIQ_MMR);
-            const pct = ((liq - avgPrice) / avgPrice) * 100;
-            if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value green'; }
-            if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
-        }
-        // ЕСЛИ MIX → показываем оба
-        else {
-            const liqL = avgPrice * (1 - dep / totalVolume + LIQ_MMR);
-            const liqS = avgPrice * (1 + dep / totalVolume - LIQ_MMR);
-            if (liqPriceEl) {
-                liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + ' $</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + ' $</span>';
-                liqPriceEl.className = 'result-value';
+        // Залоговое обеспечение: 10$ на каждую позицию
+        const marginPerPosition = 10;
+        const totalMargin = positionCount * marginPerPosition;
+
+        // Убыток от движения цены от цены открытия первой позиции
+        let unrealizedLoss = 0;
+        if (firstPrice !== null && !isNaN(firstPrice) && firstPrice > 0) {
+            const totalQty = totalVolume / avgPrice;
+            if (dir === 'LONG' && avgPrice < firstPrice) {
+                unrealizedLoss = (firstPrice - avgPrice) * totalQty;
+            } else if (dir === 'SHORT' && avgPrice > firstPrice) {
+                unrealizedLoss = (avgPrice - firstPrice) * totalQty;
             }
-            if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
         }
-    } catch (e) {} finally {
-        // Расчёт % до ликвидации от плеча
-        const leverageInput = document.getElementById('liq-leverage');
-        const leveragePctEl = document.getElementById('liq-leverage-pct');
-        if (leverageInput && leveragePctEl) {
-            const leverage = parseNumber(leverageInput.value);
-            if (!isNaN(leverage) && leverage > 0) {
-                leveragePctEl.textContent = formatNumber((1 / leverage) * 100, 1) + '%';
-                leveragePctEl.className = 'result-value orange';
+
+        // Эффективный депозит с учётом залога и убытка
+        let effectiveDeposit = dep - totalMargin - unrealizedLoss;
+
+        // Плечо
+        let leverage = 0;
+        if (effectiveDeposit > 0) {
+            leverage = totalVolume / effectiveDeposit;
+        }
+
+        if (leverageDisplayEl) {
+            if (effectiveDeposit > 0 && leverage > 0) {
+                leverageDisplayEl.textContent = 'x' + formatNumber(leverage, 2);
             } else {
-                leveragePctEl.textContent = '—';
-                leveragePctEl.className = 'result-value orange';
+                leverageDisplayEl.textContent = '—';
             }
         }
+
+        // Цена ликвидации
+        if (dir === 'LONG') {
+            if (effectiveDeposit <= 0) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
+            } else {
+                const liq = avgPrice * (1 - effectiveDeposit / totalVolume + LIQ_MMR);
+                const pct = ((avgPrice - liq) / avgPrice) * 100;
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+            }
+        } else if (dir === 'SHORT') {
+            if (effectiveDeposit <= 0) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
+            } else {
+                const liq = avgPrice * (1 + effectiveDeposit / totalVolume - LIQ_MMR);
+                const pct = ((liq - avgPrice) / avgPrice) * 100;
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+            }
+        } else {
+            if (effectiveDeposit <= 0) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
+            } else {
+                const liqL = avgPrice * (1 - effectiveDeposit / totalVolume + LIQ_MMR);
+                const liqS = avgPrice * (1 + effectiveDeposit / totalVolume - LIQ_MMR);
+                if (liqPriceEl) {
+                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + ' $</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + ' $</span>';
+                    liqPriceEl.className = 'result-value';
+                }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
+            }
+        }
+    } catch (e) {
+        console.error('calcLiquidation error:', e);
     }
 }
 
