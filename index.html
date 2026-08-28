@@ -1133,10 +1133,14 @@
     </div>
 <div class="card" id="liq-card">
         <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: end;">
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ДЕПОЗИТ ($)</label>
                 <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0,00">
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ЗАЛОГ ($)</label>
+                <input type="text" inputmode="decimal" id="liq-margin" placeholder="10" value="10">
             </div>
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ПЛЕЧО</label>
@@ -2962,6 +2966,18 @@ window.addEventListener('DOMContentLoaded', () => {
             saveLiqData();
         });
     }
+    // Setup margin input listener
+    const liqMargin = document.getElementById('liq-margin');
+    if (liqMargin) {
+        liqMargin.addEventListener('input', function() {
+            calcLiquidation();
+            saveLiqData();
+        });
+        liqMargin.addEventListener('keyup', function() {
+            calcLiquidation();
+            saveLiqData();
+        });
+    }
     calcLiquidation();
 
     // Cleanup intervals on page unload
@@ -3112,17 +3128,24 @@ function deleteLiqPosition(id) {
 function saveLiqData() {
     const deposit = document.getElementById('liq-deposit');
     if (deposit) localStorage.setItem('liq_deposit', deposit.value);
+    const margin = document.getElementById('liq-margin');
+    if (margin) localStorage.setItem('liq_margin', margin.value);
     localStorage.setItem('liqPositions', JSON.stringify(liqPositions));
     localStorage.setItem('liqCounter', liqCounter);
 }
 
 function loadLiqData() {
     initLiqData();
-        initRetraceInputs();
+    initRetraceInputs();
     const deposit = localStorage.getItem('liq_deposit');
     if (deposit !== null) {
         const el = document.getElementById('liq-deposit');
         if (el) el.value = deposit;
+    }
+    const margin = localStorage.getItem('liq_margin');
+    if (margin !== null) {
+        const el = document.getElementById('liq-margin');
+        if (el) el.value = margin;
     }
     // Fix liqCounter to be max of existing ids + 1
     let maxNum = 0;
@@ -3155,6 +3178,8 @@ function calcLiquidation() {
     try {
         const depositInput = document.getElementById('liq-deposit');
         const deposit = depositInput ? parseNumber(depositInput.value) : NaN;
+        const marginInput = document.getElementById('liq-margin');
+        const marginPerPosition = marginInput ? parseNumber(marginInput.value) : 10;
         const avgEl = document.getElementById('liq-avg-price');
         const totalVolEl = document.getElementById('liq-total-volume');
         const liqPriceEl = document.getElementById('liq-price');
@@ -3195,13 +3220,13 @@ function calcLiquidation() {
 
         const avgPrice = weightedSum / totalVolume;
         const dep = isNaN(deposit) ? 0 : deposit;
+        const margin = isNaN(marginPerPosition) || marginPerPosition <= 0 ? 10 : marginPerPosition;
 
         avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
         if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 2) + ' $';
 
-        // Залоговое обеспечение: 10$ на каждую позицию
-        const marginPerPosition = 10;
-        const totalMargin = positionCount * marginPerPosition;
+        // Залоговое обеспечение
+        const totalMargin = positionCount * margin;
 
         // Убыток от движения цены от цены открытия первой позиции
         let unrealizedLoss = 0;
@@ -3225,7 +3250,7 @@ function calcLiquidation() {
 
         if (leverageDisplayEl) {
             if (effectiveDeposit > 0 && leverage > 0) {
-                leverageDisplayEl.textContent = 'x' + formatNumber(leverage, 2);
+                leverageDisplayEl.textContent = formatNumber(leverage, 2);
             } else {
                 leverageDisplayEl.textContent = '—';
             }
