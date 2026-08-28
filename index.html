@@ -1506,9 +1506,20 @@ function formatNumberInput(input) {
     if (!val || val === '') return;
     const num = parseNumber(val);
     if (!isNaN(num)) {
-        const decimals = input.id.includes('qty') && input.id.includes('btc') ? 8 :
-                         input.id.includes('qty') && input.id.includes('gold') ? 3 :
-                         input.id.includes('qty') ? 2 : 2;
+        let decimals = 2;
+        if (input.id.includes('qty') && input.id.includes('btc')) decimals = 8;
+        else if (input.id.includes('qty') && input.id.includes('gold')) decimals = 3;
+        else if (input.id.includes('qty')) decimals = 2;
+        else if (input.id === 'quote-btc-retrace-extremum') decimals = 0;
+        else if (input.id === 'quote-eth-retrace-extremum') decimals = 1;
+        else if (input.id === 'quote-sol-retrace-extremum') decimals = 2;
+        else if (input.id === 'quote-link-retrace-extremum') decimals = 2;
+        else if (input.id === 'quote-uni-retrace-extremum') decimals = 2;
+        else if (input.id === 'quote-doge-retrace-extremum') decimals = 5;
+        else if (input.id === 'quote-brent-retrace-extremum') decimals = 2;
+        else if (input.id === 'quote-copper-retrace-extremum') decimals = 2;
+        else if (input.id === 'quote-gold-retrace-extremum') decimals = 1;
+        else if (input.id === 'quote-eur-retrace-extremum') decimals = 5;
         input.value = formatNumber(num, decimals);
     }
 }
@@ -1785,6 +1796,7 @@ function initRetraceInputs() {
         const el = document.getElementById('quote-' + asset + '-retrace-extremum');
         if (el && data[asset]) {
             el.value = data[asset];
+            formatNumberInput(el);
             calculateRetrace(asset);
         }
         if (el) {
