@@ -913,13 +913,39 @@
         }
 
 
+.grid-header {
+    margin-bottom: 0;
+}
+.grid-header .trade-grid {
+    grid-template-columns: 1fr 1fr 44px;
+    gap: 8px;
+}
+.grid-header .trade-grid .input-group {
+    margin-bottom: 0;
+}
+.grid-header .trade-grid .input-group label {
+    font-size: 12px !important;
+    margin-bottom: 2px;
+}
+.grid-row { margin-bottom: 2px; }
+.grid-row .trade-grid {
+    grid-template-columns: 1fr 1fr 44px;
+    gap: 8px;
+    align-items: end;
+    margin-bottom: 2px;
+}
+.grid-row .result-box {
+    margin-top: 0;
+}
+
+
 .grid-row { margin-bottom: 4px; }
 
 .grid-row .trade-grid {
     grid-template-columns: 1fr 1fr 44px;
     gap: 8px;
     align-items: end;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .percent-wrap { display: flex; align-items: center; position: relative; width: 100%; white-space: nowrap; }
@@ -1075,10 +1101,10 @@
             <label>ЭКСТРЕМУМ</label>
             <input type="text" inputmode="decimal" id="grid-extremum" placeholder="0" onblur="formatNumberInput(this); saveGridData()" onfocus="unformatNumberInput(this)" oninput="calcGrid(); saveGridData()">
         </div>
-        <div class="grid-header" style="margin-bottom:4px;">
-            <div class="trade-grid" style="align-items:end;">
-                <div class="input-group" style="margin-bottom:0;"><label>%</label></div>
-                <div class="input-group" style="margin-bottom:0;"><label>РЕЗУЛЬТАТ</label></div>
+        <div class="grid-header">
+            <div class="trade-grid">
+                <div class="input-group"><label>%</label></div>
+                <div class="input-group"><label>РЕЗУЛЬТАТ</label></div>
                 <div style="width:44px;"></div>
             </div>
         </div>
