@@ -3256,34 +3256,47 @@ function calcLiquidation() {
             }
         }
 
+        // Проверка: если плечо <= 1 — ликвидация невозможна (позиция полностью обеспечена)
+        const noRisk = effectiveDeposit > 0 && leverage <= 1;
+        const liquidated = effectiveDeposit <= 0;
+
         // Цена ликвидации
         if (dir === 'LONG') {
-            if (effectiveDeposit <= 0) {
+            if (liquidated) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
+            } else if (noRisk) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
-                const liq = avgPrice * (1 - effectiveDeposit / totalVolume + LIQ_MMR);
-                const pct = ((avgPrice - liq) / avgPrice) * 100;
+                const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
+                const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else if (dir === 'SHORT') {
-            if (effectiveDeposit <= 0) {
+            if (liquidated) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
+            } else if (noRisk) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
-                const liq = avgPrice * (1 + effectiveDeposit / totalVolume - LIQ_MMR);
-                const pct = ((liq - avgPrice) / avgPrice) * 100;
+                const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
+                const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else {
-            if (effectiveDeposit <= 0) {
+            if (liquidated) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
+            } else if (noRisk) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
-                const liqL = avgPrice * (1 - effectiveDeposit / totalVolume + LIQ_MMR);
-                const liqS = avgPrice * (1 + effectiveDeposit / totalVolume - LIQ_MMR);
+                const liqL = avgPrice * (1 - 1 / leverage + LIQ_MMR);
+                const liqS = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 if (liqPriceEl) {
                     liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + ' $</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + ' $</span>';
                     liqPriceEl.className = 'result-value';
