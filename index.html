@@ -1067,7 +1067,7 @@
             </div>
             <div class="input-group">
                 <label>ПЛЕЧО</label>
-                <input type="text" inputmode="decimal" id="risk-leverage" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('risk-leverage')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); saveCalcInput('risk-leverage')">
+                <input type="text" inputmode="decimal" id="risk-leverage" placeholder="0" onblur="formatNumberInput(this); calcLeverageLiq(); saveCalcInput('risk-leverage')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); calcLeverageLiq(); saveCalcInput('risk-leverage')">
             </div>
         </div>
         <div class="input-group">
@@ -1082,16 +1082,10 @@
                 <div class="result-value neutral" id="risk-min">—</div>
             </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; margin-top: 4px;">
-            <div class="input-group" style="margin-bottom: 0;">
-                <label>ПЛЕЧО</label>
-                <input type="text" inputmode="decimal" id="risk-liq-leverage" placeholder="0,0" onblur="formatNumberInput(this); saveCalcInput('risk-liq-leverage'); calcLeverageLiq()" onfocus="unformatNumberInput(this)" oninput="calcLeverageLiq(); saveCalcInput('risk-liq-leverage')" onchange="calcLeverageLiq()">
-            </div>
-            <div class="input-group" style="margin-bottom: 0;">
-                <label>% ДО ЛИКВИДАЦИИ</label>
-                <div class="result-box" style="margin-top: 0;">
-                    <div class="result-value neutral" id="risk-liq-pct">—</div>
-                </div>
+        <div class="input-group">
+            <label>% ДО ЛИКВИДАЦИИ</label>
+            <div class="result-box">
+                <div class="result-value neutral" id="risk-liq-pct">—</div>
             </div>
         </div>
     </div>
@@ -2285,8 +2279,7 @@ function initCalcInputs() {
         'calc2-price', 'calc2-percent',
         'risk-deposit',
         'calc4-btc-price', 'calc4-btc-qty', 'calc4-usd-qty',
-        'calc5-btc-price', 'calc5-gold-price', 'calc5-btc-qty', 'calc5-gold-qty', 'calc5-usd-qty',
-        'risk-liq-leverage'
+        'calc5-btc-price', 'calc5-gold-price', 'calc5-btc-qty', 'calc5-gold-qty', 'calc5-usd-qty'
     ];
     calcInputs.forEach(id => loadCalcInput(id));
     calc1(); calc2(); calcRisk(); calc4(); calc5(); calcLeverageLiq();
@@ -2356,7 +2349,7 @@ function calcRisk() {
     minEl.textContent = formatNumber(deposit * 0.45, 2);
 }
 function calcLeverageLiq() {
-    const input = document.getElementById('risk-liq-leverage');
+    const input = document.getElementById('risk-leverage');
     const resultEl = document.getElementById('risk-liq-pct');
     if (!input || !resultEl) return;
     const raw = input.value;
