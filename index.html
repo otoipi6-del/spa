@@ -656,6 +656,17 @@
         }
         .quote-monthly.up { color: var(--green); }
         .quote-monthly.down { color: var(--red); }
+        .quote-atr {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-align: right;
+            white-space: nowrap;
+            min-width: 36px;
+        }
+        @media (max-width: 380px) {
+            .quote-atr { font-size: 13px; min-width: 36px; text-align: right; }
+        }
         .quotes-footer {
             font-size: 11px;
             color: var(--text-muted);
@@ -1379,77 +1390,77 @@
                 <span></span>
                 <span>ЭКСТРЕМУМ</span>
                 <span>% ОТКАТА</span>
-                <span></span>
+                <span>ATR (14 дн)</span>
                 <span></span>
             </div>
             <div class="quote-row" id="quote-btc-retrace">
                 <span class="quote-name">BTC</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-btc-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-btc-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-btc-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-eth-retrace">
                 <span class="quote-name">ETH</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-eth-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-eth-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-eth-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-sol-retrace">
                 <span class="quote-name">SOL</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-sol-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-sol-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-sol-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-link-retrace">
                 <span class="quote-name">LINK</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-link-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-link-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-link-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-uni-retrace">
                 <span class="quote-name">UNI</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-uni-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-uni-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-uni-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-doge-retrace">
                 <span class="quote-name">DOGE</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-doge-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-doge-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-doge-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-brent-retrace">
                 <span class="quote-name">BRENT</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-brent-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-brent-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-brent-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-copper-retrace">
                 <span class="quote-name">COPPER</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-copper-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-copper-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-copper-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-gold-retrace">
                 <span class="quote-name">GOLD</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-gold-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-gold-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-gold-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-eur-retrace">
                 <span class="quote-name">EUR</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-eur-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-eur-retrace-change">—</span>
-                <span class="quote-weekly">—</span>
+                <span class="quote-atr" id="quote-eur-atr">—</span>
                 <span class="quote-monthly">—</span>
             </div>
             
@@ -2945,6 +2956,7 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchGoldPrice();
     fetchQuotes();
     fetchPeriodChanges();
+    fetchATR();
     initCalcInputs();
     loadLiqData();
     // Setup deposit input listener
@@ -2987,6 +2999,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const quotesInterval = setInterval(() => {
         fetchQuotes();
         fetchPeriodChanges();
+        fetchATR();
     }, 15000);
 });
 
@@ -3303,6 +3316,95 @@ function calcLiquidation() {
 }
 
 
+
+
+// ====== ATR (14 дней) ======
+const ATR_CACHE_KEY = 'trading_atr_cache';
+const ATR_CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 часа
+
+function getATRCache() {
+    try {
+        const raw = localStorage.getItem(ATR_CACHE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (Date.now() - data.timestamp < ATR_CACHE_DURATION) return data.values;
+        return null;
+    } catch (e) { return null; }
+}
+
+function setATRCache(values) {
+    localStorage.setItem(ATR_CACHE_KEY, JSON.stringify({ timestamp: Date.now(), values }));
+}
+
+function updateATRDisplay(asset, value) {
+    const el = document.getElementById('quote-' + asset + '-atr');
+    if (!el) return;
+    if (value === null || value === undefined || isNaN(value)) {
+        el.textContent = '—';
+        return;
+    }
+    el.textContent = value.toFixed(2) + '%';
+    el.className = 'quote-atr';
+}
+
+async function fetchATR() {
+    const assets = [
+        { asset: 'btc', symbol: 'BTCUSDT', api: 'spot' },
+        { asset: 'eth', symbol: 'ETHUSDT', api: 'spot' },
+        { asset: 'sol', symbol: 'SOLUSDT', api: 'spot' },
+        { asset: 'link', symbol: 'LINKUSDT', api: 'spot' },
+        { asset: 'uni', symbol: 'UNIUSDT', api: 'spot' },
+        { asset: 'doge', symbol: 'DOGEUSDT', api: 'spot' },
+        { asset: 'gold', symbol: 'XAUUSDT', api: 'futures' },
+        { asset: 'copper', symbol: 'COPPERUSDT', api: 'futures' },
+        { asset: 'brent', symbol: 'BZUSDT', api: 'futures' },
+        { asset: 'eur', symbol: 'EURUSDT', api: 'spot' }
+    ];
+
+    // Check cache first
+    const cached = getATRCache();
+    if (cached) {
+        Object.entries(cached).forEach(([asset, value]) => {
+            updateATRDisplay(asset, value);
+        });
+    }
+
+    const results = await Promise.all(assets.map(async (a) => {
+        let baseUrl = a.api === 'futures' ? 'https://fapi.binance.com/fapi/v1' : 'https://api.binance.com/api/v3';
+        try {
+            const res = await fetch(baseUrl + '/klines?symbol=' + a.symbol + '&interval=1d&limit=15');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const klines = await res.json();
+            if (klines.length < 15) throw new Error('Not enough data');
+
+            // Calculate average daily range (modified ATR) for last 14 days
+            let sum = 0;
+            for (let i = 1; i < klines.length; i++) {
+                const open = parseFloat(klines[i][1]);
+                const high = parseFloat(klines[i][2]);
+                const low = parseFloat(klines[i][3]);
+                const tr = Math.max((high - open) / open * 100, (open - low) / open * 100);
+                sum += tr;
+            }
+            const atr = sum / 14;
+            return { asset: a.asset, atr };
+        } catch (e) {
+            return { asset: a.asset, atr: null };
+        }
+    }));
+
+    const cacheData = {};
+    results.forEach(r => {
+        if (r.atr !== null) {
+            updateATRDisplay(r.asset, r.atr);
+            cacheData[r.asset] = r.atr;
+        }
+    });
+    if (Object.keys(cacheData).length > 0) {
+        setATRCache(cacheData);
+    }
+}
+// ====== END ATR ======
 
 // ====== SERVICE WORKER (OFFLINE SUPPORT) ======
 if ('serviceWorker' in navigator) {
