@@ -2956,7 +2956,7 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchGoldPrice();
     fetchQuotes();
     fetchPeriodChanges();
-    fetchATR();
+    scheduleATRUpdate();
     initCalcInputs();
     loadLiqData();
     // Setup deposit input listener
@@ -2999,7 +2999,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const quotesInterval = setInterval(() => {
         fetchQuotes();
         fetchPeriodChanges();
-        fetchATR();
     }, 15000);
 });
 
@@ -3318,17 +3317,15 @@ function calcLiquidation() {
 
 
 
-// ====== ATR (14 дней) ======
-const ATR_CACHE_KEY = 'trading_atr_cache';
-const ATR_CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 часа
+// ====== ATR (14 дней) — ежедневное обновление после 04:00 UTC ======
+const ATR_CACHE_KEY = 'trading_atr_cache_v2';
+const ATR_UPDATE_HOUR_UTC = 4; // 04:00 UTC = 00:00 UTC+4
 
 function getATRCache() {
     try {
         const raw = localStorage.getItem(ATR_CACHE_KEY);
         if (!raw) return null;
-        const data = JSON.parse(raw);
-        if (Date.now() - data.timestamp < ATR_CACHE_DURATION) return data.values;
-        return null;
+        return JSON.parse(raw);
     } catch (e) { return null; }
 }
 
@@ -3347,6 +3344,25 @@ function updateATRDisplay(asset, value) {
     el.className = 'quote-atr';
 }
 
+function shouldUpdateATR() {
+    const cached = getATRCache();
+    if (!cached || !cached.timestamp) return true;
+    const now = new Date();
+    const today04UTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), ATR_UPDATE_HOUR_UTC, 0, 0);
+    // Если сейчас ещё до 04:00 UTC — проверяем вчерашнее обновление
+    const checkTime = now.getTime() >= today04UTC ? today04UTC : today04UTC - 86400000;
+    return cached.timestamp < checkTime;
+}
+
+function msUntilNextUpdate() {
+    const now = new Date();
+    const today04UTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), ATR_UPDATE_HOUR_UTC, 0, 0);
+    if (now.getTime() < today04UTC) {
+        return today04UTC - now.getTime();
+    }
+    return today04UTC + 86400000 - now.getTime();
+}
+
 async function fetchATR() {
     const assets = [
         { asset: 'btc', symbol: 'BTCUSDT', api: 'spot' },
@@ -3361,12 +3377,17 @@ async function fetchATR() {
         { asset: 'eur', symbol: 'EURUSDT', api: 'spot' }
     ];
 
-    // Check cache first
+    // Показать кэш сразу
     const cached = getATRCache();
-    if (cached) {
-        Object.entries(cached).forEach(([asset, value]) => {
+    if (cached && cached.values) {
+        Object.entries(cached.values).forEach(([asset, value]) => {
             updateATRDisplay(asset, value);
         });
+    }
+
+    // Если обновление не требуется — выходим
+    if (!shouldUpdateATR()) {
+        return;
     }
 
     const results = await Promise.all(assets.map(async (a) => {
@@ -3377,7 +3398,6 @@ async function fetchATR() {
             const klines = await res.json();
             if (klines.length < 15) throw new Error('Not enough data');
 
-            // Calculate average daily range (modified ATR) for last 14 days
             let sum = 0;
             for (let i = 1; i < klines.length; i++) {
                 const open = parseFloat(klines[i][1]);
@@ -3403,6 +3423,17 @@ async function fetchATR() {
     if (Object.keys(cacheData).length > 0) {
         setATRCache(cacheData);
     }
+}
+
+function scheduleATRUpdate() {
+    // Первый запуск: если пора обновлять — сразу, иначе покажем кэш
+    fetchATR();
+    // Затем планируем ежедневное обновление в 04:00 UTC
+    const ms = msUntilNextUpdate();
+    setTimeout(() => {
+        fetchATR();
+        setInterval(fetchATR, 24 * 60 * 60 * 1000); // раз в сутки
+    }, ms);
 }
 // ====== END ATR ======
 
