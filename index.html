@@ -534,7 +534,7 @@
 }
 #quotes-list-retrace {
     display: grid;
-    grid-template-columns: min-content 1fr minmax(58px, auto) minmax(58px, auto) 20px;
+    grid-template-columns: min-content 1fr minmax(58px, auto) minmax(58px, auto);
     gap: 0 6px;
     align-items: center;
     width: 100%;
@@ -546,7 +546,8 @@
         .quote-row:not(.quote-header) .quote-price,
         .quote-row:not(.quote-header) .quote-change,
         .quote-row:not(.quote-header) .quote-weekly,
-        .quote-row:not(.quote-header) .quote-monthly {
+        .quote-row:not(.quote-header) .quote-monthly,
+        .quote-row:not(.quote-header) .quote-atr {
             border-top: 1px solid var(--border);
             padding-top: 8px;
             padding-bottom: 8px;
@@ -581,7 +582,8 @@
         .quote-row:last-child .quote-price,
         .quote-row:last-child .quote-change,
         .quote-row:last-child .quote-weekly,
-        .quote-row:last-child .quote-monthly {
+        .quote-row:last-child .quote-monthly,
+        .quote-row:last-child .quote-atr {
             border-bottom: 1px solid var(--border);
         }
         .quote-header span {
@@ -599,6 +601,7 @@
             letter-spacing: 0.1px;
             padding-left: 2px;
             padding-right: 2px;
+            line-height: 1.3;
         }
         #quotes-list-retrace .quote-header span:first-child {
             padding-left: 6px;
@@ -612,6 +615,9 @@
         }
         .quote-header span:last-child {
             padding-right: 8px;
+        }
+        #quotes-list-retrace .quote-header span:last-child {
+            padding-right: 2px;
         }
         .quote-name {
             font-size: 14px;
@@ -689,7 +695,7 @@
         }
         @media (max-width: 380px) {
             #quotes-list { gap: 0 1px; }
-            #quotes-list-retrace { gap: 0 4px; grid-template-columns: min-content 1fr minmax(50px, auto) minmax(50px, auto) 16px; }
+            #quotes-list-retrace { gap: 0 4px; grid-template-columns: min-content 1fr minmax(50px, auto) minmax(50px, auto); }
             .quote-name { font-size: 13px; padding: 0 4px 0 6px; margin: 0; }
             .quote-price { font-size: 13px; }
             .quote-change { font-size: 13px; min-width: 36px; text-align: right; }
@@ -1404,78 +1410,67 @@
                 <span></span>
                 <span>ЭКСТРЕМУМ</span>
                 <span>% ОТКАТА</span>
-                <span>ATR (14 дн)</span>
-                <span></span>
+                <span>ATR<br>(14 дн)</span>
             </div>
             <div class="quote-row" id="quote-btc-retrace">
                 <span class="quote-name">BTC</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-btc-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-btc-retrace-change">—</span>
                 <span class="quote-atr" id="quote-btc-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-eth-retrace">
                 <span class="quote-name">ETH</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-eth-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-eth-retrace-change">—</span>
                 <span class="quote-atr" id="quote-eth-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-sol-retrace">
                 <span class="quote-name">SOL</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-sol-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-sol-retrace-change">—</span>
                 <span class="quote-atr" id="quote-sol-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-link-retrace">
                 <span class="quote-name">LINK</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-link-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-link-retrace-change">—</span>
                 <span class="quote-atr" id="quote-link-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-uni-retrace">
                 <span class="quote-name">UNI</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-uni-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-uni-retrace-change">—</span>
                 <span class="quote-atr" id="quote-uni-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-doge-retrace">
                 <span class="quote-name">DOGE</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-doge-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-doge-retrace-change">—</span>
                 <span class="quote-atr" id="quote-doge-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-brent-retrace">
                 <span class="quote-name">BRENT</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-brent-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-brent-retrace-change">—</span>
                 <span class="quote-atr" id="quote-brent-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-copper-retrace">
                 <span class="quote-name">COPPER</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-copper-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-copper-retrace-change">—</span>
                 <span class="quote-atr" id="quote-copper-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-gold-retrace">
                 <span class="quote-name">GOLD</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-gold-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-gold-retrace-change">—</span>
                 <span class="quote-atr" id="quote-gold-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             <div class="quote-row" id="quote-eur-retrace">
                 <span class="quote-name">EUR</span>
                 <input type="text" inputmode="decimal" class="extremum-input" id="quote-eur-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-eur-retrace-change">—</span>
                 <span class="quote-atr" id="quote-eur-atr">—</span>
-                <span class="quote-monthly">—</span>
             </div>
             
         </div>
