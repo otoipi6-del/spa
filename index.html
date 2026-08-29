@@ -534,7 +534,8 @@
 }
 #quotes-list-retrace {
     display: grid;
-    grid-template-columns: min-content auto minmax(36px, auto) minmax(36px, auto) minmax(36px, auto);
+    grid-template-columns: min-content 1fr minmax(58px, auto) minmax(58px, auto) 20px;
+    gap: 0 6px;
     align-items: center;
     width: 100%;
 }
@@ -555,7 +556,7 @@
             background: var(--bg-input);
             border: none;
             border-radius: var(--radius-sm);
-            padding: 6px 8px;
+            padding: 6px 6px;
             font-size: 0.85rem;
             font-weight: 500;
             color: var(--text-bright);
@@ -592,6 +593,15 @@
             padding-bottom: 4px;
             padding-top: 8px;
             text-align: center;
+        }
+        #quotes-list-retrace .quote-header span {
+            font-size: 11px;
+            letter-spacing: 0.1px;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        #quotes-list-retrace .quote-header span:first-child {
+            padding-left: 6px;
         }
         .quote-header span:first-child {
             text-align: left;
@@ -663,9 +673,10 @@
             text-align: right;
             white-space: nowrap;
             min-width: 36px;
+            padding-right: 2px;
         }
         @media (max-width: 380px) {
-            .quote-atr { font-size: 13px; min-width: 36px; text-align: right; }
+            .quote-atr { font-size: 13px; min-width: 36px; text-align: right; padding-right: 1px; }
         }
         .quotes-footer {
             font-size: 11px;
@@ -677,17 +688,20 @@
             padding: 0 18px 14px 18px;
         }
         @media (max-width: 380px) {
-            #quotes-list, #quotes-list-retrace { gap: 0 1px; }
+            #quotes-list { gap: 0 1px; }
+            #quotes-list-retrace { gap: 0 4px; grid-template-columns: min-content 1fr minmax(50px, auto) minmax(50px, auto) 16px; }
             .quote-name { font-size: 13px; padding: 0 4px 0 6px; margin: 0; }
             .quote-price { font-size: 13px; }
             .quote-change { font-size: 13px; min-width: 36px; text-align: right; }
             .quote-weekly { font-size: 13px; min-width: 36px; text-align: right; }
             .quote-monthly { font-size: 13px; min-width: 36px; text-align: right; padding-right: 6px; }
+            .quote-atr { font-size: 13px; min-width: 36px; text-align: right; }
             .quote-row:not(.quote-header) .quote-name,
             .quote-row:not(.quote-header) .quote-price,
             .quote-row:not(.quote-header) .quote-change,
             .quote-row:not(.quote-header) .quote-weekly,
-            .quote-row:not(.quote-header) .quote-monthly {
+            .quote-row:not(.quote-header) .quote-monthly,
+            .quote-row:not(.quote-header) .quote-atr {
                 padding-top: 6px;
                 padding-bottom: 6px;
             }
