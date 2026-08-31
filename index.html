@@ -1166,7 +1166,9 @@
             </div>
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ЗАЛОГ ($)</label>
-                <input type="text" inputmode="decimal" id="liq-margin" placeholder="10" value="10" onblur="formatNumberInput(this); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="liq-margin-display">—</div>
+                </div>
             </div>
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ПЛЕЧО</label>
@@ -1192,6 +1194,12 @@
             <label>Общий объём позиций</label>
             <div class="result-box">
                 <div class="result-value neutral" id="liq-total-volume">—</div>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>ЭФФЕКТИВНЫЙ ДЕПОЗИТ</label>
+            <div class="result-box">
+                <div class="result-value neutral" id="liq-effective-deposit">—</div>
             </div>
         </div>
         <div class="input-group">
@@ -2981,18 +2989,7 @@ window.addEventListener('DOMContentLoaded', () => {
             saveLiqData();
         });
     }
-    // Setup margin input listener
-    const liqMargin = document.getElementById('liq-margin');
-    if (liqMargin) {
-        liqMargin.addEventListener('input', function() {
-            calcLiquidation();
-            saveLiqData();
-        });
-        liqMargin.addEventListener('keyup', function() {
-            calcLiquidation();
-            saveLiqData();
-        });
-    }
+
     calcLiquidation();
 
     // Cleanup intervals on page unload
@@ -3143,8 +3140,6 @@ function deleteLiqPosition(id) {
 function saveLiqData() {
     const deposit = document.getElementById('liq-deposit');
     if (deposit) localStorage.setItem('liq_deposit', deposit.value);
-    const margin = document.getElementById('liq-margin');
-    if (margin) localStorage.setItem('liq_margin', margin.value);
     localStorage.setItem('liqPositions', JSON.stringify(liqPositions));
     localStorage.setItem('liqCounter', liqCounter);
 }
@@ -3157,11 +3152,7 @@ function loadLiqData() {
         const el = document.getElementById('liq-deposit');
         if (el) el.value = deposit;
     }
-    const margin = localStorage.getItem('liq_margin');
-    if (margin !== null) {
-        const el = document.getElementById('liq-margin');
-        if (el) el.value = margin;
-    }
+
     // Fix liqCounter to be max of existing ids + 1
     let maxNum = 0;
     liqPositions.forEach(function(p) {
@@ -3193,13 +3184,13 @@ function calcLiquidation() {
     try {
         const depositInput = document.getElementById('liq-deposit');
         const deposit = depositInput ? parseNumber(depositInput.value) : NaN;
-        const marginInput = document.getElementById('liq-margin');
-        const marginPerPosition = marginInput ? parseNumber(marginInput.value) : 10;
         const avgEl = document.getElementById('liq-avg-price');
         const totalVolEl = document.getElementById('liq-total-volume');
+        const effectiveDepositEl = document.getElementById('liq-effective-deposit');
         const liqPriceEl = document.getElementById('liq-price');
         const liqPctEl = document.getElementById('liq-pct');
         const leverageDisplayEl = document.getElementById('liq-leverage-display');
+        const marginDisplayEl = document.getElementById('liq-margin-display');
 
         if (!avgEl) return;
 
@@ -3209,6 +3200,7 @@ function calcLiquidation() {
         let dir = null;
         let firstPrice = null;
         let positionCount = 0;
+        let totalMargin = 0;
 
         liqPositions.forEach(function(pos) {
             const vol = parseNumber(pos.volume);
@@ -3216,6 +3208,7 @@ function calcLiquidation() {
             if (!isNaN(vol) && !isNaN(price) && vol > 0 && price > 0) {
                 totalVolume += vol;
                 weightedSum += vol * price;
+                totalMargin += vol / 10;
                 hasData = true;
                 positionCount++;
                 if (dir === null) dir = pos.direction;
@@ -3227,21 +3220,20 @@ function calcLiquidation() {
         if (!hasData || totalVolume === 0) {
             avgEl.textContent = '—';
             if (totalVolEl) totalVolEl.textContent = '—';
+            if (effectiveDepositEl) effectiveDepositEl.textContent = '—';
             if (liqPriceEl) { liqPriceEl.textContent = '—'; liqPriceEl.className = 'result-value'; }
             if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             if (leverageDisplayEl) leverageDisplayEl.textContent = '—';
+            if (marginDisplayEl) marginDisplayEl.textContent = '—';
             return;
         }
 
         const avgPrice = weightedSum / totalVolume;
         const dep = isNaN(deposit) ? 0 : deposit;
-        const margin = isNaN(marginPerPosition) || marginPerPosition <= 0 ? 10 : marginPerPosition;
 
         avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
         if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 2) + ' $';
-
-        // Залоговое обеспечение
-        const totalMargin = positionCount * margin;
+        if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 2) + ' $';
 
         // Убыток от движения цены от цены открытия первой позиции
         let unrealizedLoss = 0;
@@ -3261,6 +3253,10 @@ function calcLiquidation() {
         let leverage = 0;
         if (effectiveDeposit > 0) {
             leverage = totalVolume / effectiveDeposit;
+        }
+
+        if (effectiveDepositEl) {
+            effectiveDepositEl.textContent = formatNumber(effectiveDeposit, 2) + ' $';
         }
 
         if (leverageDisplayEl) {
