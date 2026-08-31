@@ -2832,12 +2832,7 @@ function renderTrades(type) {
     const currentExchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
     const arr = (type === 'spot' ? spotTrades : futuresTrades).filter(t => (t.exchange || 'Dzengi') === currentExchange);
     if (arr.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="icon">📭</div>
-                <p>Нет позиций. Нажмите «Добавить позицию»</p>
-            </div>
-        `;
+        container.innerHTML = '';
         return;
     }
     arr.forEach(t => {
