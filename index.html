@@ -534,7 +534,7 @@
 }
 #quotes-list-retrace {
     display: grid;
-    grid-template-columns: min-content 1fr minmax(58px, auto) minmax(58px, auto);
+    grid-template-columns: min-content auto minmax(58px, auto) minmax(58px, auto);
     gap: 0 6px;
     align-items: center;
     width: 100%;
@@ -553,7 +553,9 @@
             padding-bottom: 8px;
         }
         .extremum-input {
-            width: 100%;
+            width: auto;
+            min-width: 60px;
+            max-width: 90px;
             background: var(--bg-input);
             border: none;
             border-radius: var(--radius-sm);
@@ -563,7 +565,6 @@
             color: var(--text-bright);
             font-family: var(--font);
             transition: all 0.2s;
-            min-width: 0;
         }
         .extremum-input::-webkit-outer-spin-button,
         .extremum-input::-webkit-inner-spin-button {
@@ -695,7 +696,7 @@
         }
         @media (max-width: 380px) {
             #quotes-list { gap: 0 1px; }
-            #quotes-list-retrace { gap: 0 4px; grid-template-columns: min-content 1fr minmax(50px, auto) minmax(50px, auto); }
+            #quotes-list-retrace { gap: 0 4px; grid-template-columns: min-content auto minmax(50px, auto) minmax(50px, auto); }
             .quote-name { font-size: 13px; padding: 0 4px 0 6px; margin: 0; }
             .quote-price { font-size: 13px; }
             .quote-change { font-size: 13px; min-width: 36px; text-align: right; }
@@ -1418,7 +1419,7 @@
             <div class="quote-row quote-header">
                 <span></span>
                 <span>ЭКСТРЕМУМ</span>
-                <span>% ОТКАТА</span>
+                <span>%<br>ОТКАТА</span>
                 <span>ATR<br>(14 дн)</span>
             </div>
             <div class="quote-row" id="quote-btc-retrace">
