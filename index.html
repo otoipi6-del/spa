@@ -1584,6 +1584,8 @@ function formatNumberInput(input) {
         else if (input.id === 'quote-gold-retrace-extremum') decimals = 1;
         else if (input.id === 'quote-eur-retrace-extremum') decimals = 5;
         else if (input.id === 'liq-deposit') decimals = 0;
+        else if (input.id === 'risk-deposit') decimals = 0;
+        else if (input.classList && input.classList.contains('liq-vol')) decimals = 0;
         input.value = formatNumber(num, decimals);
     }
 }
@@ -3054,7 +3056,7 @@ function addLiqPosition(data) {
 
     row.innerHTML = `
         <div class="input-group">
-            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.volume || ''}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+            <input type="text" inputmode="decimal" placeholder="0" value="${posData.volume || ''}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
             <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
@@ -3173,7 +3175,7 @@ function loadLiqData() {
         header.style.marginBottom = '4px';
         header.innerHTML = `
             <div class="input-group"><label>Объём ($)</label></div>
-            <div class="input-group"><label>Цена входа ($)</label></div>
+            <div class="input-group"><label>Цена входа</label></div>
             <div class="input-group"><label>Напр.</label></div>
             <div style="width:44px;"></div>
         `;
