@@ -1076,6 +1076,38 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
+        .futures-quote-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .futures-quote-row:last-child {
+            border-bottom: none;
+        }
+        .futures-quote-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-bright);
+            min-width: 50px;
+        }
+        .futures-quote-price {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-bright);
+            flex: 1;
+            text-align: right;
+        }
+        .futures-quote-pnl {
+            font-size: 12px;
+            font-weight: 600;
+            min-width: 70px;
+            text-align: right;
+        }
+        .futures-quote-pnl.green { color: var(--green); }
+        .futures-quote-pnl.red { color: var(--red); }
+        body.dark .futures-quote-row { border-bottom-color: #2a2a4a; }
 </style>
     <base target="_blank">
 <base target="_blank">
@@ -1374,6 +1406,55 @@
         <button type="button" class="exchange-tab" onclick="switchExchange('futures','OKX')">OKX</button>
         <button type="button" class="exchange-tab" onclick="switchExchange('futures','Bybit')">Bybit</button>
         <button type="button" class="exchange-tab" onclick="switchExchange('futures','Binance')">Binance</button>
+    </div>
+    <div class="card" id="futures-liq-panel">
+        <div class="card-title"><span class="icon">⚠️</span> Ликвидация позиций</div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr auto; gap: 10px; align-items: end;">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ДЕПОЗИТ ($)</label>
+                <input type="text" inputmode="decimal" id="futures-liq-deposit" placeholder="0" onblur="formatNumberInput(this); calcFuturesLiq(); saveFuturesLiqDeposit();" onfocus="unformatNumberInput(this)">
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ЗАЛОГ</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="futures-liq-margin">—</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ПЛЕЧО</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="futures-liq-leverage">—</div>
+                </div>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Ср. цена входа</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="futures-liq-avg">—</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Общий объём</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="futures-liq-total">—</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Эфф. депозит</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="futures-liq-effective">—</div>
+                </div>
+            </div>
+        </div>
+        <div class="input-group" style="margin-top: 10px; margin-bottom: 0;">
+            <label>Цена ликвидации</label>
+            <div class="result-box" style="margin-top: 0;">
+                <div class="result-value" id="futures-liq-price">—</div>
+            </div>
+        </div>
+        <div id="futures-quotes-row" style="margin-top: 14px;"></div>
+        <div class="quote-update-time" id="futures-quotes-update-time" style="margin-top: 8px; text-align: center;"></div>
     </div>
     <div id="futures-trades"></div>
     <button type="button" class="btn-add" onclick="addTrade('futures')">
@@ -2142,7 +2223,11 @@ function switchTab(tab) {
     const pageTitleEl = document.getElementById('page-title'); if(pageTitleEl) pageTitleEl.textContent = titles[tab];
 
     if (tab === 'spot') renderTrades('spot');
-    if (tab === 'futures') renderTrades('futures');
+    if (tab === 'futures') {
+        renderTrades('futures');
+        loadFuturesLiqDeposit();
+        updateFuturesQuotes();
+    }
 }
 
 function toggleTheme() {
@@ -2613,6 +2698,9 @@ function switchExchange(type, exchange) {
         });
     }
     renderTrades(type);
+    if (type === 'futures') {
+        updateFuturesQuotes();
+    }
 }
 
 function updateExchangeTabs(type) {
@@ -2717,6 +2805,9 @@ function addTrade(type, data = null) {
         </div>
     `;
     container.appendChild(card);
+    if (type === 'futures') {
+        updateFuturesQuotes();
+    }
 }
 
 function handleTickerChange(select, type, id) {
@@ -2804,6 +2895,9 @@ function calcTrade(type, id) {
     }
     trade.percent = percent;
     localStorage.setItem(type + 'Trades', JSON.stringify(arr));
+    if (type === 'futures') {
+        updateFuturesQuotes();
+    }
 }
 
 function deleteTrade(type, id) {
@@ -2815,6 +2909,9 @@ function deleteTrade(type, id) {
         localStorage.setItem(type + 'Trades', JSON.stringify(arr));
     }
     const elToRemove = document.getElementById(id); if(elToRemove) elToRemove.remove();
+    if (type === 'futures') {
+        updateFuturesQuotes();
+    }
 }
 function deleteSummaryTrade(type, id) {
     if (!confirm('Удалить позицию из сводной ведомости?')) return;
@@ -3052,6 +3149,7 @@ function closeSummary(e) {
 window.addEventListener('DOMContentLoaded', () => {
     loadGridData();
     initTheme();
+    loadFuturesLiqDeposit();
     const percentInput = document.getElementById('calc2-percent');
     if (percentInput) stylePercentInput(percentInput);
 
@@ -3116,9 +3214,10 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('beforeunload', () => {
         clearInterval(priceInterval);
         clearInterval(quotesInterval);
+        clearInterval(futuresQuotesInterval);
     });
 
-    // Автообновление котировок: Калькуляторы — 30с, Котировки — 15с
+    // Автообновление котировок: Калькуляторы — 30с, Котировки — 15с, Фьючерсы — 15с
     const priceInterval = setInterval(() => {
         fetchBtcPrice();
         fetchGoldPrice();
@@ -3126,6 +3225,11 @@ window.addEventListener('DOMContentLoaded', () => {
     const quotesInterval = setInterval(() => {
         fetchQuotes();
         fetchPeriodChanges();
+    }, 15000);
+    const futuresQuotesInterval = setInterval(() => {
+        if (document.getElementById('section-futures') && document.getElementById('section-futures').classList.contains('active')) {
+            updateFuturesQuotes();
+        }
     }, 15000);
 });
 
@@ -3299,6 +3403,264 @@ function loadLiqData() {
         liqPositions.forEach(function(p) { addLiqPosition(p); });
     }
 }
+
+// ====== ФЬЮЧЕРСЫ — ЛИКВИДАЦИЯ И КОТИРОВКИ ======
+let futuresLiqDeposit = parseFloat(localStorage.getItem('futuresLiqDeposit') || '0') || 0;
+let futuresTickerPrices = {};
+
+function saveFuturesLiqDeposit() {
+    const input = document.getElementById('futures-liq-deposit');
+    if (input) {
+        const val = parseNumber(input.value);
+        futuresLiqDeposit = isNaN(val) ? 0 : val;
+        localStorage.setItem('futuresLiqDeposit', futuresLiqDeposit);
+    }
+}
+
+function loadFuturesLiqDeposit() {
+    const input = document.getElementById('futures-liq-deposit');
+    if (input && futuresLiqDeposit > 0) {
+        input.value = formatNumber(futuresLiqDeposit, 0);
+    }
+}
+
+function getFuturesPositions() {
+    const currentExchange = currentFuturesExchange;
+    return futuresTrades.filter(t => (t.exchange || 'Dzengi') === currentExchange && t.buyPrice && t.buySum);
+}
+
+function getTickerSymbol(ticker) {
+    const map = {
+        'BTC': 'BTCUSDT', 'ETH': 'ETHUSDT', 'SOL': 'SOLUSDT', 'LINK': 'LINKUSDT',
+        'UNI': 'UNIUSDT', 'DOGE': 'DOGEUSDT', 'BNB': 'BNBUSDT', 'LTC': 'LTCUSDT',
+        'SUI': 'SUIUSDT', 'ZK': 'ZKUSDT', 'ONDO': 'ONDOUSDT', 'TWT': 'TWTUSDT'
+    };
+    return map[ticker] || (ticker + 'USDT');
+}
+
+async function fetchFuturesTickerPrice(ticker) {
+    const symbol = getTickerSymbol(ticker);
+    // Check if we already have fresh data from quotes
+    const asset = ticker.toLowerCase();
+    if (quotesData[asset] && quotesData[asset].price !== null) {
+        return quotesData[asset].price;
+    }
+    try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=' + symbol);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        return parseFloat(data.lastPrice);
+    } catch (e) {
+        return null;
+    }
+}
+
+async function updateFuturesQuotes() {
+    const positions = getFuturesPositions();
+    const uniqueTickers = [...new Set(positions.map(p => p.ticker).filter(Boolean))];
+    if (uniqueTickers.length === 0) {
+        const rowContainer = document.getElementById('futures-quotes-row');
+        if (rowContainer) rowContainer.innerHTML = '';
+        const timeEl = document.getElementById('futures-quotes-update-time');
+        if (timeEl) timeEl.innerHTML = '';
+        return;
+    }
+
+    const prices = {};
+    await Promise.all(uniqueTickers.map(async (ticker) => {
+        const price = await fetchFuturesTickerPrice(ticker);
+        if (price !== null) prices[ticker] = price;
+    }));
+    futuresTickerPrices = prices;
+
+    renderFuturesQuotes(prices, positions);
+    calcFuturesLiq();
+
+    const now = new Date();
+    const timeEl = document.getElementById('futures-quotes-update-time');
+    if (timeEl) {
+        timeEl.innerHTML = '<span class="update-dot"></span>Обновлено: ' + now.toLocaleTimeString('ru-RU');
+    }
+}
+
+function renderFuturesQuotes(prices, positions) {
+    const container = document.getElementById('futures-quotes-row');
+    if (!container) return;
+    let html = '';
+    Object.entries(prices).forEach(([ticker, price]) => {
+        const pos = positions.find(p => p.ticker === ticker);
+        let pnlText = '';
+        let pnlClass = '';
+        if (pos && pos.buyPrice) {
+            const buyPrice = parseNumber(pos.buyPrice);
+            const buySum = parseNumber(pos.buySum);
+            if (!isNaN(buyPrice) && !isNaN(buySum) && buyPrice > 0) {
+                const qty = buySum / buyPrice;
+                const pnl = (price - buyPrice) * qty;
+                pnlText = (pnl >= 0 ? '+' : '') + formatNumber(pnl, 2) + ' $';
+                pnlClass = pnl >= 0 ? 'green' : 'red';
+            }
+        }
+        const decimals = price >= 10000 ? 1 : price >= 100 ? 2 : price >= 1 ? 4 : 6;
+        html += '<div class="futures-quote-row">';
+        html += '<span class="futures-quote-name">' + escapeHtml(ticker) + '</span>';
+        html += '<span class="api-price-display"><span class="live-dot"></span><span class="price-value">' + formatNumber(price, decimals) + ' $</span></span>';
+        html += '<span class="futures-quote-pnl ' + pnlClass + '">' + pnlText + '</span>';
+        html += '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function calcFuturesLiq() {
+    try {
+        const depositInput = document.getElementById('futures-liq-deposit');
+        const deposit = depositInput ? parseNumber(depositInput.value) : futuresLiqDeposit;
+        const marginEl = document.getElementById('futures-liq-margin');
+        const leverageEl = document.getElementById('futures-liq-leverage');
+        const avgEl = document.getElementById('futures-liq-avg');
+        const totalEl = document.getElementById('futures-liq-total');
+        const effectiveEl = document.getElementById('futures-liq-effective');
+        const liqPriceEl = document.getElementById('futures-liq-price');
+
+        if (!marginEl) return;
+
+        const positions = getFuturesPositions();
+        if (positions.length === 0) {
+            if (marginEl) marginEl.textContent = '—';
+            if (leverageEl) leverageEl.textContent = '—';
+            if (avgEl) avgEl.textContent = '—';
+            if (totalEl) totalEl.textContent = '—';
+            if (effectiveEl) effectiveEl.textContent = '—';
+            if (liqPriceEl) { liqPriceEl.textContent = '—'; liqPriceEl.className = 'result-value'; }
+            return;
+        }
+
+        let totalVolume = 0;
+        let weightedSum = 0;
+        let totalMargin = 0;
+        let dir = null;
+
+        positions.forEach(function(t) {
+            const sum = parseNumber(t.buySum);
+            const price = parseNumber(t.buyPrice);
+            if (!isNaN(sum) && !isNaN(price) && price > 0) {
+                totalVolume += sum;
+                weightedSum += sum * price;
+                totalMargin += sum / 10;
+                const typeVal = (t.type || '').toUpperCase();
+                if (dir === null) {
+                    if (typeVal === 'ПРОДАЖА' || typeVal === 'SHORT') dir = 'SHORT';
+                    else dir = 'LONG';
+                } else if ((typeVal === 'ПРОДАЖА' || typeVal === 'SHORT') && dir !== 'SHORT') {
+                    dir = 'MIX';
+                } else if (typeVal !== 'ПРОДАЖА' && typeVal !== 'SHORT' && dir !== 'LONG') {
+                    dir = 'MIX';
+                }
+            }
+        });
+
+        if (totalVolume === 0) {
+            if (marginEl) marginEl.textContent = '—';
+            if (leverageEl) leverageEl.textContent = '—';
+            if (avgEl) avgEl.textContent = '—';
+            if (totalEl) totalEl.textContent = '—';
+            if (effectiveEl) effectiveEl.textContent = '—';
+            if (liqPriceEl) { liqPriceEl.textContent = '—'; liqPriceEl.className = 'result-value'; }
+            return;
+        }
+
+        const avgPrice = weightedSum / totalVolume;
+        const dep = isNaN(deposit) ? 0 : deposit;
+
+        if (marginEl) marginEl.textContent = formatNumber(totalMargin, 1);
+        if (avgEl) avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
+        if (totalEl) totalEl.textContent = formatNumber(totalVolume, 0) + ' $';
+
+        // Нереализованный убыток/прибыль по текущим котировкам
+        let unrealizedLoss = 0;
+        positions.forEach(function(t) {
+            const sum = parseNumber(t.buySum);
+            const price = parseNumber(t.buyPrice);
+            const ticker = t.ticker;
+            const currentPrice = futuresTickerPrices[ticker];
+            if (!isNaN(sum) && !isNaN(price) && price > 0 && currentPrice) {
+                const qty = sum / price;
+                const typeVal = (t.type || '').toUpperCase();
+                const isShort = typeVal === 'ПРОДАЖА' || typeVal === 'SHORT';
+                if (!isShort) {
+                    // LONG: если цена упала — убыток
+                    if (currentPrice < price) {
+                        unrealizedLoss += (price - currentPrice) * qty;
+                    }
+                } else {
+                    // SHORT: если цена выросла — убыток
+                    if (currentPrice > price) {
+                        unrealizedLoss += (currentPrice - price) * qty;
+                    }
+                }
+            }
+        });
+
+        const effectiveDeposit = dep - totalMargin - unrealizedLoss;
+        if (effectiveEl) {
+            effectiveEl.textContent = formatNumber(effectiveDeposit, 0) + ' $';
+            effectiveEl.className = 'result-value ' + (effectiveDeposit >= 0 ? 'neutral' : 'red');
+        }
+
+        let leverage = 0;
+        if (effectiveDeposit > 0) {
+            leverage = totalVolume / effectiveDeposit;
+        }
+        if (leverageEl) {
+            if (effectiveDeposit > 0 && leverage > 0) {
+                leverageEl.textContent = formatNumber(leverage, 2);
+            } else {
+                leverageEl.textContent = '—';
+            }
+        }
+
+        const LIQ_MMR = 0.005;
+        const noRisk = effectiveDeposit > 0 && leverage <= 1;
+        const liquidated = effectiveDeposit <= 0;
+
+        if (dir === 'LONG') {
+            if (liquidated) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+            } else if (noRisk) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+            } else {
+                const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value red'; }
+            }
+        } else if (dir === 'SHORT') {
+            if (liquidated) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+            } else if (noRisk) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+            } else {
+                const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value green'; }
+            }
+        } else {
+            if (liquidated) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+            } else if (noRisk) {
+                if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+            } else {
+                const liqL = avgPrice * (1 - 1 / leverage + LIQ_MMR);
+                const liqS = avgPrice * (1 + 1 / leverage - LIQ_MMR);
+                if (liqPriceEl) {
+                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + ' $</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + ' $</span>';
+                    liqPriceEl.className = 'result-value';
+                }
+            }
+        }
+    } catch (e) {
+        console.error('calcFuturesLiq error:', e);
+    }
+}
+
+// ====== END ФЬЮЧЕРСЫ ЛИКВИДАЦИЯ ======
 
 function calcLiquidation() {
     try {
