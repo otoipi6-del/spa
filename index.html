@@ -2378,8 +2378,8 @@ function calcRisk() {
         minEl.textContent = '—';
         return;
     }
-    totalEl.textContent = formatNumber(deposit * leverage, 2);
-    minEl.textContent = formatNumber(deposit * 0.45, 2);
+    totalEl.textContent = formatNumber(deposit * leverage, 0);
+    minEl.textContent = formatNumber(deposit * 0.45, 0);
 }
 function calcLeverageLiq() {
     const input = document.getElementById('risk-leverage');
