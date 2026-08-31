@@ -2947,10 +2947,10 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function showSummary(type) {
-    const currentExchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
-    const arr = (type === 'spot' ? spotTrades : futuresTrades).filter(t => (t.exchange || 'Dzengi') === currentExchange);
-    const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
+function showSummary(type, selectedExchange) {
+    const currentExchange = selectedExchange || (type === 'spot' ? currentSpotExchange : currentFuturesExchange);
+    const allArr = type === 'spot' ? spotTrades : futuresTrades;
+    const completed = allArr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
     // Add completed trades to archive (avoid duplicates and removed)
     completed.forEach(t => {
         if (!summaryRemoved.includes(t.id) && !summaryArchive.some(a => String(a.id) === String(t.id) && a.archiveType === type)) {
@@ -2961,20 +2961,30 @@ function showSummary(type) {
     const modal = document.getElementById('summary-modal');
     const content = document.getElementById('modal-content');
     const title = document.getElementById('modal-title');
-    title.textContent = (type === 'spot' ? 'Спот' : 'Фьючерсы') + ' — ' + currentExchange + ' — Сводная ведомость';
-    const display = summaryArchive.filter(t => t.archiveType === type);
+    title.textContent = (type === 'spot' ? 'Спот' : 'Фьючерсы') + ' — Сводная ведомость';
+
+    // Build exchange tabs inside modal
+    const exchanges = ['Dzengi','OKX','Bybit','Binance'];
+    let tabsHtml = '<div class="exchange-tabs" style="margin-bottom:12px;">';
+    exchanges.forEach(ex => {
+        tabsHtml += `<button type="button" class="exchange-tab ${ex === currentExchange ? 'active' : ''}" onclick="showSummary('${type}', '${ex}')">${ex}</button>`;
+    });
+    tabsHtml += '</div>';
+
+    const display = summaryArchive.filter(t => t.archiveType === type && (t.exchange || 'Dzengi') === currentExchange);
     if (display.length === 0) {
         const emptyDiv = document.createElement('div');
         emptyDiv.className = 'empty-state';
-        emptyDiv.innerHTML = '<div class="icon">📋</div><p>Нет завершенных сделок. Укажите дату продажи и % продажи.</p>';
+        emptyDiv.innerHTML = tabsHtml + '<div class="icon">📋</div><p>Нет завершенных сделок на ' + currentExchange + '. Укажите дату продажи и % продажи.</p>';
         content.innerHTML = '';
         content.appendChild(emptyDiv);
         modal.classList.add('active');
         return;
     }
     let totalProfit = 0;
-    let html = '<div style="overflow-x:auto;"><table class="summary-table"><thead><tr>';
-    html += '<th>№</th><th>Биржа</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th><th>Действие</th>';
+    let html = tabsHtml;
+    html += '<div style="overflow-x:auto;"><table class="summary-table"><thead><tr>';
+    html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th><th>Действие</th>';
     html += '</tr></thead><tbody>';
     display.forEach(t => {
         const p = parseFloat(t.profit.replace(/[+\s]/g, '').replace(',', '.'));
@@ -2988,7 +2998,6 @@ function showSummary(type) {
         const sellSum = t.sellSum || '—';
         html += `<tr>
             <td>#${t.num}</td>
-            <td><b>${escapeHtml(t.exchange) || 'Dzengi'}</b></td>
             <td>${escapeHtml(t.sellDate)}</td>
             <td><b>${escapeHtml(t.ticker) || '—'}</b></td>
             <td>${escapeHtml(t.type) || '—'}</td>
@@ -3004,18 +3013,18 @@ function showSummary(type) {
     });
     html += '</tbody></table></div>';
     html += `<div class="summary-total">
-        <span class="summary-total-label">ИТОГО ПРИБЫЛЬ / УБЫТОК</span>
+        <span class="summary-total-label">ИТОГО ${currentExchange} — ПРИБЫЛЬ / УБЫТОК</span>
         <span class="summary-total-value" style="color:${totalProfit>=0?'var(--green)':'var(--red)'}">${totalProfit>=0?'+':''}${formatNumber(totalProfit, 2)} $</span>
     </div>`;
     const summaryEntry = {
-        type, date: new Date().toISOString(),
-        trades: completed.map(t => ({...t})),
+        type, exchange: currentExchange, date: new Date().toISOString(),
+        trades: completed.filter(t => (t.exchange || 'Dzengi') === currentExchange).map(t => ({...t})),
         totalProfit
     };
     summaryData.push(summaryEntry);
     localStorage.setItem('tradeSummary', JSON.stringify(summaryData));
-    html += `<button type="button" class="btn-add" style="margin-top:16px;background:var(--red-soft);border-color:var(--red);color:var(--red);" onclick="clearCompleted('${type}')">
-        <span>🧹</span> Очистить завершенные сделки
+    html += `<button type="button" class="btn-add" style="margin-top:16px;background:var(--red-soft);border-color:var(--red);color:var(--red);" onclick="clearCompletedByExchange('${type}', '${currentExchange}')">
+        <span>🧹</span> Очистить ${currentExchange}
     </button>`;
     content.innerHTML = html;
     modal.classList.add('active');
@@ -3024,15 +3033,20 @@ function showSummary(type) {
 function clearCompleted(type) {
     if (!confirm('Очистить сводную ведомость?')) return;
     const currentExchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
-    const arr = (type === 'spot' ? spotTrades : futuresTrades).filter(t => (t.exchange || 'Dzengi') === currentExchange);
+    clearCompletedByExchange(type, currentExchange);
+}
+
+function clearCompletedByExchange(type, exchange) {
+    if (!confirm('Очистить сводную ведомость для ' + exchange + '?')) return;
+    const arr = (type === 'spot' ? spotTrades : futuresTrades).filter(t => (t.exchange || 'Dzengi') === exchange);
     const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
     completed.forEach(t => {
         if (!summaryRemoved.includes(t.id)) summaryRemoved.push(t.id);
     });
-    summaryArchive = summaryArchive.filter(t => t.archiveType !== type);
+    summaryArchive = summaryArchive.filter(t => !(t.archiveType === type && (t.exchange || 'Dzengi') === exchange));
     localStorage.setItem('tradeSummaryArchive', JSON.stringify(summaryArchive));
     localStorage.setItem('tradeSummaryRemoved', JSON.stringify(summaryRemoved));
-    showSummary(type);
+    showSummary(type, exchange);
 }
 
 function closeSummary(e) {
