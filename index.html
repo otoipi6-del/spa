@@ -1160,13 +1160,13 @@
     </div>
 <div class="card" id="liq-card">
         <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: end;">
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr auto; gap: 10px; align-items: end;">
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ДЕПОЗИТ ($)</label>
-                <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0,00" onblur="formatNumberInput(this); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+                <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0" onblur="formatNumberInput(this); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
             </div>
             <div class="input-group" style="margin-bottom: 0;">
-                <label>ЗАЛОГ ($)</label>
+                <label>ЗАЛОГ</label>
                 <div class="result-box" style="margin-top: 0;">
                     <div class="result-value neutral" id="liq-margin-display">—</div>
                 </div>
@@ -1583,6 +1583,7 @@ function formatNumberInput(input) {
         else if (input.id === 'quote-copper-retrace-extremum') decimals = 2;
         else if (input.id === 'quote-gold-retrace-extremum') decimals = 1;
         else if (input.id === 'quote-eur-retrace-extremum') decimals = 5;
+        else if (input.id === 'liq-deposit') decimals = 0;
         input.value = formatNumber(num, decimals);
     }
 }
@@ -3234,7 +3235,7 @@ function calcLiquidation() {
 
         avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
         if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 2) + ' $';
-        if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 2) + ' $';
+        if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 1);
 
         // Убыток от движения цены от цены открытия первой позиции
         let unrealizedLoss = 0;
