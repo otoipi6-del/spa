@@ -885,7 +885,7 @@
         /* ====== ЛИКВИДАЦИЯ ====== */
         .liq-position-row {
             display: grid;
-            grid-template-columns: 1fr 1.5fr 60px 36px;
+            grid-template-columns: 0.85fr 1.75fr 50px 36px;
             gap: 8px;
             align-items: end;
             margin-bottom: 10px;
@@ -893,7 +893,7 @@
         .liq-position-row .input-group { margin-bottom: 0; }
         .liq-position-row .input-group input,
         .liq-position-row .input-group select {
-            padding: 10px 10px;
+            padding: 12px 14px;
             font-size: 16px;
         }
         .liq-position-row .input-group label {
@@ -932,7 +932,7 @@
         }
         @media (max-width: 380px) {
             .liq-position-row {
-                grid-template-columns: 1fr 1fr 70px 32px;
+                grid-template-columns: 0.85fr 1.15fr 55px 32px;
                 gap: 6px;
             }
             .liq-position-row .input-group input,
@@ -1025,6 +1025,7 @@
         body.dark .grid-del-btn:hover { opacity: 1; }
 </style>
     <base target="_blank">
+<base target="_blank">
 <base target="_blank">
 <base target="_blank">
 </head>
@@ -1161,11 +1162,11 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; align-items: end;">
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ДЕПОЗИТ ($)</label>
-                <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0,00">
+                <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0,00" onblur="formatNumberInput(this); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
             </div>
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ЗАЛОГ ($)</label>
-                <input type="text" inputmode="decimal" id="liq-margin" placeholder="10" value="10">
+                <input type="text" inputmode="decimal" id="liq-margin" placeholder="10" value="10" onblur="formatNumberInput(this); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
             </div>
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ПЛЕЧО</label>
@@ -3054,10 +3055,10 @@ function addLiqPosition(data) {
 
     row.innerHTML = `
         <div class="input-group">
-            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.volume || ''}" class="liq-vol" data-field="volume">
+            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.volume || ''}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
-            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price" data-field="entryPrice">
+            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
             <select class="liq-dir" data-field="direction">${getLiqDirOptions(posData.direction)}</select>
