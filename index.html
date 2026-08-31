@@ -3236,7 +3236,7 @@ function calcLiquidation() {
         const dep = isNaN(deposit) ? 0 : deposit;
 
         avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
-        if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 2) + ' $';
+        if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 0) + ' $';
         if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 1);
 
         // Убыток от движения цены от цены открытия первой позиции
@@ -3260,7 +3260,7 @@ function calcLiquidation() {
         }
 
         if (effectiveDepositEl) {
-            effectiveDepositEl.textContent = formatNumber(effectiveDeposit, 2) + ' $';
+            effectiveDepositEl.textContent = formatNumber(effectiveDeposit, 0) + ' $';
         }
 
         if (leverageDisplayEl) {
