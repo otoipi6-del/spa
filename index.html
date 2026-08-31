@@ -1586,6 +1586,7 @@ function formatNumberInput(input) {
         else if (input.id === 'liq-deposit') decimals = 0;
         else if (input.id === 'risk-deposit') decimals = 0;
         else if (input.classList && input.classList.contains('liq-vol')) decimals = 0;
+        else if (input.classList && input.classList.contains('trade-sum')) decimals = 0;
         input.value = formatNumber(num, decimals);
     }
 }
@@ -2576,7 +2577,7 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buySum')}</label>
-                <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${tradeData.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>Кол-во актива (авто)</label>
@@ -2780,7 +2781,7 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buySum')}</label>
-                    <input type="text" inputmode="decimal" placeholder="0,00" value="${t.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${t.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>Кол-во актива (авто)</label>
