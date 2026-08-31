@@ -1024,6 +1024,58 @@
             opacity: 0.7;
         }
         body.dark .grid-del-btn:hover { opacity: 1; }
+        .trade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .exchange-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .exchange-tab {
+            padding: 8px 14px;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+        .exchange-tab.active {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        body.dark .exchange-tab {
+            background: #16213e;
+            border-color: #2a2a4a;
+            color: #a0a0a0;
+        }
+        body.dark .exchange-tab.active {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: #4ade80;
+            color: #4ade80;
+        }
+        .trade-exchange-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            background: var(--accent-soft);
+            padding: 2px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
 </style>
     <base target="_blank">
 <base target="_blank">
@@ -1301,6 +1353,12 @@
 </div>
 
 <div id="section-spot" class="section">
+    <div class="exchange-tabs" id="spot-exchange-tabs">
+        <button type="button" class="exchange-tab active" onclick="switchExchange('spot','Dzengi')">Dzengi</button>
+        <button type="button" class="exchange-tab" onclick="switchExchange('spot','OKX')">OKX</button>
+        <button type="button" class="exchange-tab" onclick="switchExchange('spot','Bybit')">Bybit</button>
+        <button type="button" class="exchange-tab" onclick="switchExchange('spot','Binance')">Binance</button>
+    </div>
     <div id="spot-trades"></div>
     <button type="button" class="btn-add" onclick="addTrade('spot')">
         <span>➕</span> Добавить позицию
@@ -1311,6 +1369,12 @@
 </div>
 
 <div id="section-futures" class="section">
+    <div class="exchange-tabs" id="futures-exchange-tabs">
+        <button type="button" class="exchange-tab active" onclick="switchExchange('futures','Dzengi')">Dzengi</button>
+        <button type="button" class="exchange-tab" onclick="switchExchange('futures','OKX')">OKX</button>
+        <button type="button" class="exchange-tab" onclick="switchExchange('futures','Bybit')">Bybit</button>
+        <button type="button" class="exchange-tab" onclick="switchExchange('futures','Binance')">Binance</button>
+    </div>
     <div id="futures-trades"></div>
     <button type="button" class="btn-add" onclick="addTrade('futures')">
         <span>➕</span> Добавить позицию
@@ -1730,9 +1794,13 @@ function updateTradeDate(type, id, field, value) {
 
 const tickers = ['BTC','ETH','BNB','SOL','LTC','LINK','SUI','DOGE','ZK','ONDO','UNI','TWT'];
 let spotTrades = JSON.parse(localStorage.getItem('spotTrades') || '[]');
+spotTrades.forEach(t => { if (!t.exchange) t.exchange = 'Dzengi'; });
 let futuresTrades = JSON.parse(localStorage.getItem('futuresTrades') || '[]');
+futuresTrades.forEach(t => { if (!t.exchange) t.exchange = 'Dzengi'; });
 let spotCounter = parseInt(localStorage.getItem('spotCounter') || '1', 10);
 let futuresCounter = parseInt(localStorage.getItem('futuresCounter') || '1', 10);
+let currentSpotExchange = localStorage.getItem('currentSpotExchange') || 'Dzengi';
+let currentFuturesExchange = localStorage.getItem('currentFuturesExchange') || 'Dzengi';
 
 // ====== СОСТОЯНИЕ ЦЕН API ======
 let apiPrices = {
@@ -2528,12 +2596,42 @@ function getTradeLabel(type, key) {
     return labels[type] && labels[type][key] ? labels[type][key] : key;
 }
 
+function getExchangeOptions(selected) {
+    const exchanges = ['Dzengi','OKX','Bybit','Binance'];
+    let html = '';
+    exchanges.forEach(e => html += `<option value="${e}" ${e === selected ? 'selected' : ''}>${e}</option>`);
+    return html;
+}
+function switchExchange(type, exchange) {
+    if (type === 'spot') currentSpotExchange = exchange;
+    else currentFuturesExchange = exchange;
+    localStorage.setItem('current' + type.charAt(0).toUpperCase() + type.slice(1) + 'Exchange', exchange);
+    const tabs = document.getElementById(type + '-exchange-tabs');
+    if (tabs) {
+        tabs.querySelectorAll('.exchange-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent.trim() === exchange);
+        });
+    }
+    renderTrades(type);
+}
+
+function updateExchangeTabs(type) {
+    const exchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
+    const tabs = document.getElementById(type + '-exchange-tabs');
+    if (tabs) {
+        tabs.querySelectorAll('.exchange-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.textContent.trim() === exchange);
+        });
+    }
+}
 function addTrade(type, data = null) {
     const container = document.getElementById(type + '-trades');
     const counter = type === 'spot' ? spotCounter++ : futuresCounter++;
     const id = type + '_' + counter;
+    const currentExchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
     const tradeData = data || {
         id, num: counter,
+        exchange: currentExchange,
         buyDate: '', ticker: '', type: '', buyPrice: '', amount: '', buySum: '',
         sellDate: '', sellPrice: '', sellPercent: '', sellAmount: '', sellSum: '', profit: '', percent: ''
     };
@@ -2551,6 +2649,7 @@ function addTrade(type, data = null) {
     card.innerHTML = `
         <div class="trade-header">
             <span class="trade-number">#${counter}</span>
+            <span class="trade-exchange-badge">${tradeData.exchange || 'Dzengi'}</span>
             <button type="button" class="trade-delete" onclick="deleteTrade('${type}','${id}')">🗑️</button>
         </div>
         <div class="trade-grid">
@@ -2729,7 +2828,9 @@ function deleteSummaryTrade(type, id) {
 function renderTrades(type) {
     const container = document.getElementById(type + '-trades');
     container.innerHTML = '';
-    const arr = type === 'spot' ? spotTrades : futuresTrades;
+    updateExchangeTabs(type);
+    const currentExchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
+    const arr = (type === 'spot' ? spotTrades : futuresTrades).filter(t => (t.exchange || 'Dzengi') === currentExchange);
     if (arr.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
@@ -2755,6 +2856,7 @@ function renderTrades(type) {
         card.innerHTML = `
             <div class="trade-header">
                 <span class="trade-number">#${t.num}</span>
+                <span class="trade-exchange-badge">${t.exchange || 'Dzengi'}</span>
                 <button type="button" class="trade-delete" onclick="deleteTrade('${type}','${t.id}')">🗑️</button>
             </div>
             <div class="trade-grid">
@@ -2835,6 +2937,7 @@ function checkCompleted(type, id) {
 
 let summaryData = JSON.parse(localStorage.getItem('tradeSummary') || '[]');
 let summaryArchive = JSON.parse(localStorage.getItem('tradeSummaryArchive') || '[]');
+summaryArchive.forEach(t => { if (!t.exchange) t.exchange = 'Dzengi'; });
 let summaryRemoved = JSON.parse(localStorage.getItem('tradeSummaryRemoved') || '[]');
 
 function escapeHtml(text) {
@@ -2845,7 +2948,8 @@ function escapeHtml(text) {
 }
 
 function showSummary(type) {
-    const arr = type === 'spot' ? spotTrades : futuresTrades;
+    const currentExchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
+    const arr = (type === 'spot' ? spotTrades : futuresTrades).filter(t => (t.exchange || 'Dzengi') === currentExchange);
     const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
     // Add completed trades to archive (avoid duplicates and removed)
     completed.forEach(t => {
@@ -2857,7 +2961,7 @@ function showSummary(type) {
     const modal = document.getElementById('summary-modal');
     const content = document.getElementById('modal-content');
     const title = document.getElementById('modal-title');
-    title.textContent = (type === 'spot' ? 'Спот' : 'Фьючерсы') + ' — Сводная ведомость';
+    title.textContent = (type === 'spot' ? 'Спот' : 'Фьючерсы') + ' — ' + currentExchange + ' — Сводная ведомость';
     const display = summaryArchive.filter(t => t.archiveType === type);
     if (display.length === 0) {
         const emptyDiv = document.createElement('div');
@@ -2870,7 +2974,7 @@ function showSummary(type) {
     }
     let totalProfit = 0;
     let html = '<div style="overflow-x:auto;"><table class="summary-table"><thead><tr>';
-    html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th><th>Действие</th>';
+    html += '<th>№</th><th>Биржа</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th><th>Действие</th>';
     html += '</tr></thead><tbody>';
     display.forEach(t => {
         const p = parseFloat(t.profit.replace(/[+\s]/g, '').replace(',', '.'));
@@ -2884,6 +2988,7 @@ function showSummary(type) {
         const sellSum = t.sellSum || '—';
         html += `<tr>
             <td>#${t.num}</td>
+            <td><b>${escapeHtml(t.exchange) || 'Dzengi'}</b></td>
             <td>${escapeHtml(t.sellDate)}</td>
             <td><b>${escapeHtml(t.ticker) || '—'}</b></td>
             <td>${escapeHtml(t.type) || '—'}</td>
@@ -2918,7 +3023,8 @@ function showSummary(type) {
 
 function clearCompleted(type) {
     if (!confirm('Очистить сводную ведомость?')) return;
-    const arr = type === 'spot' ? spotTrades : futuresTrades;
+    const currentExchange = type === 'spot' ? currentSpotExchange : currentFuturesExchange;
+    const arr = (type === 'spot' ? spotTrades : futuresTrades).filter(t => (t.exchange || 'Dzengi') === currentExchange);
     const completed = arr.filter(t => t.sellDate && t.sellDate.trim() !== '' && t.profit !== '');
     completed.forEach(t => {
         if (!summaryRemoved.includes(t.id)) summaryRemoved.push(t.id);
