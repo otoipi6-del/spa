@@ -1262,42 +1262,46 @@
                 </div>
             </div>
         </div>
-        <div class="input-group">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Ср. цена входа</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="liq-avg-price">—</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Общий объём</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="liq-total-volume">—</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>ЭФФЕКТ. ДЕПОЗИТ</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value neutral" id="liq-effective-deposit">—</div>
+                </div>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Цена ликвидации</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value" id="liq-price">—</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>% ДО ЛИКВИДАЦИИ</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value orange" id="liq-pct">—</div>
+                </div>
+            </div>
+        </div>
+        <div class="input-group" style="margin-top: 10px;">
             <label>Позиции</label>
             <div id="liq-positions"></div>
             <button type="button" class="btn-add" onclick="addLiqPosition()" style="margin-top:10px;margin-bottom:0;">
                 <span>➕</span> Добавить позицию
             </button>
-        </div>
-        <div class="input-group">
-            <label>Средняя цена входа</label>
-            <div class="result-box">
-                <div class="result-value neutral" id="liq-avg-price">—</div>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>Общий объём позиций</label>
-            <div class="result-box">
-                <div class="result-value neutral" id="liq-total-volume">—</div>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>ЭФФЕКТИВНЫЙ ДЕПОЗИТ</label>
-            <div class="result-box">
-                <div class="result-value neutral" id="liq-effective-deposit">—</div>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>Цена ликвидации</label>
-            <div class="result-box">
-                <div class="result-value" id="liq-price">—</div>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>% до ликвидации</label>
-            <div class="result-box">
-                <div class="result-value orange" id="liq-pct">—</div>
-            </div>
         </div>
     </div>
 
