@@ -2708,6 +2708,7 @@ function switchExchange(type, exchange) {
     }
     renderTrades(type);
     if (type === 'futures') {
+        loadFuturesLiqDeposit();
         updateFuturesQuotes();
     }
 }
@@ -2815,6 +2816,7 @@ function addTrade(type, data = null) {
     `;
     container.appendChild(card);
     if (type === 'futures') {
+        loadFuturesLiqDeposit();
         updateFuturesQuotes();
     }
 }
@@ -2837,6 +2839,9 @@ function updateTrade(type, id, field, value) {
     const trade = arr.find(t => t.id === id);
     if (trade) trade[field] = value;
     localStorage.setItem(type + 'Trades', JSON.stringify(arr));
+    if (type === 'futures') {
+        calcFuturesLiq();
+    }
 }
 
 function calcTrade(type, id) {
@@ -2905,6 +2910,7 @@ function calcTrade(type, id) {
     trade.percent = percent;
     localStorage.setItem(type + 'Trades', JSON.stringify(arr));
     if (type === 'futures') {
+        loadFuturesLiqDeposit();
         updateFuturesQuotes();
     }
 }
@@ -2919,6 +2925,7 @@ function deleteTrade(type, id) {
     }
     const elToRemove = document.getElementById(id); if(elToRemove) elToRemove.remove();
     if (type === 'futures') {
+        loadFuturesLiqDeposit();
         updateFuturesQuotes();
     }
 }
@@ -3414,22 +3421,30 @@ function loadLiqData() {
 }
 
 // ====== ФЬЮЧЕРСЫ — ЛИКВИДАЦИЯ И КОТИРОВКИ ======
-let futuresLiqDeposit = parseFloat(localStorage.getItem('futuresLiqDeposit') || '0') || 0;
+function getFuturesLiqDeposit() {
+    const key = 'futuresLiqDeposit_' + currentFuturesExchange;
+    let val = localStorage.getItem(key);
+    if (val === null && currentFuturesExchange === 'Dzengi') {
+        val = localStorage.getItem('futuresLiqDeposit');
+    }
+    return parseFloat(val || '0') || 0;
+}
 let futuresTickerPrices = {};
 
 function saveFuturesLiqDeposit() {
     const input = document.getElementById('futures-liq-deposit');
     if (input) {
         const val = parseNumber(input.value);
-        futuresLiqDeposit = isNaN(val) ? 0 : val;
-        localStorage.setItem('futuresLiqDeposit', futuresLiqDeposit);
+        const deposit = isNaN(val) ? 0 : val;
+        localStorage.setItem('futuresLiqDeposit_' + currentFuturesExchange, deposit);
     }
 }
 
 function loadFuturesLiqDeposit() {
     const input = document.getElementById('futures-liq-deposit');
-    if (input && futuresLiqDeposit > 0) {
-        input.value = formatNumber(futuresLiqDeposit, 0);
+    const deposit = getFuturesLiqDeposit();
+    if (input) {
+        input.value = deposit > 0 ? formatNumber(deposit, 0) : '';
     }
 }
 
@@ -3472,6 +3487,7 @@ async function updateFuturesQuotes() {
         if (rowContainer) rowContainer.innerHTML = '';
         const timeEl = document.getElementById('futures-quotes-update-time');
         if (timeEl) timeEl.innerHTML = '';
+        calcFuturesLiq();
         return;
     }
 
@@ -3534,7 +3550,7 @@ function renderFuturesQuotes(prices, positions) {
 function calcFuturesLiq() {
     try {
         const depositInput = document.getElementById('futures-liq-deposit');
-        const deposit = depositInput ? parseNumber(depositInput.value) : futuresLiqDeposit;
+        const deposit = depositInput ? parseNumber(depositInput.value) : getFuturesLiqDeposit();
         const marginEl = document.getElementById('futures-liq-margin');
         const leverageEl = document.getElementById('futures-liq-leverage');
         const avgEl = document.getElementById('futures-liq-avg');
