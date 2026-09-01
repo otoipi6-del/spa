@@ -1737,6 +1737,7 @@ function formatNumberInput(input) {
         else if (input.id === 'quote-gold-retrace-extremum') decimals = 1;
         else if (input.id === 'quote-eur-retrace-extremum') decimals = 5;
         else if (input.id === 'liq-deposit') decimals = 0;
+        else if (input.id === 'futures-liq-deposit') decimals = 0;
         else if (input.id === 'risk-deposit') decimals = 0;
         else if (input.classList && input.classList.contains('liq-vol')) decimals = 0;
         else if (input.classList && input.classList.contains('trade-sum')) decimals = 0;
@@ -3654,7 +3655,7 @@ function calcFuturesLiq() {
                 const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value red'; }
-                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+                if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else if (dir === 'SHORT') {
             if (liquidated) {
@@ -3667,7 +3668,7 @@ function calcFuturesLiq() {
                 const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value green'; }
-                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+                if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else {
             if (liquidated) {
@@ -3744,8 +3745,8 @@ function calcLiquidation() {
         const avgPrice = weightedSum / totalVolume;
         const dep = isNaN(deposit) ? 0 : deposit;
 
-        avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
-        if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 0) + ' $';
+        avgEl.textContent = formatNumber(avgPrice, 2);
+        if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 0);
         if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 1);
 
         // Убыток от движения цены от цены открытия первой позиции
@@ -3769,7 +3770,7 @@ function calcLiquidation() {
         }
 
         if (effectiveDepositEl) {
-            effectiveDepositEl.textContent = formatNumber(effectiveDeposit, 0) + ' $';
+            effectiveDepositEl.textContent = formatNumber(effectiveDeposit, 0);
         }
 
         if (leverageDisplayEl) {
@@ -3796,7 +3797,7 @@ function calcLiquidation() {
                 const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value red'; }
-                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+                if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else if (dir === 'SHORT') {
             if (liquidated) {
@@ -3809,7 +3810,7 @@ function calcLiquidation() {
                 const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value green'; }
-                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
+                if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else {
             if (liquidated) {
