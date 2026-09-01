@@ -3596,8 +3596,8 @@ function calcFuturesLiq() {
         if (avgEl) avgEl.textContent = formatNumber(avgPrice, 2);
         if (totalEl) totalEl.textContent = formatNumber(totalVolume, 0);
 
-        // Нереализованный убыток/прибыль по текущим котировкам
-        let unrealizedLoss = 0;
+        // Нереализованный PnL по текущим котировкам
+        let unrealizedPnL = 0;
         positions.forEach(function(t) {
             const sum = parseNumber(t.buySum);
             const price = parseNumber(t.buyPrice);
@@ -3608,20 +3608,16 @@ function calcFuturesLiq() {
                 const typeVal = (t.type || '').toUpperCase();
                 const isShort = typeVal === 'ПРОДАЖА' || typeVal === 'SHORT';
                 if (!isShort) {
-                    // LONG: если цена упала — убыток
-                    if (currentPrice < price) {
-                        unrealizedLoss += (price - currentPrice) * qty;
-                    }
+                    // LONG: PnL = (current - entry) * qty
+                    unrealizedPnL += (currentPrice - price) * qty;
                 } else {
-                    // SHORT: если цена выросла — убыток
-                    if (currentPrice > price) {
-                        unrealizedLoss += (currentPrice - price) * qty;
-                    }
+                    // SHORT: PnL = (entry - current) * qty
+                    unrealizedPnL += (price - currentPrice) * qty;
                 }
             }
         });
 
-        const effectiveDeposit = dep - totalMargin - unrealizedLoss;
+        const effectiveDeposit = dep - totalMargin + unrealizedPnL;
         if (effectiveEl) {
             effectiveEl.textContent = formatNumber(effectiveDeposit, 0);
             effectiveEl.className = 'result-value ' + (effectiveDeposit >= 0 ? 'neutral' : 'red');
