@@ -1441,16 +1441,24 @@
                 </div>
             </div>
             <div class="input-group" style="margin-bottom: 0;">
-                <label>Эфф. депозит</label>
+                <label>ЭФФЕКТ. ДЕПОЗИТ</label>
                 <div class="result-box" style="margin-top: 0;">
                     <div class="result-value neutral" id="futures-liq-effective">—</div>
                 </div>
             </div>
         </div>
-        <div class="input-group" style="margin-top: 10px; margin-bottom: 0;">
-            <label>Цена ликвидации</label>
-            <div class="result-box" style="margin-top: 0;">
-                <div class="result-value" id="futures-liq-price">—</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Цена ликвидации</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value" id="futures-liq-price">—</div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>% ДО ЛИКВИДАЦИИ</label>
+                <div class="result-box" style="margin-top: 0;">
+                    <div class="result-value orange" id="futures-liq-pct">—</div>
+                </div>
             </div>
         </div>
         <div id="futures-quotes-row" style="margin-top: 14px;"></div>
@@ -3488,24 +3496,35 @@ function renderFuturesQuotes(prices, positions) {
     if (!container) return;
     let html = '';
     Object.entries(prices).forEach(([ticker, price]) => {
-        const pos = positions.find(p => p.ticker === ticker);
+        const tickerPositions = positions.filter(p => p.ticker === ticker);
         let pnlText = '';
         let pnlClass = '';
-        if (pos && pos.buyPrice) {
-            const buyPrice = parseNumber(pos.buyPrice);
-            const buySum = parseNumber(pos.buySum);
-            if (!isNaN(buyPrice) && !isNaN(buySum) && buyPrice > 0) {
-                const qty = buySum / buyPrice;
-                const pnl = (price - buyPrice) * qty;
-                pnlText = (pnl >= 0 ? '+' : '') + formatNumber(pnl, 2) + ' $';
-                pnlClass = pnl >= 0 ? 'green' : 'red';
+        let pctText = '';
+        let avgEntry = 0;
+        let tickerVolume = 0;
+        let tickerWeighted = 0;
+        tickerPositions.forEach(p => {
+            const bp = parseNumber(p.buyPrice);
+            const bs = parseNumber(p.buySum);
+            if (!isNaN(bp) && !isNaN(bs) && bp > 0) {
+                tickerVolume += bs;
+                tickerWeighted += bs * bp;
             }
+        });
+        if (tickerVolume > 0) {
+            avgEntry = tickerWeighted / tickerVolume;
+            const qty = tickerVolume / avgEntry;
+            const pnl = (price - avgEntry) * qty;
+            const pct = ((price - avgEntry) / avgEntry) * 100;
+            pnlText = (pnl >= 0 ? '+' : '') + formatNumber(pnl, 2) + ' $';
+            pctText = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+            pnlClass = pnl >= 0 ? 'green' : 'red';
         }
         const decimals = price >= 10000 ? 1 : price >= 100 ? 2 : price >= 1 ? 4 : 6;
         html += '<div class="futures-quote-row">';
         html += '<span class="futures-quote-name">' + escapeHtml(ticker) + '</span>';
-        html += '<span class="api-price-display"><span class="live-dot"></span><span class="price-value">' + formatNumber(price, decimals) + ' $</span></span>';
-        html += '<span class="futures-quote-pnl ' + pnlClass + '">' + pnlText + '</span>';
+        html += '<span class="api-price-display"><span class="price-value">' + formatNumber(price, decimals) + '</span></span>';
+        html += '<span class="futures-quote-pnl ' + pnlClass + '">' + pctText + ' (' + pnlText + ')</span>';
         html += '</div>';
     });
     container.innerHTML = html;
@@ -3572,9 +3591,9 @@ function calcFuturesLiq() {
         const avgPrice = weightedSum / totalVolume;
         const dep = isNaN(deposit) ? 0 : deposit;
 
-        if (marginEl) marginEl.textContent = formatNumber(totalMargin, 1);
-        if (avgEl) avgEl.textContent = formatNumber(avgPrice, 2) + ' $';
-        if (totalEl) totalEl.textContent = formatNumber(totalVolume, 0) + ' $';
+        if (marginEl) marginEl.textContent = formatNumber(totalMargin, 0);
+        if (avgEl) avgEl.textContent = formatNumber(avgPrice, 2);
+        if (totalEl) totalEl.textContent = formatNumber(totalVolume, 0);
 
         // Нереализованный убыток/прибыль по текущим котировкам
         let unrealizedLoss = 0;
@@ -3603,7 +3622,7 @@ function calcFuturesLiq() {
 
         const effectiveDeposit = dep - totalMargin - unrealizedLoss;
         if (effectiveEl) {
-            effectiveEl.textContent = formatNumber(effectiveDeposit, 0) + ' $';
+            effectiveEl.textContent = formatNumber(effectiveDeposit, 0);
             effectiveEl.className = 'result-value ' + (effectiveDeposit >= 0 ? 'neutral' : 'red');
         }
 
@@ -3623,36 +3642,48 @@ function calcFuturesLiq() {
         const noRisk = effectiveDeposit > 0 && leverage <= 1;
         const liquidated = effectiveDeposit <= 0;
 
+        const liqPctEl = document.getElementById('futures-liq-pct');
         if (dir === 'LONG') {
             if (liquidated) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
             } else if (noRisk) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
                 const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value red'; }
+                const pct = (1 / leverage - LIQ_MMR) * 100;
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else if (dir === 'SHORT') {
             if (liquidated) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
             } else if (noRisk) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
                 const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value green'; }
+                const pct = (1 / leverage - LIQ_MMR) * 100;
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else {
             if (liquidated) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
+                if (liqPctEl) { liqPctEl.textContent = '0%'; liqPctEl.className = 'result-value red'; }
             } else if (noRisk) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
                 const liqL = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const liqS = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 if (liqPriceEl) {
-                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + ' $</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + ' $</span>';
+                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + '</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + '</span>';
                     liqPriceEl.className = 'result-value';
                 }
+                if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             }
         }
     } catch (e) {
@@ -3764,7 +3795,7 @@ function calcLiquidation() {
             } else {
                 const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value red'; }
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else if (dir === 'SHORT') {
@@ -3777,7 +3808,7 @@ function calcLiquidation() {
             } else {
                 const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2) + ' $'; liqPriceEl.className = 'result-value green'; }
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = pct.toFixed(2) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else {
@@ -3791,7 +3822,7 @@ function calcLiquidation() {
                 const liqL = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const liqS = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 if (liqPriceEl) {
-                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + ' $</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + ' $</span>';
+                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + '</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + '</span>';
                     liqPriceEl.className = 'result-value';
                 }
                 if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
