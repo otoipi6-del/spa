@@ -1110,6 +1110,7 @@
         body.dark .futures-quote-row { border-bottom-color: #2a2a4a; }
 </style>
     <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -1135,7 +1136,7 @@
         <div class="card-title"><span class="icon">🎯</span> Цена при росте(+)/падении(-) на указанный %</div>
         <div class="input-group">
             <label>Цена актива</label>
-            <input type="text" inputmode="decimal" id="calc2-price" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc2-price')" onfocus="unformatNumberInput(this)" oninput="calc2(); saveCalcInput('calc2-price')">
+            <input type="text" inputmode="decimal" id="calc2-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc2-price')" onfocus="unformatNumberInput(this)" oninput="calc2(); saveCalcInput('calc2-price')">
         </div>
         <div class="input-group">
             <label>Изменение цены на %<br><span style="font-size:11px;color:var(--text-muted);font-weight:400;">(пример: 5% или -3%)</span></label>
@@ -1157,11 +1158,11 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="input-group">
                 <label>Цена входа</label>
-                <input type="text" inputmode="decimal" id="calc1-open" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-open')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-open')">
+                <input type="text" inputmode="decimal" id="calc1-open" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-open')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-open')">
             </div>
             <div class="input-group">
                 <label>Цена выхода</label>
-                <input type="text" inputmode="decimal" id="calc1-close" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-close')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-close')">
+                <input type="text" inputmode="decimal" id="calc1-close" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-close')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-close')">
             </div>
         </div>
         <div class="input-group">
@@ -1172,7 +1173,42 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="grid-card">
+        <div class="card-title"><span class="icon">📐</span> Сетка ордеров</div>
+        <div class="input-group">
+            <label>ЭКСТРЕМУМ</label>
+            <input type="text" inputmode="decimal" id="grid-extremum" class="price-input" placeholder="0" onblur="formatNumberInput(this); saveGridData()" onfocus="unformatNumberInput(this)" oninput="calcGrid(); saveGridData()">
+        </div>
+        <div class="grid-header">
+            <div class="trade-grid">
+                <div class="input-group"><label>%</label></div>
+                <div class="input-group"><label>РЕЗУЛЬТАТ</label></div>
+                <div style="width:44px;"></div>
+            </div>
+        </div>
+        <div id="grid-rows">
+            <div class="grid-row" data-index="0">
+                <div class="trade-grid">
+                    <div class="input-group" style="margin-bottom:0;">
+                        <div class="percent-wrap">
+                            <input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()">
+                            <span class="percent-suffix">%</span>
+                        </div>
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <div class="result-box">
+                            <div class="result-value neutral grid-result">—</div>
+                        </div>
+                    </div>
+                    <button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:12px;">
+            <button type="button" class="btn-add" onclick="addGridRow()" style="width:100%;"><span>➕</span> Добавить позицию</button>
+        </div>
+    </div>
+<div class="card">
         <div class="card-title"><span class="icon">⚖️</span> Риск менеджмент</div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="input-group">
@@ -1204,42 +1240,7 @@
         </div>
     </div>
 
-        <div class="card" id="grid-card">
-        <div class="card-title"><span class="icon">📐</span> Сетка ордеров</div>
-        <div class="input-group">
-            <label>ЭКСТРЕМУМ</label>
-            <input type="text" inputmode="decimal" id="grid-extremum" placeholder="0" onblur="formatNumberInput(this); saveGridData()" onfocus="unformatNumberInput(this)" oninput="calcGrid(); saveGridData()">
-        </div>
-        <div class="grid-header">
-            <div class="trade-grid">
-                <div class="input-group"><label>%</label></div>
-                <div class="input-group"><label>РЕЗУЛЬТАТ</label></div>
-                <div style="width:44px;"></div>
-            </div>
-        </div>
-        <div id="grid-rows">
-            <div class="grid-row" data-index="0">
-                <div class="trade-grid">
-                    <div class="input-group" style="margin-bottom:0;">
-                        <div class="percent-wrap">
-                            <input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()">
-                            <span class="percent-suffix">%</span>
-                        </div>
-                    </div>
-                    <div class="input-group" style="margin-bottom:0;">
-                        <div class="result-box">
-                            <div class="result-value neutral grid-result">—</div>
-                        </div>
-                    </div>
-                    <button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button>
-                </div>
-            </div>
-        </div>
-        <div style="margin-top:12px;">
-            <button type="button" class="btn-add" onclick="addGridRow()" style="width:100%;"><span>➕</span> Добавить позицию</button>
-        </div>
-    </div>
-<div class="card" id="liq-card">
+        <div class="card" id="liq-card">
         <div class="card-title"><span class="icon">⚠️</span> Цена ликвидации</div>
         <div style="display: grid; grid-template-columns: 1.5fr 1fr auto; gap: 10px; align-items: end;">
             <div class="input-group" style="margin-bottom: 0;">
@@ -1259,11 +1260,11 @@
                 </div>
             </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px;">
+        <div style="display: grid; grid-template-columns: 0.9fr 0.8fr 1.5fr; gap: 10px; margin-top: 10px;">
             <div class="input-group" style="margin-bottom: 0;">
-                <label>Ср. цена входа</label>
+                <label>ЭФФЕКТ. ДЕПОЗИТ</label>
                 <div class="result-box" style="margin-top: 0;">
-                    <div class="result-value neutral" id="liq-avg-price">—</div>
+                    <div class="result-value neutral" id="liq-effective-deposit">—</div>
                 </div>
             </div>
             <div class="input-group" style="margin-bottom: 0;">
@@ -1273,9 +1274,9 @@
                 </div>
             </div>
             <div class="input-group" style="margin-bottom: 0;">
-                <label>ЭФФЕКТ. ДЕПОЗИТ</label>
+                <label>Ср. цена входа</label>
                 <div class="result-box" style="margin-top: 0;">
-                    <div class="result-value neutral" id="liq-effective-deposit">—</div>
+                    <div class="result-value neutral" id="liq-avg-price">—</div>
                 </div>
             </div>
         </div>
@@ -1306,7 +1307,7 @@
         <div class="card-title"><span class="icon">🔄</span> Ребалансировка портфеля (USD / BTC 50/50)</div>
         <div class="input-group">
             <label>Цена BTC (USD)</label>
-            <input type="text" inputmode="decimal" id="calc4-btc-price" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc4-btc-price')" onfocus="unformatNumberInput(this)" oninput="calc4(); saveCalcInput('calc4-btc-price')">
+            <input type="text" inputmode="decimal" id="calc4-btc-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc4-btc-price')" onfocus="unformatNumberInput(this)" oninput="calc4(); saveCalcInput('calc4-btc-price')">
             <div class="api-price-row">
                 <div class="api-price-display" id="btc-display-calc4">
                     <span class="live-dot"></span>
@@ -1338,7 +1339,7 @@
         <div class="card-title"><span class="icon">🔄</span> Ребалансировка портфеля (USD / BTC / GOLD 33/33/33)</div>
         <div class="input-group">
             <label>Цена BTC (USD)</label>
-            <input type="text" inputmode="decimal" id="calc5-btc-price" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc5-btc-price')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-btc-price')">
+            <input type="text" inputmode="decimal" id="calc5-btc-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc5-btc-price')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-btc-price')">
             <div class="api-price-row">
                 <div class="api-price-display" id="btc-display-calc5">
                     <span class="live-dot"></span>
@@ -1351,7 +1352,7 @@
         </div>
         <div class="input-group">
             <label>Цена GOLD (USD за унцию)</label>
-            <input type="text" inputmode="decimal" id="calc5-gold-price" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc5-gold-price')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-gold-price')">
+            <input type="text" inputmode="decimal" id="calc5-gold-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc5-gold-price')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-gold-price')">
             <div class="api-price-row">
                 <div class="api-price-display" id="gold-display-calc5">
                     <span class="live-dot"></span>
@@ -1428,11 +1429,11 @@
                 </div>
             </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px;">
+        <div style="display: grid; grid-template-columns: 0.9fr 0.8fr 1.5fr; gap: 10px; margin-top: 10px;">
             <div class="input-group" style="margin-bottom: 0;">
-                <label>Ср. цена входа</label>
+                <label>ЭФФЕКТ. ДЕПОЗИТ</label>
                 <div class="result-box" style="margin-top: 0;">
-                    <div class="result-value neutral" id="futures-liq-avg">—</div>
+                    <div class="result-value neutral" id="futures-liq-effective">—</div>
                 </div>
             </div>
             <div class="input-group" style="margin-bottom: 0;">
@@ -1442,9 +1443,9 @@
                 </div>
             </div>
             <div class="input-group" style="margin-bottom: 0;">
-                <label>ЭФФЕКТ. ДЕПОЗИТ</label>
+                <label>Ср. цена входа</label>
                 <div class="result-box" style="margin-top: 0;">
-                    <div class="result-value neutral" id="futures-liq-effective">—</div>
+                    <div class="result-value neutral" id="futures-liq-avg">—</div>
                 </div>
             </div>
         </div>
@@ -1578,61 +1579,61 @@
             </div>
             <div class="quote-row" id="quote-btc-retrace">
                 <span class="quote-name">BTC</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-btc-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-btc-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-btc-retrace-change">—</span>
                 <span class="quote-atr" id="quote-btc-atr">—</span>
             </div>
             <div class="quote-row" id="quote-eth-retrace">
                 <span class="quote-name">ETH</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-eth-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-eth-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-eth-retrace-change">—</span>
                 <span class="quote-atr" id="quote-eth-atr">—</span>
             </div>
             <div class="quote-row" id="quote-sol-retrace">
                 <span class="quote-name">SOL</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-sol-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-sol-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-sol-retrace-change">—</span>
                 <span class="quote-atr" id="quote-sol-atr">—</span>
             </div>
             <div class="quote-row" id="quote-link-retrace">
                 <span class="quote-name">LINK</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-link-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-link-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-link-retrace-change">—</span>
                 <span class="quote-atr" id="quote-link-atr">—</span>
             </div>
             <div class="quote-row" id="quote-uni-retrace">
                 <span class="quote-name">UNI</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-uni-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-uni-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-uni-retrace-change">—</span>
                 <span class="quote-atr" id="quote-uni-atr">—</span>
             </div>
             <div class="quote-row" id="quote-doge-retrace">
                 <span class="quote-name">DOGE</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-doge-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-doge-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-doge-retrace-change">—</span>
                 <span class="quote-atr" id="quote-doge-atr">—</span>
             </div>
             <div class="quote-row" id="quote-brent-retrace">
                 <span class="quote-name">BRENT</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-brent-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-brent-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-brent-retrace-change">—</span>
                 <span class="quote-atr" id="quote-brent-atr">—</span>
             </div>
             <div class="quote-row" id="quote-copper-retrace">
                 <span class="quote-name">COPPER</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-copper-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-copper-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-copper-retrace-change">—</span>
                 <span class="quote-atr" id="quote-copper-atr">—</span>
             </div>
             <div class="quote-row" id="quote-gold-retrace">
                 <span class="quote-name">GOLD</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-gold-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-gold-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-gold-retrace-change">—</span>
                 <span class="quote-atr" id="quote-gold-atr">—</span>
             </div>
             <div class="quote-row" id="quote-eur-retrace">
                 <span class="quote-name">EUR</span>
-                <input type="text" inputmode="decimal" class="extremum-input" id="quote-eur-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-eur-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
                 <span class="quote-change" id="quote-eur-retrace-change">—</span>
                 <span class="quote-atr" id="quote-eur-atr">—</span>
             </div>
@@ -1722,21 +1723,17 @@ function formatNumberInput(input) {
     const val = input.value;
     if (!val || val === '') return;
     const num = parseNumber(val);
+    if (isNaN(num)) return;
+    // Ценовые поля: сохраняем любое количество десятичных знаков, как введено
+    if (input.classList && input.classList.contains('price-input')) {
+        input.value = String(val).replace(/\s/g, '').replace(',', '.');
+        return;
+    }
     if (!isNaN(num)) {
         let decimals = 2;
         if (input.id.includes('qty') && input.id.includes('btc')) decimals = 8;
         else if (input.id.includes('qty') && input.id.includes('gold')) decimals = 3;
         else if (input.id.includes('qty')) decimals = 2;
-        else if (input.id === 'quote-btc-retrace-extremum') decimals = 0;
-        else if (input.id === 'quote-eth-retrace-extremum') decimals = 1;
-        else if (input.id === 'quote-sol-retrace-extremum') decimals = 2;
-        else if (input.id === 'quote-link-retrace-extremum') decimals = 2;
-        else if (input.id === 'quote-uni-retrace-extremum') decimals = 2;
-        else if (input.id === 'quote-doge-retrace-extremum') decimals = 5;
-        else if (input.id === 'quote-brent-retrace-extremum') decimals = 2;
-        else if (input.id === 'quote-copper-retrace-extremum') decimals = 2;
-        else if (input.id === 'quote-gold-retrace-extremum') decimals = 1;
-        else if (input.id === 'quote-eur-retrace-extremum') decimals = 5;
         else if (input.id === 'liq-deposit') decimals = 0;
         else if (input.id === 'futures-liq-deposit') decimals = 0;
         else if (input.id === 'risk-deposit') decimals = 0;
@@ -1747,6 +1744,7 @@ function formatNumberInput(input) {
 }
 
 function unformatNumberInput(input) {
+    if (input.classList && input.classList.contains('price-input')) return;
     const val = input.value;
     if (!val || val === '') return;
     const num = parseNumber(val);
@@ -2348,7 +2346,7 @@ function applyApiPrice(asset, inputId, priceDisplayId) {
     const price = parseNumber(priceText);
 
     if (!isNaN(price) && price > 0) {
-        input.value = formatNumber(price, 2);
+        input.value = formatNumber(price, 0);
         // Запустить расчёт
         if (inputId.includes('calc4')) calc4();
         if (inputId.includes('calc5')) calc5();
@@ -2392,7 +2390,7 @@ async function fetchBtcPrice() {
         apiPrices.btc = price;
 
         displays.forEach(d => {
-            if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(price, 2);
+            if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(price, 0);
         });
 
         enableApplyButton('btc', 'calc4');
@@ -2404,7 +2402,7 @@ async function fetchBtcPrice() {
             const cachedData = JSON.parse(cached);
             apiPrices.btc = cachedData.price;
             displays.forEach(d => {
-                if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(cachedData.price, 2) + ' (кэш)';
+                if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(cachedData.price, 0) + ' (кэш)';
             });
             enableApplyButton('btc', 'calc4');
             enableApplyButton('btc', 'calc5');
@@ -2433,14 +2431,14 @@ async function fetchGoldPrice() {
         const data = await response.json();
         const price = parseFloat(data.lastPrice);
         apiPrices.gold = price;
-        if (priceEl) priceEl.textContent = '$' + formatNumber(price, 2);
+        if (priceEl) priceEl.textContent = '$' + formatNumber(price, 0);
         enableApplyButton('gold', 'calc5');
         localStorage.setItem('goldPrice', JSON.stringify({ price, timestamp: Date.now() }));
     } catch (err) {const cached = localStorage.getItem('goldPrice');
         if (cached) {
             const cachedData = JSON.parse(cached);
             apiPrices.gold = cachedData.price;
-            if (priceEl) priceEl.textContent = '$' + formatNumber(cachedData.price, 2) + ' (кэш)';
+            if (priceEl) priceEl.textContent = '$' + formatNumber(cachedData.price, 0) + ' (кэш)';
             enableApplyButton('gold', 'calc5');
         } else {
             if (displayEl) {
@@ -2519,7 +2517,7 @@ function calc2() {
     const el = document.getElementById('calc2-result');
     if (isNaN(price) || isNaN(pct)) { el.textContent = '—'; el.className = 'result-value neutral'; return; }
     const res = price * (1 + pct / 100);
-    el.textContent = formatNumber(res, 2);
+    el.textContent = formatNumber(res, 0);
     el.className = 'result-value neutral';
 }
 
@@ -2580,15 +2578,15 @@ function calc4() {
     const absRes = Math.abs(btcDiff);
     const formattedQty = formatNumber(absRes, 5);
     if (btcDiff > 0) {
-        el.textContent = formatNumber(targetPerAsset, 2);
+        el.textContent = formatNumber(targetPerAsset, 0);
         el.className = 'result-value neutral';
         actionEl.innerHTML = '<span class="rebalance-action green rebalance-action-large">+' + formattedQty + ' BTC</span>';
     } else if (btcDiff < 0) {
-        el.textContent = formatNumber(targetPerAsset, 2);
+        el.textContent = formatNumber(targetPerAsset, 0);
         el.className = 'result-value neutral';
         actionEl.innerHTML = '<span class="rebalance-action red rebalance-action-large">−' + formattedQty + ' BTC</span>';
     } else {
-        el.textContent = formatNumber(targetPerAsset, 2);
+        el.textContent = formatNumber(targetPerAsset, 0);
         el.className = 'result-value neutral';
         actionEl.textContent = 'Портфель сбалансирован';
         actionEl.className = 'rebalance-action';
@@ -2631,13 +2629,13 @@ function calc5() {
         actionLines.push('<span class="rebalance-action ' + colorClass + ' rebalance-action-large">' + sign + fmtGold + ' GOLD</span>');
     }
     if (!hasAction) {
-        el.textContent = formatNumber(targetPerAsset, 2);
+        el.textContent = formatNumber(targetPerAsset, 0);
         el.className = 'result-value neutral';
         actionEl.textContent = 'Портфель сбалансирован';
         actionEl.className = 'rebalance-action';
     } else {
         const usdAfter = usdQty - btcDiff * btcPrice - goldDiff * goldPrice;
-        el.textContent = formatNumber(usdAfter, 2);
+        el.textContent = formatNumber(usdAfter, 0);
         el.className = 'result-value neutral';
         actionEl.innerHTML = actionLines.join('<br>');
         actionEl.className = 'rebalance-action';
@@ -2771,7 +2769,7 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buyPrice')}</label>
-                <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${tradeData.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buySum')}</label>
@@ -2791,7 +2789,7 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellPrice')}</label>
-                <input type="text" inputmode="decimal" placeholder="0,00" value="${tradeData.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${tradeData.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellPercent')}</label>
@@ -2988,7 +2986,7 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buyPrice')}</label>
-                    <input type="text" inputmode="decimal" placeholder="0,00" value="${t.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${t.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buySum')}</label>
@@ -3008,7 +3006,7 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellPrice')}</label>
-                    <input type="text" inputmode="decimal" placeholder="0,00" value="${t.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${t.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellPercent')}</label>
@@ -3189,7 +3187,7 @@ window.addEventListener('DOMContentLoaded', () => {
             { priceEl: document.getElementById('btc-price-calc5'), btnId: 'btn-apply-btc-calc5' }
         ];
         displays.forEach(d => {
-            if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(data.price, 2);
+            if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(data.price, 0);
             const btn = document.getElementById(d.btnId);
             if (btn) { btn.disabled = false; }
         });
@@ -3199,7 +3197,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const data = JSON.parse(cachedGold);
         apiPrices.gold = data.price;
         const priceEl = document.getElementById('gold-price-calc5');
-        if (priceEl) priceEl.textContent = '$' + formatNumber(data.price, 2);
+        if (priceEl) priceEl.textContent = '$' + formatNumber(data.price, 0);
         const btn = document.getElementById('btn-apply-gold-calc5');
         if (btn) { btn.disabled = false; }
     }
@@ -3296,7 +3294,7 @@ function addLiqPosition(data) {
             <input type="text" inputmode="decimal" placeholder="0" value="${posData.volume || ''}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
-            <input type="text" inputmode="decimal" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+            <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price price-input" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
             <select class="liq-dir" data-field="direction">${getLiqDirOptions(posData.direction)}</select>
@@ -3610,7 +3608,7 @@ function calcFuturesLiq() {
         const dep = isNaN(deposit) ? 0 : deposit;
 
         if (marginEl) marginEl.textContent = formatNumber(totalMargin, 0);
-        if (avgEl) avgEl.textContent = formatNumber(avgPrice, 2);
+        if (avgEl) avgEl.textContent = formatNumber(avgPrice, 0);
         if (totalEl) totalEl.textContent = formatNumber(totalVolume, 0);
 
         // Нереализованный PnL по текущим котировкам
@@ -3667,7 +3665,7 @@ function calcFuturesLiq() {
             } else {
                 const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value red'; }
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 0); liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else if (dir === 'SHORT') {
@@ -3680,7 +3678,7 @@ function calcFuturesLiq() {
             } else {
                 const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value green'; }
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 0); liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else {
@@ -3694,7 +3692,7 @@ function calcFuturesLiq() {
                 const liqL = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const liqS = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 if (liqPriceEl) {
-                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + '</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + '</span>';
+                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 0) + '</span> / <span class="liq-mix-short">' + formatNumber(liqS, 0) + '</span>';
                     liqPriceEl.className = 'result-value';
                 }
                 if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
@@ -3758,7 +3756,7 @@ function calcLiquidation() {
         const avgPrice = weightedSum / totalVolume;
         const dep = isNaN(deposit) ? 0 : deposit;
 
-        avgEl.textContent = formatNumber(avgPrice, 2);
+        avgEl.textContent = formatNumber(avgPrice, 0);
         if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 0);
         if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 1);
 
@@ -3809,7 +3807,7 @@ function calcLiquidation() {
             } else {
                 const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value red'; }
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 0); liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else if (dir === 'SHORT') {
@@ -3822,7 +3820,7 @@ function calcLiquidation() {
             } else {
                 const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
-                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 2); liqPriceEl.className = 'result-value green'; }
+                if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 0); liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
             }
         } else {
@@ -3836,7 +3834,7 @@ function calcLiquidation() {
                 const liqL = avgPrice * (1 - 1 / leverage + LIQ_MMR);
                 const liqS = avgPrice * (1 + 1 / leverage - LIQ_MMR);
                 if (liqPriceEl) {
-                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 2) + '</span> / <span class="liq-mix-short">' + formatNumber(liqS, 2) + '</span>';
+                    liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 0) + '</span> / <span class="liq-mix-short">' + formatNumber(liqS, 0) + '</span>';
                     liqPriceEl.className = 'result-value';
                 }
                 if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
@@ -4007,7 +4005,7 @@ function calcGrid() {
         } else {
             result = extremum - (extremum * percent / -100);
         }
-        resultEl.textContent = formatNumber(result, 2);
+        resultEl.textContent = formatNumber(result, 0);
     });
 }
 
