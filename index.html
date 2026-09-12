@@ -1115,14 +1115,14 @@
     <span class="install-banner-text">📲 Установите приложение на рабочий стол</span>
     <div style="display:flex;gap:8px;align-items:center;">
         <button type="button" class="install-banner-btn" id="install-btn">Установить</button>
-        <button type="button" class="install-banner-close" onclick="hideInstallBanner()">&times;</button>
+        <button type="button" class="install-banner-close">&times;</button>
     </div>
 </div>
 
 <div class="header" id="main-header">
     <div class="header-icon">📊</div>
     <h1 id="page-title">Калькуляторы</h1>
-    <button type="button" class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+    <button type="button" class="theme-toggle" id="theme-toggle">
         <span id="theme-icon">🌙</span>
     </button>
 </div>
@@ -1134,12 +1134,12 @@
         <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px;">
         <div class="input-group">
             <label>Цена актива</label>
-            <input type="text" inputmode="decimal" id="calc2-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc2-price')" onfocus="unformatNumberInput(this)" oninput="calc2(); saveCalcInput('calc2-price')">
+            <input type="text" inputmode="decimal" id="calc2-price" class="price-input" placeholder="0,00">
         </div>
         <div class="input-group">
             <label>% ИЗМ. ЦЕНЫ</label>
             <div class="percent-field-wrapper" style="position:relative;">
-                <input type="number" id="calc2-percent" placeholder="0" step="any" style="width:100%;padding-right:28px;" oninput="calc2(); stylePercentInput(this); saveCalcInput('calc2-percent')">
+                <input type="number" id="calc2-percent" placeholder="0" step="any" style="width:100%;padding-right:28px;">
                 <span class="percent-suffix" id="calc2-suffix" style="position:absolute;left:calc(14px + 0px);top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--text-muted);white-space:nowrap;">%</span>
             </div>
         </div>
@@ -1157,11 +1157,11 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="input-group">
                 <label>Цена входа</label>
-                <input type="text" inputmode="decimal" id="calc1-open" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-open')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-open')">
+                <input type="text" inputmode="decimal" id="calc1-open" class="price-input" placeholder="0,00">
             </div>
             <div class="input-group">
                 <label>Цена выхода</label>
-                <input type="text" inputmode="decimal" id="calc1-close" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc1-close')" onfocus="unformatNumberInput(this)" oninput="calc1(); saveCalcInput('calc1-close')">
+                <input type="text" inputmode="decimal" id="calc1-close" class="price-input" placeholder="0,00">
             </div>
         </div>
         <div class="input-group">
@@ -1176,7 +1176,7 @@
         <div class="card-title"><span class="icon">📐</span> Сетка ордеров</div>
         <div class="input-group">
             <label>ЭКСТРЕМУМ</label>
-            <input type="text" inputmode="decimal" id="grid-extremum" class="price-input" placeholder="0" onblur="formatNumberInput(this); saveGridData()" onfocus="unformatNumberInput(this)" oninput="calcGrid(); saveGridData()">
+            <input type="text" inputmode="decimal" id="grid-extremum" class="price-input" placeholder="0">
         </div>
         <div class="grid-header">
             <div class="trade-grid">
@@ -1190,7 +1190,7 @@
                 <div class="trade-grid">
                     <div class="input-group" style="margin-bottom:0;">
                         <div class="percent-wrap">
-                            <input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()">
+                            <input type="text" class="grid-percent" placeholder="0">
                             <span class="percent-suffix">%</span>
                         </div>
                     </div>
@@ -1199,12 +1199,12 @@
                             <div class="result-value neutral grid-result">—</div>
                         </div>
                     </div>
-                    <button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button>
+                    <button type="button" class="grid-del-btn" title="Удалить строку">🗑️</button>
                 </div>
             </div>
         </div>
         <div style="margin-top:12px;">
-            <button type="button" class="btn-add" onclick="addGridRow()" style="width:100%;"><span>➕</span> Добавить позицию</button>
+            <button type="button" class="btn-add" id="btn-add-grid" style="width:100%;"><span>➕</span> Добавить позицию</button>
         </div>
     </div>
 <div class="card">
@@ -1212,11 +1212,11 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div class="input-group">
                 <label>ДЕПОЗИТ (USD)</label>
-                <input type="text" inputmode="numeric" id="risk-deposit" placeholder="0" onblur="formatNumberInput(this); saveCalcInput('risk-deposit')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); saveCalcInput('risk-deposit')">
+                <input type="text" inputmode="numeric" id="risk-deposit" placeholder="0">
             </div>
             <div class="input-group">
                 <label>ПЛЕЧО</label>
-                <input type="text" inputmode="decimal" id="risk-leverage" placeholder="0" onblur="formatNumberInput(this); calcLeverageLiq(); saveCalcInput('risk-leverage')" onfocus="unformatNumberInput(this)" oninput="calcRisk(); calcLeverageLiq(); saveCalcInput('risk-leverage')">
+                <input type="text" inputmode="decimal" id="risk-leverage" placeholder="0">
             </div>
         </div>
         <div class="input-group">
@@ -1244,7 +1244,7 @@
         <div style="display: grid; grid-template-columns: 1.5fr 1fr auto; gap: 10px; align-items: end;">
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ДЕПОЗИТ ($)</label>
-                <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0" onblur="formatNumberInput(this); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+                <input type="text" inputmode="decimal" id="liq-deposit" placeholder="0">
             </div>
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ЗАЛОГ</label>
@@ -1296,7 +1296,7 @@
         <div class="input-group" style="margin-top: 10px;">
             <label>Позиции</label>
             <div id="liq-positions"></div>
-            <button type="button" class="btn-add" onclick="addLiqPosition()" style="margin-top:10px;margin-bottom:0;">
+            <button type="button" class="btn-add" id="btn-add-liq" style="margin-top:10px;margin-bottom:0;">
                 <span>➕</span> Добавить позицию
             </button>
         </div>
@@ -1306,24 +1306,24 @@
         <div class="card-title"><span class="icon">🔄</span> Ребалансировка портфеля (USD / BTC 50/50)</div>
         <div class="input-group">
             <label>Цена BTC (USD)</label>
-            <input type="text" inputmode="decimal" id="calc4-btc-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc4-btc-price')" onfocus="unformatNumberInput(this)" oninput="calc4(); saveCalcInput('calc4-btc-price')">
+            <input type="text" inputmode="decimal" id="calc4-btc-price" class="price-input" placeholder="0,00">
             <div class="api-price-row">
                 <div class="api-price-display" id="btc-display-calc4">
                     <span class="live-dot"></span>
                     <span>API: </span>
                     <span class="price-value" id="btc-price-calc4">—</span>
                 </div>
-                <button type="button" class="btn-refresh-price" onclick="fetchBtcPrice()" title="Обновить цену">🔄</button>
-                <button type="button" class="btn-apply-price" id="btn-apply-btc-calc4" onclick="applyApiPrice('btc', 'calc4-btc-price', 'btc-price-calc4')" disabled>✓ Применить</button>
+                <button type="button" class="btn-refresh-price" data-action="refresh-btc" title="Обновить цену">🔄</button>
+                <button type="button" class="btn-apply-price" id="btn-apply-btc-calc4" disabled>✓ Применить</button>
             </div>
         </div>
         <div class="input-group">
             <label>Количество BTC</label>
-            <input type="text" inputmode="decimal" id="calc4-btc-qty" placeholder="0,00000000" onblur="formatNumberInput(this); saveCalcInput('calc4-btc-qty')" onfocus="unformatNumberInput(this)" oninput="calc4(); saveCalcInput('calc4-btc-qty')">
+            <input type="text" inputmode="decimal" id="calc4-btc-qty" placeholder="0,00000000">
         </div>
         <div class="input-group">
             <label>Количество USD</label>
-            <input type="text" inputmode="decimal" id="calc4-usd-qty" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc4-usd-qty')" onfocus="unformatNumberInput(this)" oninput="calc4(); saveCalcInput('calc4-usd-qty')">
+            <input type="text" inputmode="decimal" id="calc4-usd-qty" placeholder="0,00">
         </div>
         <div class="input-group">
             <label>Действие</label>
@@ -1338,41 +1338,41 @@
         <div class="card-title"><span class="icon">🔄</span> Ребалансировка портфеля (USD / BTC / GOLD 33/33/33)</div>
         <div class="input-group">
             <label>Цена BTC (USD)</label>
-            <input type="text" inputmode="decimal" id="calc5-btc-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc5-btc-price')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-btc-price')">
+            <input type="text" inputmode="decimal" id="calc5-btc-price" class="price-input" placeholder="0,00">
             <div class="api-price-row">
                 <div class="api-price-display" id="btc-display-calc5">
                     <span class="live-dot"></span>
                     <span>API: </span>
                     <span class="price-value" id="btc-price-calc5">—</span>
                 </div>
-                <button type="button" class="btn-refresh-price" onclick="fetchBtcPrice()" title="Обновить цену">🔄</button>
-                <button type="button" class="btn-apply-price" id="btn-apply-btc-calc5" onclick="applyApiPrice('btc', 'calc5-btc-price', 'btc-price-calc5')" disabled>✓ Применить</button>
+                <button type="button" class="btn-refresh-price" data-action="refresh-btc" title="Обновить цену">🔄</button>
+                <button type="button" class="btn-apply-price" id="btn-apply-btc-calc5" disabled>✓ Применить</button>
             </div>
         </div>
         <div class="input-group">
             <label>Цена GOLD (USD за унцию)</label>
-            <input type="text" inputmode="decimal" id="calc5-gold-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc5-gold-price')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-gold-price')">
+            <input type="text" inputmode="decimal" id="calc5-gold-price" class="price-input" placeholder="0,00">
             <div class="api-price-row">
                 <div class="api-price-display" id="gold-display-calc5">
                     <span class="live-dot"></span>
                     <span>API: </span>
                     <span class="price-value" id="gold-price-calc5">—</span>
                 </div>
-                <button type="button" class="btn-refresh-price" onclick="fetchGoldPrice()" title="Обновить цену">🔄</button>
-                <button type="button" class="btn-apply-price" id="btn-apply-gold-calc5" onclick="applyApiPrice('gold', 'calc5-gold-price', 'gold-price-calc5')" disabled>✓ Применить</button>
+                <button type="button" class="btn-refresh-price" data-action="refresh-gold" title="Обновить цену">🔄</button>
+                <button type="button" class="btn-apply-price" id="btn-apply-gold-calc5" disabled>✓ Применить</button>
             </div>
         </div>
         <div class="input-group">
             <label>Количество BTC</label>
-            <input type="text" inputmode="decimal" id="calc5-btc-qty" placeholder="0,00000000" onblur="formatNumberInput(this); saveCalcInput('calc5-btc-qty')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-btc-qty')">
+            <input type="text" inputmode="decimal" id="calc5-btc-qty" placeholder="0,00000000">
         </div>
         <div class="input-group">
             <label>Количество GOLD (унций)</label>
-            <input type="text" inputmode="decimal" id="calc5-gold-qty" placeholder="0,000" onblur="formatNumberInput(this); saveCalcInput('calc5-gold-qty')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-gold-qty')">
+            <input type="text" inputmode="decimal" id="calc5-gold-qty" placeholder="0,000">
         </div>
         <div class="input-group">
             <label>Количество USD</label>
-            <input type="text" inputmode="decimal" id="calc5-usd-qty" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc5-usd-qty')" onfocus="unformatNumberInput(this)" oninput="calc5(); saveCalcInput('calc5-usd-qty')">
+            <input type="text" inputmode="decimal" id="calc5-usd-qty" placeholder="0,00">
         </div>
         <div class="input-group">
             <label>Действие</label>
@@ -1387,33 +1387,33 @@
 
 <div id="section-spot" class="section">
     <div class="exchange-tabs" id="spot-exchange-tabs">
-        <button type="button" class="exchange-tab active" onclick="switchExchange('spot','Dzengi')">Dzengi</button>
-        <button type="button" class="exchange-tab" onclick="switchExchange('spot','OKX')">OKX</button>
-        <button type="button" class="exchange-tab" onclick="switchExchange('spot','Bybit')">Bybit</button>
-        <button type="button" class="exchange-tab" onclick="switchExchange('spot','Binance')">Binance</button>
+        <button type="button" class="exchange-tab active" data-etype="spot" data-exchange="Dzengi">Dzengi</button>
+        <button type="button" class="exchange-tab" data-etype="spot" data-exchange="OKX">OKX</button>
+        <button type="button" class="exchange-tab" data-etype="spot" data-exchange="Bybit">Bybit</button>
+        <button type="button" class="exchange-tab" data-etype="spot" data-exchange="Binance">Binance</button>
     </div>
     <div id="spot-trades"></div>
-    <button type="button" class="btn-add" onclick="addTrade('spot')">
+    <button type="button" class="btn-add" id="btn-add-spot">
         <span>➕</span> Добавить позицию
     </button>
-    <button type="button" class="btn-summary" onclick="showSummary('spot')">
+    <button type="button" class="btn-summary" id="btn-summary-spot">
         <span>📋</span> Сводная ведомость
     </button>
 </div>
 
 <div id="section-futures" class="section">
     <div class="exchange-tabs" id="futures-exchange-tabs">
-        <button type="button" class="exchange-tab active" onclick="switchExchange('futures','Dzengi')">Dzengi</button>
-        <button type="button" class="exchange-tab" onclick="switchExchange('futures','OKX')">OKX</button>
-        <button type="button" class="exchange-tab" onclick="switchExchange('futures','Bybit')">Bybit</button>
-        <button type="button" class="exchange-tab" onclick="switchExchange('futures','Binance')">Binance</button>
+        <button type="button" class="exchange-tab active" data-etype="futures" data-exchange="Dzengi">Dzengi</button>
+        <button type="button" class="exchange-tab" data-etype="futures" data-exchange="OKX">OKX</button>
+        <button type="button" class="exchange-tab" data-etype="futures" data-exchange="Bybit">Bybit</button>
+        <button type="button" class="exchange-tab" data-etype="futures" data-exchange="Binance">Binance</button>
     </div>
     <div class="card" id="futures-liq-panel">
         <div class="card-title"><span class="icon">⚠️</span> Ликвидация позиций</div>
         <div style="display: grid; grid-template-columns: 1.5fr 1fr auto; gap: 10px; align-items: end;">
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ДЕПОЗИТ ($)</label>
-                <input type="text" inputmode="decimal" id="futures-liq-deposit" placeholder="0" onblur="formatNumberInput(this); calcFuturesLiq(); saveFuturesLiqDeposit();" onfocus="unformatNumberInput(this)">
+                <input type="text" inputmode="decimal" id="futures-liq-deposit" placeholder="0">
             </div>
             <div class="input-group" style="margin-bottom: 0;">
                 <label>ЗАЛОГ</label>
@@ -1466,10 +1466,10 @@
         <div class="quote-update-time" id="futures-quotes-update-time" style="margin-top: 8px; text-align: center;"></div>
     </div>
     <div id="futures-trades"></div>
-    <button type="button" class="btn-add" onclick="addTrade('futures')">
+    <button type="button" class="btn-add" id="btn-add-futures">
         <span>➕</span> Добавить позицию
     </button>
-    <button type="button" class="btn-summary" onclick="showSummary('futures')">
+    <button type="button" class="btn-summary" id="btn-summary-futures">
         <span>📋</span> Сводная ведомость
     </button>
 </div>
@@ -1578,61 +1578,61 @@
             </div>
             <div class="quote-row" id="quote-btc-retrace">
                 <span class="quote-name">BTC</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-btc-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-btc-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-btc-retrace-change">—</span>
                 <span class="quote-atr" id="quote-btc-atr">—</span>
             </div>
             <div class="quote-row" id="quote-eth-retrace">
                 <span class="quote-name">ETH</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-eth-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-eth-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-eth-retrace-change">—</span>
                 <span class="quote-atr" id="quote-eth-atr">—</span>
             </div>
             <div class="quote-row" id="quote-sol-retrace">
                 <span class="quote-name">SOL</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-sol-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-sol-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-sol-retrace-change">—</span>
                 <span class="quote-atr" id="quote-sol-atr">—</span>
             </div>
             <div class="quote-row" id="quote-link-retrace">
                 <span class="quote-name">LINK</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-link-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-link-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-link-retrace-change">—</span>
                 <span class="quote-atr" id="quote-link-atr">—</span>
             </div>
             <div class="quote-row" id="quote-uni-retrace">
                 <span class="quote-name">UNI</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-uni-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-uni-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-uni-retrace-change">—</span>
                 <span class="quote-atr" id="quote-uni-atr">—</span>
             </div>
             <div class="quote-row" id="quote-doge-retrace">
                 <span class="quote-name">DOGE</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-doge-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-doge-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-doge-retrace-change">—</span>
                 <span class="quote-atr" id="quote-doge-atr">—</span>
             </div>
             <div class="quote-row" id="quote-brent-retrace">
                 <span class="quote-name">BRENT</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-brent-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-brent-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-brent-retrace-change">—</span>
                 <span class="quote-atr" id="quote-brent-atr">—</span>
             </div>
             <div class="quote-row" id="quote-copper-retrace">
                 <span class="quote-name">COPPER</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-copper-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-copper-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-copper-retrace-change">—</span>
                 <span class="quote-atr" id="quote-copper-atr">—</span>
             </div>
             <div class="quote-row" id="quote-gold-retrace">
                 <span class="quote-name">GOLD</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-gold-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-gold-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-gold-retrace-change">—</span>
                 <span class="quote-atr" id="quote-gold-atr">—</span>
             </div>
             <div class="quote-row" id="quote-eur-retrace">
                 <span class="quote-name">EUR</span>
-                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-eur-retrace-extremum" placeholder="0,00" onfocus="unformatNumberInput(this)" onblur="formatNumberInput(this)">
+                <input type="text" inputmode="decimal" class="extremum-input price-input" id="quote-eur-retrace-extremum" placeholder="0,00">
                 <span class="quote-change" id="quote-eur-retrace-change">—</span>
                 <span class="quote-atr" id="quote-eur-atr">—</span>
             </div>
@@ -1645,41 +1645,41 @@
 
 
 <div class="bottom-nav">
-    <button type="button" class="nav-item active" onclick="switchTab('calculators', this)">
+    <button type="button" class="nav-item active" data-tab="calculators">
         <span class="nav-icon">🧮</span>
         <span>Калькуляторы</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('quotes', this)">
+    <button type="button" class="nav-item" data-tab="quotes">
         <span class="nav-icon">🔄</span>
         <span>Котировки</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('spot', this)">
+    <button type="button" class="nav-item" data-tab="spot">
         <span class="nav-icon">💰</span>
         <span>Спот</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('futures', this)">
+    <button type="button" class="nav-item" data-tab="futures">
         <span class="nav-icon">📈</span>
         <span>Фьючерсы</span>
     </button>
 </div>
 
-<div class="modal-overlay" id="summary-modal" onclick="closeSummary(event)">
-    <div class="modal" onclick="event.stopPropagation()">
+<div class="modal-overlay" id="summary-modal">
+    <div class="modal">
         <div class="modal-header">
             <h2 id="modal-title">Сводная ведомость</h2>
-            <button type="button" class="modal-close" onclick="closeSummary()">&times;</button>
+            <button type="button" class="modal-close">&times;</button>
         </div>
         <div id="modal-content"></div>
     </div>
 </div>
 
-<div class="modal-overlay" id="confirm-modal" onclick="onConfirmOverlayClick(event)">
-    <div class="modal" onclick="event.stopPropagation()">
+<div class="modal-overlay" id="confirm-modal">
+    <div class="modal">
         <div class="modal-header"><h2>Подтверждение</h2></div>
         <p id="confirm-message" style="font-size:15px;color:var(--text-bright);margin-bottom:4px;"></p>
         <div class="confirm-actions">
-            <button type="button" class="btn-confirm-cancel" onclick="closeConfirm(false)">Отмена</button>
-            <button type="button" class="btn-confirm-danger" id="confirm-ok" onclick="closeConfirm(true)">Удалить</button>
+            <button type="button" class="btn-confirm-cancel">Отмена</button>
+            <button type="button" class="btn-confirm-danger" id="confirm-ok">Удалить</button>
         </div>
     </div>
 </div>
@@ -2767,33 +2767,33 @@ function addTrade(type, data = null) {
         <div class="trade-header">
             <span class="trade-number">#${counter}</span>
             <span class="trade-exchange-badge">${tradeData.exchange || 'Dzengi'}</span>
-            <button type="button" class="trade-delete" onclick="deleteTrade('${type}','${id}')">🗑️</button>
+            <button type="button" class="trade-delete" data-action="delete">🗑️</button>
         </div>
         <div class="trade-grid">
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buyDate')}</label>
-                <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                    <input type="text" class="date-text-input" value="${escapeHtml(buyDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                <div class="date-wrapper">
+                    <input type="text" class="date-text-input" value="${escapeHtml(buyDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" data-datefield="buyDate">
                     <button type="button" class="date-picker-btn">&nbsp;</button>
-                    <input type="date" class="native-date-input" value="${escapeHtml(buyDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'buyDate')">
+                    <input type="date" class="native-date-input" value="${escapeHtml(buyDateIso)}" data-datefield="buyDate">
                 </div>
             </div>
             <div class="input-group">
                 <label>Тикер</label>
-                <select onchange="handleTickerChange(this,'${type}','${id}')">${getTickerOptions(tradeData.ticker)}</select>
-                <input type="text" id="${id}_ticker_custom" value="${escapeHtml(tickers.includes(tradeData.ticker) ? '' : tradeData.ticker)}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(tradeData.ticker) || !tradeData.ticker ? 'display:none;' : ''}" oninput="updateTrade('${type}','${id}','ticker',this.value)">
+                <select data-field="ticker-select">${getTickerOptions(tradeData.ticker)}</select>
+                <input type="text" id="${id}_ticker_custom" class="ticker-custom" value="${escapeHtml(tickers.includes(tradeData.ticker) ? '' : tradeData.ticker)}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(tradeData.ticker) || !tradeData.ticker ? 'display:none;' : ''}">
             </div>
             <div class="input-group">
                 <label>Тип</label>
-                <select onchange="updateTrade('${type}','${id}','type',this.value)">${getTypeOptions(tradeData.type)}</select>
+                <select data-field="type">${getTypeOptions(tradeData.type)}</select>
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buyPrice')}</label>
-                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(tradeData.buyPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(tradeData.buyPrice)}" data-field="buyPrice" data-calc="1">
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buySum')}</label>
-                <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${escapeHtml(tradeData.buySum)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${escapeHtml(tradeData.buySum)}" data-field="buySum" data-calc="1">
             </div>
             <div class="input-group">
                 <label>Кол-во актива (авто)</label>
@@ -2801,19 +2801,19 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellDate')}</label>
-                <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                    <input type="text" class="date-text-input" value="${escapeHtml(sellDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                <div class="date-wrapper">
+                    <input type="text" class="date-text-input" value="${escapeHtml(sellDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" data-datefield="sellDate">
                     <button type="button" class="date-picker-btn">&nbsp;</button>
-                    <input type="date" class="native-date-input" value="${escapeHtml(sellDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'sellDate')">
+                    <input type="date" class="native-date-input" value="${escapeHtml(sellDateIso)}" data-datefield="sellDate">
                 </div>
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellPrice')}</label>
-                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(tradeData.sellPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(tradeData.sellPrice)}" data-field="sellPrice" data-calc="1">
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellPercent')}</label>
-                <select id="${id}_sellPercent" onchange="updateTrade('${type}','${id}','sellPercent',this.value); calcTrade('${type}','${id}')">${getSellPercentOptions(tradeData.sellPercent)}</select>
+                <select id="${id}_sellPercent" data-field="sellPercent" data-calc="1">${getSellPercentOptions(tradeData.sellPercent)}</select>
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellAmount')}</label>
@@ -2988,33 +2988,33 @@ function renderTrades(type) {
             <div class="trade-header">
                 <span class="trade-number">#${t.num}</span>
                 <span class="trade-exchange-badge">${t.exchange || 'Dzengi'}</span>
-                <button type="button" class="trade-delete" onclick="deleteTrade('${type}','${t.id}')">🗑️</button>
+                <button type="button" class="trade-delete" data-action="delete">🗑️</button>
             </div>
             <div class="trade-grid">
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buyDate')}</label>
-                    <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                        <input type="text" class="date-text-input" value="${escapeHtml(buyDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                    <div class="date-wrapper">
+                        <input type="text" class="date-text-input" value="${escapeHtml(buyDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" data-datefield="buyDate">
                         <button type="button" class="date-picker-btn">&nbsp;</button>
-                            <input type="date" class="native-date-input" value="${escapeHtml(buyDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'buyDate')">
+                            <input type="date" class="native-date-input" value="${escapeHtml(buyDateIso)}" data-datefield="buyDate">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Тикер</label>
-                    <select onchange="handleTickerChange(this,'${type}','${t.id}')">${getTickerOptions(t.ticker)}</select>
-                    <input type="text" id="${t.id}_ticker_custom" value="${escapeHtml(tickers.includes(t.ticker) ? '' : t.ticker)}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(t.ticker) || !t.ticker ? 'display:none;' : ''}" oninput="updateTrade('${type}','${t.id}','ticker',this.value)">
+                    <select data-field="ticker-select">${getTickerOptions(t.ticker)}</select>
+                    <input type="text" id="${t.id}_ticker_custom" class="ticker-custom" value="${escapeHtml(tickers.includes(t.ticker) ? '' : t.ticker)}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(t.ticker) || !t.ticker ? 'display:none;' : ''}">
                 </div>
                 <div class="input-group">
                     <label>Тип</label>
-                    <select onchange="updateTrade('${type}','${t.id}','type',this.value)">${getTypeOptions(t.type)}</select>
+                    <select data-field="type">${getTypeOptions(t.type)}</select>
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buyPrice')}</label>
-                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(t.buyPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(t.buyPrice)}" data-field="buyPrice" data-calc="1">
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buySum')}</label>
-                    <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${escapeHtml(t.buySum)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${escapeHtml(t.buySum)}" data-field="buySum" data-calc="1">
                 </div>
                 <div class="input-group">
                     <label>Кол-во актива (авто)</label>
@@ -3022,19 +3022,19 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellDate')}</label>
-                    <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                        <input type="text" class="date-text-input" value="${escapeHtml(sellDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                    <div class="date-wrapper">
+                        <input type="text" class="date-text-input" value="${escapeHtml(sellDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" data-datefield="sellDate">
                         <button type="button" class="date-picker-btn">&nbsp;</button>
-                            <input type="date" class="native-date-input" value="${escapeHtml(sellDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'sellDate')">
+                            <input type="date" class="native-date-input" value="${escapeHtml(sellDateIso)}" data-datefield="sellDate">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellPrice')}</label>
-                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(t.sellPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(t.sellPrice)}" data-field="sellPrice" data-calc="1">
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellPercent')}</label>
-                    <select id="${t.id}_sellPercent" onchange="updateTrade('${type}','${t.id}','sellPercent',this.value); calcTrade('${type}','${t.id}')">${getSellPercentOptions(t.sellPercent)}</select>
+                    <select id="${t.id}_sellPercent" data-field="sellPercent" data-calc="1">${getSellPercentOptions(t.sellPercent)}</select>
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellAmount')}</label>
@@ -3097,7 +3097,7 @@ function showSummary(type, selectedExchange) {
     const exchanges = ['Dzengi','OKX','Bybit','Binance'];
     let tabsHtml = '<div class="exchange-tabs" style="margin-bottom:12px;">';
     exchanges.forEach(ex => {
-        tabsHtml += `<button type="button" class="exchange-tab ${ex === currentExchange ? 'active' : ''}" onclick="showSummary('${type}', '${ex}')">${ex}</button>`;
+        tabsHtml += `<button type="button" class="exchange-tab ${ex === currentExchange ? 'active' : ''}" data-stype="${type}" data-sexchange="${ex}">${ex}</button>`;
     });
     tabsHtml += '</div>';
 
@@ -3138,7 +3138,7 @@ function showSummary(type, selectedExchange) {
             <td>$${escapeHtml(sellSum)}</td>
             <td style="color:${p>=0?'var(--green)':'var(--red)'};font-weight:700;">${escapeHtml(t.profit)}</td>
             <td style="color:${pct.startsWith('+')?'var(--green)':pct.startsWith('-')?'var(--red)':'inherit'};font-weight:700;">${escapeHtml(pct)}</td>
-            <td><button type="button" class="trade-delete" onclick="deleteSummaryTrade('${type}','${t.id}')" title="Удалить из сводной ведомости" style="position:static;display:inline-block;margin:0;">🗑️</button></td>
+            <td><button type="button" class="trade-delete" data-action="sumdelete" data-stype="${type}" data-sid="${t.id}" title="Удалить из сводной ведомости" style="position:static;display:inline-block;margin:0;">🗑️</button></td>
         </tr>`;
     });
     html += '</tbody></table></div>';
@@ -3146,7 +3146,7 @@ function showSummary(type, selectedExchange) {
         <span class="summary-total-label">ИТОГО ${currentExchange} — ПРИБЫЛЬ / УБЫТОК</span>
         <span class="summary-total-value" style="color:${totalProfit>=0?'var(--green)':'var(--red)'}">${totalProfit>=0?'+':''}${formatNumber(totalProfit, 2)} $</span>
     </div>`;
-    html += `<button type="button" class="btn-add" style="margin-top:16px;background:var(--red-soft);border-color:var(--red);color:var(--red);" onclick="clearCompletedByExchange('${type}', '${currentExchange}')">
+    html += `<button type="button" class="btn-add" data-action="clearexch" data-stype="${type}" data-sexch="${currentExchange}" style="margin-top:16px;background:var(--red-soft);border-color:var(--red);color:var(--red);">
         <span>🧹</span> Очистить ${currentExchange}
     </button>`;
     content.innerHTML = html;
@@ -3192,13 +3192,240 @@ function closeConfirm(result) {
     if (confirmResolver) { confirmResolver(result); confirmResolver = null; }
 }
 
-function onConfirmOverlayClick(e) {
-    if (e.target === e.currentTarget) closeConfirm(false);
-}
-
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeConfirm(false);
 });
+
+// ====== ДЕЛЕГИРОВАННЫЕ ОБРАБОТЧИКИ: КАЛЬКУЛЯТОРЫ ======
+function bindClick(id, fn) {
+    const el = document.getElementById(id);
+    // обёртка без проброса event: вызываемые функции не ждут аргументов
+    if (el) el.addEventListener('click', function() { fn(); });
+}
+
+function initCalculatorHandlers() {
+    const root = document.getElementById('section-calculators');
+    if (!root) return;
+
+    // Что считать при вводе в каждое поле
+    const onInput = {
+        'calc1-open':       () => { calc1(); saveCalcInput('calc1-open'); },
+        'calc1-close':      () => { calc1(); saveCalcInput('calc1-close'); },
+        'calc2-price':      () => { calc2(); saveCalcInput('calc2-price'); },
+        'calc2-percent':    () => { calc2(); stylePercentInput(document.getElementById('calc2-percent')); saveCalcInput('calc2-percent'); },
+        'risk-deposit':     () => { calcRisk(); saveCalcInput('risk-deposit'); },
+        'risk-leverage':    () => { calcRisk(); calcLeverageLiq(); saveCalcInput('risk-leverage'); },
+        'calc4-btc-price':  () => { calc4(); saveCalcInput('calc4-btc-price'); },
+        'calc4-btc-qty':    () => { calc4(); saveCalcInput('calc4-btc-qty'); },
+        'calc4-usd-qty':    () => { calc4(); saveCalcInput('calc4-usd-qty'); },
+        'calc5-btc-price':  () => { calc5(); saveCalcInput('calc5-btc-price'); },
+        'calc5-gold-price': () => { calc5(); saveCalcInput('calc5-gold-price'); },
+        'calc5-btc-qty':    () => { calc5(); saveCalcInput('calc5-btc-qty'); },
+        'calc5-gold-qty':   () => { calc5(); saveCalcInput('calc5-gold-qty'); },
+        'calc5-usd-qty':    () => { calc5(); saveCalcInput('calc5-usd-qty'); },
+        'grid-extremum':    () => { calcGrid(); saveGridData(); },
+        'liq-deposit':      () => { calcLiquidation(); saveLiqData(); }
+    };
+    const onBlurExtra = {
+        'risk-leverage': () => calcLeverageLiq(),
+        'grid-extremum': () => saveGridData(),
+        'liq-deposit':   () => saveLiqData()
+    };
+    const isPlainText = (t) => t.tagName === 'INPUT' && t.type === 'text' && !t.readOnly && !(t.classList && t.classList.contains('grid-percent'));
+
+    root.addEventListener('input', function(e) {
+        const t = e.target;
+        const fn = onInput[t.id];
+        if (fn) fn();
+        if (t.classList && t.classList.contains('grid-percent')) { calcGrid(); saveGridData(); }
+    });
+    root.addEventListener('focusin', function(e) {
+        if (isPlainText(e.target)) unformatNumberInput(e.target);
+    });
+    root.addEventListener('focusout', function(e) {
+        const t = e.target;
+        if (t.tagName !== 'INPUT') return;
+        if (isPlainText(t)) formatNumberInput(t);
+        if (t.id && /^(calc|risk)-/.test(t.id)) saveCalcInput(t.id);
+        const fn = onBlurExtra[t.id];
+        if (fn) fn();
+    });
+
+    // Кнопки (привязка по id)
+    bindClick('theme-toggle', toggleTheme);
+    bindClick('btn-apply-btc-calc4', () => applyApiPrice('btc', 'calc4-btc-price', 'btc-price-calc4'));
+    bindClick('btn-apply-btc-calc5', () => applyApiPrice('btc', 'calc5-btc-price', 'btc-price-calc5'));
+    bindClick('btn-apply-gold-calc5', () => applyApiPrice('gold', 'calc5-gold-price', 'gold-price-calc5'));
+    bindClick('btn-add-grid', addGridRow);
+    bindClick('btn-add-liq', addLiqPosition);
+
+    // Обновление цен — через data-action
+    root.addEventListener('click', function(e) {
+        const btn = e.target.closest ? e.target.closest('[data-action]') : null;
+        if (!btn) return;
+        const act = btn.getAttribute('data-action');
+        if (act === 'refresh-btc') fetchBtcPrice();
+        else if (act === 'refresh-gold') fetchGoldPrice();
+    });
+
+    // Сетка: делегирование для динамически созданных строк
+    const gridRows = document.getElementById('grid-rows');
+    if (gridRows) {
+        gridRows.addEventListener('click', function(e) {
+            const btn = e.target.closest ? e.target.closest('.grid-del-btn') : null;
+            if (btn) deleteGridRow(btn);
+        });
+    }
+
+    // Закрытие баннера установки
+    const bannerClose = document.querySelector ? document.querySelector('.install-banner-close') : null;
+    if (bannerClose) bannerClose.addEventListener('click', hideInstallBanner);
+}
+
+// ====== ДЕЛЕГИРОВАННЫЕ ОБРАБОТЧИКИ: НАВИГАЦИЯ, БИРЖИ, КОТИРОВКИ, МОДАЛКИ ======
+function initDelegatedHandlers() {
+    // Нижняя навигация
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) nav.addEventListener('click', function(e) {
+        const btn = e.target.closest ? e.target.closest('.nav-item') : null;
+        if (btn && btn.dataset && btn.dataset.tab) switchTab(btn.dataset.tab, btn);
+    });
+
+    // Табы бирж (спот, фьючерсы + модалка сводной ведомости)
+    document.querySelectorAll('.exchange-tabs').forEach(function(tabs) {
+        tabs.addEventListener('click', function(e) {
+            const btn = e.target.closest ? e.target.closest('.exchange-tab') : null;
+            if (!btn || !btn.dataset) return;
+            if (btn.dataset.etype) switchExchange(btn.dataset.etype, btn.dataset.exchange);
+            else if (btn.dataset.stype) showSummary(btn.dataset.stype, btn.dataset.sexchange);
+        });
+    });
+
+    // Экстремумы отката в котировках: форматирование (input-логика уже в initRetraceInputs)
+    const quotes = document.getElementById('section-quotes');
+    if (quotes) {
+        quotes.addEventListener('focusin', function(e) {
+            if (e.target.classList && e.target.classList.contains('extremum-input')) unformatNumberInput(e.target);
+        });
+        quotes.addEventListener('focusout', function(e) {
+            if (e.target.classList && e.target.classList.contains('extremum-input')) formatNumberInput(e.target);
+        });
+    }
+
+    // Модалка сводной ведомости: подложка + крестик + табы бирж + действия с архивом.
+    // NB: табы создаются динамически — делегируем с постоянного родителя.
+    const summaryModal = document.getElementById('summary-modal');
+    if (summaryModal) summaryModal.addEventListener('click', function(e) {
+        const t = e.target;
+        const tabBtn = t.closest ? t.closest('.exchange-tab') : null;
+        if (tabBtn && tabBtn.dataset && tabBtn.dataset.stype) {
+            showSummary(tabBtn.dataset.stype, tabBtn.dataset.sexchange);
+            return;
+        }
+        if (t === summaryModal || (t.closest && t.closest('.modal-close'))) { closeSummary(); return; }
+        const delBtn = t.closest ? t.closest('[data-action="sumdelete"]') : null;
+        if (delBtn) { deleteSummaryTrade(delBtn.dataset.stype, delBtn.dataset.sid); return; }
+        const clrBtn = t.closest ? t.closest('[data-action="clearexch"]') : null;
+        if (clrBtn) clearCompletedByExchange(clrBtn.dataset.stype, clrBtn.dataset.sexch);
+    });
+
+    // Модалка подтверждения: подложка + кнопки
+    const confirmModal = document.getElementById('confirm-modal');
+    if (confirmModal) confirmModal.addEventListener('click', function(e) {
+        if (e.target === confirmModal) { closeConfirm(false); return; }
+        const t = e.target;
+        if (t.classList && t.classList.contains('btn-confirm-cancel')) closeConfirm(false);
+        else if (t.classList && t.classList.contains('btn-confirm-danger')) closeConfirm(true);
+    });
+}
+
+// ====== ДЕЛЕГИРОВАННЫЕ ОБРАБОТЧИКИ: КАРТОЧКИ СДЕЛОК ======
+function initTradeHandlers() {
+    ['spot', 'futures'].forEach(function(type) {
+        const container = document.getElementById(type + '-trades');
+        if (!container) return;
+
+        container.addEventListener('click', function(e) {
+            const card = e.target.closest ? e.target.closest('.trade-card') : null;
+            const del = e.target.closest ? e.target.closest('.trade-delete') : null;
+            if (del && card) { deleteTrade(type, card.id); return; }
+            const dw = e.target.closest ? e.target.closest('.date-wrapper') : null;
+            if (dw && !(e.target.classList && e.target.classList.contains('date-text-input'))) {
+                openDatePicker(dw, e);
+            }
+        });
+
+        container.addEventListener('input', function(e) {
+            const t = e.target;
+            const card = t.closest ? t.closest('.trade-card') : null;
+            if (!card) return;
+            if (t.classList && t.classList.contains('date-text-input')) { handleDateInput(t); return; }
+            const f = t.dataset ? t.dataset.field : null;
+            if (!f) return;
+            if (f === 'ticker-custom') { updateTrade(type, card.id, 'ticker', t.value); return; }
+            updateTrade(type, card.id, f, t.value);
+            if (t.dataset.calc) calcTrade(type, card.id);
+        });
+
+        container.addEventListener('change', function(e) {
+            const t = e.target;
+            const card = t.closest ? t.closest('.trade-card') : null;
+            if (!card) return;
+            if (t.classList && t.classList.contains('native-date-input')) {
+                handleNativeDateChange(t, type, card.id, t.dataset.datefield);
+                return;
+            }
+            const f = t.dataset ? t.dataset.field : null;
+            if (f === 'ticker-select') { handleTickerChange(t, type, card.id); return; }
+            if (!f) return;
+            updateTrade(type, card.id, f, t.value);
+            if (t.dataset.calc) calcTrade(type, card.id);
+        });
+
+        container.addEventListener('focusin', function(e) {
+            const t = e.target;
+            if (t.tagName === 'INPUT' && t.dataset && t.dataset.field) unformatNumberInput(t);
+        });
+
+        container.addEventListener('focusout', function(e) {
+            const t = e.target;
+            const card = t.closest ? t.closest('.trade-card') : null;
+            if (!card) return;
+            if (t.classList && t.classList.contains('date-text-input')) {
+                updateTradeDate(type, card.id, t.dataset.datefield, t.value);
+                return;
+            }
+            if (t.tagName === 'INPUT' && t.dataset && t.dataset.field) formatNumberInput(t);
+        });
+
+        container.addEventListener('keydown', function(e) {
+            const t = e.target;
+            if (e.key === 'Enter' && t.classList && t.classList.contains('date-text-input')) t.blur();
+        });
+    });
+
+    bindClick('btn-add-spot', () => addTrade('spot'));
+    bindClick('btn-add-futures', () => addTrade('futures'));
+    bindClick('btn-summary-spot', () => showSummary('spot'));
+    bindClick('btn-summary-futures', () => showSummary('futures'));
+
+    // Депозит ликвидации фьючерсов
+    const futLiqDep = document.getElementById('futures-liq-deposit');
+    if (futLiqDep) futLiqDep.addEventListener('input', function() { calcFuturesLiq(); saveFuturesLiqDeposit(); });
+    const futSection = document.getElementById('section-futures');
+    if (futSection) {
+        futSection.addEventListener('focusin', function(e) {
+            if (e.target.id === 'futures-liq-deposit') unformatNumberInput(e.target);
+        });
+        futSection.addEventListener('focusout', function(e) {
+            if (e.target.id === 'futures-liq-deposit') {
+                formatNumberInput(e.target);
+                calcFuturesLiq();
+                saveFuturesLiqDeposit();
+            }
+        });
+    }
+}
 
 function closeSummary(e) {
     if (e && e.target !== e.currentTarget) return;
@@ -3257,6 +3484,9 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchPeriodChanges();
     scheduleATRUpdate();
     initCalcInputs();
+    initCalculatorHandlers();
+    initDelegatedHandlers();
+    initTradeHandlers();
     loadLiqData();
     // Setup deposit input listener
     const liqDep = document.getElementById('liq-deposit');
@@ -3339,10 +3569,10 @@ function addLiqPosition(data) {
 
     row.innerHTML = `
         <div class="input-group">
-            <input type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(posData.volume || '')}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+            <input type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(posData.volume || '')}" class="liq-vol" data-field="volume">
         </div>
         <div class="input-group">
-            <input type="text" inputmode="decimal" class="liq-price price-input" placeholder="0,00" value="${escapeHtml(posData.entryPrice || '')}" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+            <input type="text" inputmode="decimal" class="liq-price price-input" placeholder="0,00" value="${escapeHtml(posData.entryPrice || '')}" data-field="entryPrice">
         </div>
         <div class="input-group">
             <select class="liq-dir" data-field="direction">${getLiqDirOptions(posData.direction)}</select>
@@ -4063,7 +4293,7 @@ function addGridRow() {
     const row = document.createElement('div');
     row.className = 'grid-row';
     row.dataset.index = index;
-    row.innerHTML = '<div class="trade-grid"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
+    row.innerHTML = '<div class="trade-grid"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" title="Удалить строку">🗑️</button></div>';
     container.appendChild(row);
     saveGridData();
 }
@@ -4103,7 +4333,7 @@ function loadGridData() {
             const row = document.createElement('div');
             row.className = 'grid-row';
             row.dataset.index = i;
-            row.innerHTML = '<div class="trade-grid"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" value="' + escapeHtml(p) + '" oninput="calcGrid(); saveGridData()"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" onclick="deleteGridRow(this)" title="Удалить строку">🗑️</button></div>';
+            row.innerHTML = '<div class="trade-grid"><div class="input-group" style="margin-bottom:0;"><div class="percent-wrap"><input type="text" class="grid-percent" placeholder="0" value="' + escapeHtml(p) + '"><span class="percent-suffix">%</span></div></div><div class="input-group" style="margin-bottom:0;"><div class="result-box"><div class="result-value neutral grid-result">—</div></div></div><button type="button" class="grid-del-btn" title="Удалить строку">🗑️</button></div>';
             container.appendChild(row);
         });
     }
