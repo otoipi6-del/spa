@@ -1694,6 +1694,7 @@ window.addEventListener('appinstalled', () => {
 
 // ====== БЕЗОПАСНЫЙ ПАРСИНГ JSON (не падаем при битом localStorage) ======
 function safeJSONParse(str, fallback) {
+    if (str === null || str === undefined || str === '') return fallback;
     try { return JSON.parse(str); } catch (e) { return fallback; }
 }
 
