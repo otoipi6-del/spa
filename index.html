@@ -3296,7 +3296,7 @@ function addLiqPosition(data) {
             <input type="text" inputmode="decimal" placeholder="0" value="${posData.volume || ''}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
-            <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${posData.entryPrice || ''}" class="liq-price price-input" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+            <input type="text" inputmode="decimal" class="liq-price price-input" placeholder="0,00" value="${posData.entryPrice || ''}" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
             <select class="liq-dir" data-field="direction">${getLiqDirOptions(posData.direction)}</select>
