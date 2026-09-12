@@ -1134,16 +1134,18 @@
 
     <div class="card">
         <div class="card-title"><span class="icon">🎯</span> Цена при росте(+)/падении(-) на указанный %</div>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px;">
         <div class="input-group">
             <label>Цена актива</label>
             <input type="text" inputmode="decimal" id="calc2-price" class="price-input" placeholder="0,00" onblur="formatNumberInput(this); saveCalcInput('calc2-price')" onfocus="unformatNumberInput(this)" oninput="calc2(); saveCalcInput('calc2-price')">
         </div>
         <div class="input-group">
-            <label>Изменение цены на %<br><span style="font-size:11px;color:var(--text-muted);font-weight:400;">(пример: 5% или -3%)</span></label>
+            <label>% ИЗМ. ЦЕНЫ</label>
             <div class="percent-field-wrapper" style="position:relative;">
                 <input type="number" id="calc2-percent" placeholder="0" step="any" style="width:100%;padding-right:28px;" oninput="calc2(); stylePercentInput(this); saveCalcInput('calc2-percent')">
                 <span class="percent-suffix" id="calc2-suffix" style="position:absolute;left:calc(14px + 0px);top:50%;transform:translateY(-50%);font-size:16px;font-weight:400;pointer-events:none;color:var(--text-muted);white-space:nowrap;">%</span>
             </div>
+        </div>
         </div>
         <div class="input-group">
             <label>Новая цена</label>
@@ -3758,7 +3760,7 @@ function calcLiquidation() {
 
         avgEl.textContent = formatNumber(avgPrice, 0);
         if (totalVolEl) totalVolEl.textContent = formatNumber(totalVolume, 0);
-        if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 1);
+        if (marginDisplayEl) marginDisplayEl.textContent = formatNumber(totalMargin, 0);
 
         // Убыток от движения цены от цены открытия первой позиции
         let unrealizedLoss = 0;
