@@ -682,9 +682,6 @@
             min-width: 36px;
             padding-right: 2px;
         }
-        @media (max-width: 380px) {
-            .quote-atr { font-size: 13px; min-width: 36px; text-align: right; padding-right: 1px; }
-        }
         .quotes-footer {
             font-size: 11px;
             color: var(--text-muted);
@@ -959,13 +956,6 @@
     font-size: 12px !important;
     margin-bottom: 2px;
 }
-.grid-row { margin-bottom: 2px; }
-.grid-row .trade-grid {
-    grid-template-columns: 1fr 1fr 44px;
-    gap: 8px;
-    align-items: end;
-    margin-bottom: 2px;
-}
 .grid-row .result-box {
     margin-top: 0;
 }
@@ -1024,12 +1014,6 @@
             opacity: 0.7;
         }
         body.dark .grid-del-btn:hover { opacity: 1; }
-        .trade-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
         .exchange-tabs {
             display: flex;
             gap: 6px;
@@ -1648,19 +1632,19 @@
 
 
 <div class="bottom-nav">
-    <button type="button" class="nav-item active" onclick="switchTab('calculators')">
+    <button type="button" class="nav-item active" onclick="switchTab('calculators', this)">
         <span class="nav-icon">🧮</span>
         <span>Калькуляторы</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('quotes')">
+    <button type="button" class="nav-item" onclick="switchTab('quotes', this)">
         <span class="nav-icon">🔄</span>
         <span>Котировки</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('spot')">
+    <button type="button" class="nav-item" onclick="switchTab('spot', this)">
         <span class="nav-icon">💰</span>
         <span>Спот</span>
     </button>
-    <button type="button" class="nav-item" onclick="switchTab('futures')">
+    <button type="button" class="nav-item" onclick="switchTab('futures', this)">
         <span class="nav-icon">📈</span>
         <span>Фьючерсы</span>
     </button>
@@ -1676,6 +1660,7 @@
     </div>
 </div>
 
+<script src="config.js"></script>
 <script>
 
 let deferredPrompt = null;
@@ -1706,6 +1691,11 @@ window.addEventListener('appinstalled', () => {
     hideInstallBanner();
     deferredPrompt = null;
 });
+
+// ====== БЕЗОПАСНЫЙ ПАРСИНГ JSON (не падаем при битом localStorage) ======
+function safeJSONParse(str, fallback) {
+    try { return JSON.parse(str); } catch (e) { return fallback; }
+}
 
 // ====== ПОМОЩНИКИ ФОРМАТИРОВАНИЯ ЧИСЕЛ ======
 function formatNumber(value, decimals) {
@@ -1884,9 +1874,9 @@ function updateTradeDate(type, id, field, value) {
 }
 
 const tickers = ['BTC','ETH','BNB','SOL','LTC','LINK','SUI','DOGE','ZK','ONDO','UNI','TWT'];
-let spotTrades = JSON.parse(localStorage.getItem('spotTrades') || '[]');
+let spotTrades = safeJSONParse(localStorage.getItem('spotTrades'), []);
 spotTrades.forEach(t => { if (!t.exchange) t.exchange = 'Dzengi'; });
-let futuresTrades = JSON.parse(localStorage.getItem('futuresTrades') || '[]');
+let futuresTrades = safeJSONParse(localStorage.getItem('futuresTrades'), []);
 futuresTrades.forEach(t => { if (!t.exchange) t.exchange = 'Dzengi'; });
 let spotCounter = parseInt(localStorage.getItem('spotCounter') || '1', 10);
 let futuresCounter = parseInt(localStorage.getItem('futuresCounter') || '1', 10);
@@ -2116,7 +2106,7 @@ async function fetchFredBalance() {
     const monthlyEl = document.getElementById('quote-fred-monthly');
     if (!priceEl || !weeklyEl || !monthlyEl) return;
 
-    const apiKey = localStorage.getItem('fredApiKey') || 'fd7a13313303fa59cecde821e340bda1';
+    const apiKey = localStorage.getItem('fredApiKey') || (window.APP_CONFIG && window.APP_CONFIG.fredApiKey) || '';
 
     // Try to get cached data first
     const cached = localStorage.getItem('fredBalanceData');
@@ -2224,11 +2214,12 @@ function displayFredData(data) {
 }
 
 
-function switchTab(tab) {
+function switchTab(tab, el) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const sectionEl = document.getElementById('section-' + tab); if(sectionEl) sectionEl.classList.add('active');
-    event.currentTarget.classList.add('active');
+    const navEl = el || (typeof window.event !== 'undefined' && window.event.currentTarget);
+    if (navEl) navEl.classList.add('active');
     const titles = { calculators: 'Калькуляторы', spot: 'Спот', futures: 'Фьючерсы', quotes: 'Котировки' };
     const pageTitleEl = document.getElementById('page-title'); if(pageTitleEl) pageTitleEl.textContent = titles[tab];
 
@@ -2401,7 +2392,8 @@ async function fetchBtcPrice() {
         localStorage.setItem('btcPrice', JSON.stringify({ price, timestamp: Date.now() }));
     } catch (err) {const cached = localStorage.getItem('btcPrice');
         if (cached) {
-            const cachedData = JSON.parse(cached);
+            const cachedData = safeJSONParse(cached, null);
+            if (!cachedData) return;
             apiPrices.btc = cachedData.price;
             displays.forEach(d => {
                 if (d.priceEl) d.priceEl.textContent = '$' + formatNumber(cachedData.price, 0) + ' (кэш)';
@@ -2438,7 +2430,8 @@ async function fetchGoldPrice() {
         localStorage.setItem('goldPrice', JSON.stringify({ price, timestamp: Date.now() }));
     } catch (err) {const cached = localStorage.getItem('goldPrice');
         if (cached) {
-            const cachedData = JSON.parse(cached);
+            const cachedData = safeJSONParse(cached, null);
+            if (!cachedData) return;
             apiPrices.gold = cachedData.price;
             if (priceEl) priceEl.textContent = '$' + formatNumber(cachedData.price, 0) + ' (кэш)';
             enableApplyButton('gold', 'calc5');
@@ -2755,15 +2748,15 @@ function addTrade(type, data = null) {
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buyDate')}</label>
                 <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                    <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                    <input type="text" class="date-text-input" value="${escapeHtml(buyDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                     <button type="button" class="date-picker-btn">&nbsp;</button>
-                    <input type="date" class="native-date-input" value="${buyDateIso}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'buyDate')">
+                    <input type="date" class="native-date-input" value="${escapeHtml(buyDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'buyDate')">
                 </div>
             </div>
             <div class="input-group">
                 <label>Тикер</label>
                 <select onchange="handleTickerChange(this,'${type}','${id}')">${getTickerOptions(tradeData.ticker)}</select>
-                <input type="text" id="${id}_ticker_custom" value="${tickers.includes(tradeData.ticker) ? '' : tradeData.ticker}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(tradeData.ticker) || !tradeData.ticker ? 'display:none;' : ''}" oninput="updateTrade('${type}','${id}','ticker',this.value)">
+                <input type="text" id="${id}_ticker_custom" value="${escapeHtml(tickers.includes(tradeData.ticker) ? '' : tradeData.ticker)}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(tradeData.ticker) || !tradeData.ticker ? 'display:none;' : ''}" oninput="updateTrade('${type}','${id}','ticker',this.value)">
             </div>
             <div class="input-group">
                 <label>Тип</label>
@@ -2771,11 +2764,11 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buyPrice')}</label>
-                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${tradeData.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(tradeData.buyPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buyPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buySum')}</label>
-                <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${tradeData.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${escapeHtml(tradeData.buySum)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','buySum',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>Кол-во актива (авто)</label>
@@ -2784,14 +2777,14 @@ function addTrade(type, data = null) {
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellDate')}</label>
                 <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                    <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                    <input type="text" class="date-text-input" value="${escapeHtml(sellDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                     <button type="button" class="date-picker-btn">&nbsp;</button>
-                    <input type="date" class="native-date-input" value="${sellDateIso}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'sellDate')">
+                    <input type="date" class="native-date-input" value="${escapeHtml(sellDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${id}', 'sellDate')">
                 </div>
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellPrice')}</label>
-                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${tradeData.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
+                <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(tradeData.sellPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${id}','sellPrice',this.value); calcTrade('${type}','${id}')">
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'sellPercent')}</label>
@@ -2972,15 +2965,15 @@ function renderTrades(type) {
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buyDate')}</label>
                     <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                        <input type="text" class="date-text-input" value="${buyDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                        <input type="text" class="date-text-input" value="${escapeHtml(buyDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','buyDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                         <button type="button" class="date-picker-btn">&nbsp;</button>
-                            <input type="date" class="native-date-input" value="${buyDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'buyDate')">
+                            <input type="date" class="native-date-input" value="${escapeHtml(buyDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'buyDate')">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Тикер</label>
                     <select onchange="handleTickerChange(this,'${type}','${t.id}')">${getTickerOptions(t.ticker)}</select>
-                    <input type="text" id="${t.id}_ticker_custom" value="${tickers.includes(t.ticker) ? '' : t.ticker}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(t.ticker) || !t.ticker ? 'display:none;' : ''}" oninput="updateTrade('${type}','${t.id}','ticker',this.value)">
+                    <input type="text" id="${t.id}_ticker_custom" value="${escapeHtml(tickers.includes(t.ticker) ? '' : t.ticker)}" placeholder="Тикер" style="margin-top:6px;${tickers.includes(t.ticker) || !t.ticker ? 'display:none;' : ''}" oninput="updateTrade('${type}','${t.id}','ticker',this.value)">
                 </div>
                 <div class="input-group">
                     <label>Тип</label>
@@ -2988,11 +2981,11 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buyPrice')}</label>
-                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${t.buyPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(t.buyPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buyPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buySum')}</label>
-                    <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${t.buySum}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="trade-sum" placeholder="0" value="${escapeHtml(t.buySum)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','buySum',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>Кол-во актива (авто)</label>
@@ -3001,14 +2994,14 @@ function renderTrades(type) {
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellDate')}</label>
                     <div class="date-wrapper" onclick="openDatePicker(this, event)">
-                        <input type="text" class="date-text-input" value="${sellDateDisplay}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
+                        <input type="text" class="date-text-input" value="${escapeHtml(sellDateDisplay)}" placeholder="ДД.ММ.ГГ" maxlength="8" oninput="handleDateInput(this)" onblur="updateTradeDate('${type}','${t.id}','sellDate',this.value)" onkeydown="handleDateKeydown(event, this)">
                         <button type="button" class="date-picker-btn">&nbsp;</button>
-                            <input type="date" class="native-date-input" value="${sellDateIso}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'sellDate')">
+                            <input type="date" class="native-date-input" value="${escapeHtml(sellDateIso)}" onchange="handleNativeDateChange(this, '${type}', '${t.id}', 'sellDate')">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellPrice')}</label>
-                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${t.sellPrice}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
+                    <input type="text" inputmode="decimal" class="price-input" placeholder="0,00" value="${escapeHtml(t.sellPrice)}" onblur="formatNumberInput(this)" onfocus="unformatNumberInput(this)" oninput="updateTrade('${type}','${t.id}','sellPrice',this.value); calcTrade('${type}','${t.id}')">
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'sellPercent')}</label>
@@ -3044,10 +3037,9 @@ function checkCompleted(type, id) {
     }
 }
 
-let summaryData = JSON.parse(localStorage.getItem('tradeSummary') || '[]');
-let summaryArchive = JSON.parse(localStorage.getItem('tradeSummaryArchive') || '[]');
+let summaryArchive = safeJSONParse(localStorage.getItem('tradeSummaryArchive'), []);
 summaryArchive.forEach(t => { if (!t.exchange) t.exchange = 'Dzengi'; });
-let summaryRemoved = JSON.parse(localStorage.getItem('tradeSummaryRemoved') || '[]');
+let summaryRemoved = safeJSONParse(localStorage.getItem('tradeSummaryRemoved'), []);
 
 function escapeHtml(text) {
     if (!text) return '';
@@ -3125,13 +3117,6 @@ function showSummary(type, selectedExchange) {
         <span class="summary-total-label">ИТОГО ${currentExchange} — ПРИБЫЛЬ / УБЫТОК</span>
         <span class="summary-total-value" style="color:${totalProfit>=0?'var(--green)':'var(--red)'}">${totalProfit>=0?'+':''}${formatNumber(totalProfit, 2)} $</span>
     </div>`;
-    const summaryEntry = {
-        type, exchange: currentExchange, date: new Date().toISOString(),
-        trades: completed.filter(t => (t.exchange || 'Dzengi') === currentExchange).map(t => ({...t})),
-        totalProfit
-    };
-    summaryData.push(summaryEntry);
-    localStorage.setItem('tradeSummary', JSON.stringify(summaryData));
     html += `<button type="button" class="btn-add" style="margin-top:16px;background:var(--red-soft);border-color:var(--red);color:var(--red);" onclick="clearCompletedByExchange('${type}', '${currentExchange}')">
         <span>🧹</span> Очистить ${currentExchange}
     </button>`;
@@ -3182,7 +3167,8 @@ window.addEventListener('DOMContentLoaded', () => {
     // Загрузить кэшированные цены при запуске
     const cachedBtc = localStorage.getItem('btcPrice');
     if (cachedBtc) {
-        const data = JSON.parse(cachedBtc);
+        const data = safeJSONParse(cachedBtc, null);
+        if (data) {
         apiPrices.btc = data.price;
         const displays = [
             { priceEl: document.getElementById('btc-price-calc4'), btnId: 'btn-apply-btc-calc4' },
@@ -3193,15 +3179,18 @@ window.addEventListener('DOMContentLoaded', () => {
             const btn = document.getElementById(d.btnId);
             if (btn) { btn.disabled = false; }
         });
+        }
     }
     const cachedGold = localStorage.getItem('goldPrice');
     if (cachedGold) {
-        const data = JSON.parse(cachedGold);
+        const data = safeJSONParse(cachedGold, null);
+        if (data) {
         apiPrices.gold = data.price;
         const priceEl = document.getElementById('gold-price-calc5');
         if (priceEl) priceEl.textContent = '$' + formatNumber(data.price, 0);
         const btn = document.getElementById('btn-apply-gold-calc5');
         if (btn) { btn.disabled = false; }
+        }
     }
 
     // Получить свежие цены
@@ -3293,10 +3282,10 @@ function addLiqPosition(data) {
 
     row.innerHTML = `
         <div class="input-group">
-            <input type="text" inputmode="decimal" placeholder="0" value="${posData.volume || ''}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+            <input type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(posData.volume || '')}" class="liq-vol" data-field="volume" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'volume', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
-            <input type="text" inputmode="decimal" class="liq-price price-input" placeholder="0,00" value="${posData.entryPrice || ''}" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
+            <input type="text" inputmode="decimal" class="liq-price price-input" placeholder="0,00" value="${escapeHtml(posData.entryPrice || '')}" data-field="entryPrice" onblur="formatNumberInput(this); updateLiqPosition('${posData.id}', 'entryPrice', this.value); calcLiquidation(); saveLiqData();" onfocus="unformatNumberInput(this)">
         </div>
         <div class="input-group">
             <select class="liq-dir" data-field="direction">${getLiqDirOptions(posData.direction)}</select>
@@ -3971,11 +3960,11 @@ function scheduleATRUpdate() {
 // ====== END ATR ======
 
 // ====== SERVICE WORKER (OFFLINE SUPPORT) ======
+// Требует HTTPS (или localhost); sw.js должен лежать рядом с index.html
 if ('serviceWorker' in navigator) {
-    const swCode = `self.CACHE_NAME = 'trading-helper-v1'; self.urlsToCache = ['./']; self.addEventListener('install', function(e) { e.waitUntil(caches.open(self.CACHE_NAME).then(function(c) { return c.addAll(self.urlsToCache); })); self.skipWaiting(); }); self.addEventListener('fetch', function(e) { e.respondWith(caches.match(e.request).then(function(r) { if (r) return r; return fetch(e.request).catch(function() { return new Response('Offline: cached data only', {headers: {'Content-Type': 'text/plain'}}); }); })); }); self.addEventListener('activate', function(e) { e.waitUntil(caches.keys().then(function(n) { return Promise.all(n.map(function(c) { if (c !== self.CACHE_NAME) return caches.delete(c); })); })); self.clients.claim(); });`;
-    const blob = new Blob([swCode], {type: 'application/javascript'});
-    const swUrl = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(swUrl).then(function(){}).catch(function(){});
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').then(function(){}).catch(function(){});
+    });
 }
 
 function calcGrid() {
@@ -4047,7 +4036,7 @@ function saveGridData() {
 }
 
 function loadGridData() {
-    const data = JSON.parse(localStorage.getItem('gridData') || 'null');
+    const data = safeJSONParse(localStorage.getItem('gridData'), null);
     if (!data) return;
     const gridExtEl = document.getElementById('grid-extremum'); if(gridExtEl) gridExtEl.value = data.extremum || '';
     if (data.percents) {
