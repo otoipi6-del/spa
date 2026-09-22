@@ -1027,10 +1027,15 @@ function getTickerOptions(selected) {
     return html;
 }
 
-function getTypeOptions(selected) {
-    const types = ['Лимитка','Покупка','Продажа'];
+function getTypeOptions(selected, type) {
+    let sel = selected;
+    if (type === 'futures') {
+        if (sel === 'Покупка') sel = 'Long';
+        else if (sel === 'Продажа') sel = 'Short';
+    }
+    const types = type === 'futures' ? ['Лимитка','Long','Short'] : ['Лимитка','Покупка','Продажа'];
     let html = '<option value="">Выберите...</option>';
-    types.forEach(t => html += `<option value="${t}" ${t === selected ? 'selected' : ''}>${t}</option>`);
+    types.forEach(t => html += `<option value="${t}" ${t === sel ? 'selected' : ''}>${t}</option>`);
     return html;
 }
 
@@ -1143,7 +1148,7 @@ function addTrade(type, data = null) {
             </div>
             <div class="input-group">
                 <label>Тип</label>
-                <select data-field="type">${getTypeOptions(tradeData.type)}</select>
+                <select data-field="type">${getTypeOptions(tradeData.type, type)}</select>
             </div>
             <div class="input-group">
                 <label>${getTradeLabel(type, 'buyPrice')}</label>
@@ -1260,9 +1265,12 @@ function calcTrade(type, id) {
     let profitClass = '';
     let profitNum = 0;
     if (!isNaN(sellSumNum) && !isNaN(sellAmountNum) && !isNaN(buyPrice)) {
+        const typeVal = (trade.type || '').toUpperCase();
+        const isShort = (type === 'futures') && (typeVal === 'ПРОДАЖА' || typeVal === 'SHORT');
         const buyCost = sellAmountNum * buyPrice;
-        profitNum = sellSumNum - buyCost;
-        profit = (profitNum >= 0 ? '+' : '') + formatNumber(profitNum, 2);
+        // Long: прибыль = (цена выхода - цена входа) * кол-во; Short: наоборот
+        profitNum = isShort ? (buyCost - sellSumNum) : (sellSumNum - buyCost);
+        profit = (profitNum >= 0 ? '+' : '−') + formatNumber(Math.abs(profitNum), 2);
         profitClass = profitNum >= 0 ? 'green' : 'red';
     }
     const profitEl = document.getElementById(id + '_profit');
@@ -1276,7 +1284,7 @@ function calcTrade(type, id) {
     if (!isNaN(profitNum) && !isNaN(sellAmountNum) && !isNaN(buyPrice) && (sellAmountNum * buyPrice) !== 0) {
         const buyCost = sellAmountNum * buyPrice;
         const pct = (profitNum / buyCost) * 100;
-        percent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+        percent = (pct >= 0 ? '+' : '−') + Math.abs(pct).toFixed(2) + '%';
         percentClass = pct >= 0 ? 'green' : 'red';
     }
     const percentEl = document.getElementById(id + '_percent');
@@ -1364,7 +1372,7 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>Тип</label>
-                    <select data-field="type">${getTypeOptions(t.type)}</select>
+                    <select data-field="type">${getTypeOptions(t.type, type)}</select>
                 </div>
                 <div class="input-group">
                     <label>${getTradeLabel(type, 'buyPrice')}</label>
@@ -1404,11 +1412,11 @@ function renderTrades(type) {
                 </div>
                 <div class="input-group">
                     <label>Прибыль/убыток ($)</label>
-                    <input type="text" class="auto-field ${t.profit && t.profit.startsWith('+') ? 'green' : t.profit && t.profit.startsWith('-') ? 'red' : ''}" id="${t.id}_profit" value="${t.profit}" readonly placeholder="-">
+                    <input type="text" class="auto-field ${t.profit && t.profit.startsWith('+') ? 'green' : t.profit && (t.profit.startsWith('-') || t.profit.startsWith('−')) ? 'red' : ''}" id="${t.id}_profit" value="${t.profit}" readonly placeholder="-">
                 </div>
                 <div class="input-group">
                     <label>% роста/падения</label>
-                    <input type="text" class="auto-field ${t.percent && t.percent.startsWith('+') ? 'green' : t.percent && t.percent.startsWith('-') ? 'red' : ''}" id="${t.id}_percent" value="${t.percent}" readonly placeholder="-">
+                    <input type="text" class="auto-field ${t.percent && t.percent.startsWith('+') ? 'green' : t.percent && (t.percent.startsWith('-') || t.percent.startsWith('−')) ? 'red' : ''}" id="${t.id}_percent" value="${t.percent}" readonly placeholder="-">
                 </div>
             </div>
         `;
@@ -1475,9 +1483,17 @@ function showSummary(type, selectedExchange) {
     html += '<th>№</th><th>Дата</th><th>Тикер</th><th>Тип</th><th>' + getTradeLabel(type, 'buyPrice').replace(' ($)', '') + '</th><th>Кол-во</th><th>' + getTradeLabel(type, 'sellPrice').replace(' ($)', '') + '</th><th>% продажи</th><th>' + getTradeLabel(type, 'sellSum').replace(' ($) (авто)', '') + '</th><th>Прибыль</th><th>%</th><th>Действие</th>';
     html += '</tr></thead><tbody>';
     display.forEach(t => {
-        const p = parseFloat(t.profit.replace(/[+\s]/g, '').replace(',', '.'));
+        const profitTxt = String(t.profit || '').replace(/\s/g, '').replace(',', '.');
+        const pNeg = profitTxt.startsWith('-') || profitTxt.startsWith('−');
+        const pAbs = parseFloat(profitTxt.replace(/[+−-]/g, ''));
+        const p = (isNaN(pAbs) ? 0 : pAbs) * (pNeg ? -1 : 1);
         totalProfit += p;
         const pct = t.percent || '';
+        let typeDisplay = t.type || '';
+        if (type === 'futures') {
+            if (typeDisplay === 'Покупка') typeDisplay = 'Long';
+            else if (typeDisplay === 'Продажа') typeDisplay = 'Short';
+        }
         const buyPrice = t.buyPrice || '—';
         const sellPrice = t.sellPrice || '—';
         const sellPercent = t.sellPercent || '—';
@@ -1488,14 +1504,14 @@ function showSummary(type, selectedExchange) {
             <td>#${t.num}</td>
             <td>${escapeHtml(t.sellDate)}</td>
             <td><b>${escapeHtml(t.ticker) || '—'}</b></td>
-            <td>${escapeHtml(t.type) || '—'}</td>
+            <td>${escapeHtml(typeDisplay) || '—'}</td>
             <td>$${escapeHtml(buyPrice)}</td>
             <td>${escapeHtml(amount)}</td>
             <td>$${escapeHtml(sellPrice)}</td>
             <td>${escapeHtml(sellPercent)}%</td>
             <td>$${escapeHtml(sellSum)}</td>
             <td style="color:${p>=0?'var(--green)':'var(--red)'};font-weight:700;">${escapeHtml(t.profit)}</td>
-            <td style="color:${pct.startsWith('+')?'var(--green)':pct.startsWith('-')?'var(--red)':'inherit'};font-weight:700;">${escapeHtml(pct)}</td>
+            <td style="color:${pct.startsWith('+')?'var(--green)':(pct.startsWith('-')||pct.startsWith('−'))?'var(--red)':'inherit'};font-weight:700;">${escapeHtml(pct)}</td>
             <td><button type="button" class="trade-delete" data-action="sumdelete" data-stype="${type}" data-sid="${t.id}" title="Удалить из сводной ведомости" style="position:static;display:inline-block;margin:0;">🗑️</button></td>
         </tr>`;
     });
@@ -2156,22 +2172,26 @@ function renderFuturesQuotes(prices, positions) {
         let avgEntry = 0;
         let tickerVolume = 0;
         let tickerWeighted = 0;
+        let tickerPnl = 0;
         tickerPositions.forEach(p => {
             const bp = parseNumber(p.buyPrice);
             const bs = parseNumber(p.buySum);
             if (!isNaN(bp) && !isNaN(bs) && bp > 0) {
                 tickerVolume += bs;
                 tickerWeighted += bs * bp;
+                const qty = bs / bp;
+                const typeVal = ((p.type || '') + '').toUpperCase();
+                const isShort = typeVal === 'ПРОДАЖА' || typeVal === 'SHORT';
+                // Long: PnL = (тек.цена - вход) * кол-во; Short: (вход - тек.цена) * кол-во
+                tickerPnl += isShort ? (bp - price) * qty : (price - bp) * qty;
             }
         });
         if (tickerVolume > 0) {
             avgEntry = tickerWeighted / tickerVolume;
-            const qty = tickerVolume / avgEntry;
-            const pnl = (price - avgEntry) * qty;
-            const pct = ((price - avgEntry) / avgEntry) * 100;
-            pnlText = (pnl >= 0 ? '+' : '') + formatNumber(pnl, 2) + ' $';
-            pctText = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-            pnlClass = pnl >= 0 ? 'green' : 'red';
+            const pct = (tickerPnl / tickerVolume) * 100;
+            pnlText = (tickerPnl >= 0 ? '+' : '−') + formatNumber(Math.abs(tickerPnl), 2) + ' $';
+            pctText = (pct >= 0 ? '+' : '−') + Math.abs(pct).toFixed(2) + '%';
+            pnlClass = tickerPnl >= 0 ? 'green' : 'red';
         }
         const decimals = price >= 10000 ? 1 : price >= 100 ? 2 : price >= 1 ? 4 : 6;
         html += '<div class="futures-quote-row">';
