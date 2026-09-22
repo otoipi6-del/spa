@@ -801,6 +801,7 @@ function loadCalcInput(inputId) {
 }
 
 function initCalcInputs() {
+    loadRiskRetraceData();
     const calcInputs = [
         'calc1-open', 'calc1-close',
         'calc2-price', 'calc2-percent',
@@ -863,6 +864,7 @@ function calc3() {
 }
 
 function calcRisk() {
+    calcRiskLeverageTable();
     const deposit = getInputValue('risk-deposit');
     const leverage = getInputValue('risk-leverage');
     const totalEl = document.getElementById('risk-total');
@@ -874,6 +876,50 @@ function calcRisk() {
     }
     totalEl.textContent = formatNumber(deposit * leverage, 0);
     minEl.textContent = formatNumber(deposit * 0.45, 0);
+}
+
+// ====== ТАБЛИЦА % ОТКАТА / ОБЪЕМ ПОЗИЦИЙ / ПЛЕЧО (Риск менеджмент) ======
+function calcRiskLeverageTable() {
+    const deposit = getInputValue('risk-deposit');
+    const rows = document.querySelectorAll('#risk-leverage-rows .risk-lev-row');
+    rows.forEach(function(row) {
+        const volEl = row.querySelector('.risk-lev-vol');
+        if (!volEl) return;
+        const lev = parseFloat(row.dataset.leverage);
+        if (isNaN(deposit) || deposit === 0 || isNaN(lev)) {
+            volEl.textContent = '—';
+            return;
+        }
+        volEl.textContent = formatNumber(deposit * lev, 0);
+    });
+}
+
+function styleRiskRetraceInput(input) {
+    const suffix = input.parentElement ? input.parentElement.querySelector('.percent-suffix') : null;
+    const val = parseFloat(input.value.replace(/[+\s%]/g, '').replace(',', '.'));
+    if (input.value === '' || isNaN(val)) {
+        input.style.color = '';
+        if (suffix) suffix.style.color = '';
+        return;
+    }
+    if (val > 0) { input.style.color = 'var(--green)'; if (suffix) suffix.style.color = 'var(--green)'; }
+    else if (val < 0) { input.style.color = 'var(--red)'; if (suffix) suffix.style.color = 'var(--red)'; }
+    else { input.style.color = ''; if (suffix) suffix.style.color = ''; }
+}
+
+function saveRiskRetraceData() {
+    const percents = [];
+    document.querySelectorAll('#risk-leverage-rows .risk-retrace').forEach(function(inp) { percents.push(inp.value); });
+    localStorage.setItem('riskRetraceData', JSON.stringify(percents));
+}
+
+function loadRiskRetraceData() {
+    const data = safeJSONParse(localStorage.getItem('riskRetraceData'), null);
+    if (!data) return;
+    const inputs = document.querySelectorAll('#risk-leverage-rows .risk-retrace');
+    inputs.forEach(function(inp, i) {
+        if (data[i] !== undefined) { inp.value = data[i]; styleRiskRetraceInput(inp); }
+    });
 }
 function calcLeverageLiq() {
     const input = document.getElementById('risk-leverage');
@@ -1543,13 +1589,14 @@ function initCalculatorHandlers() {
         'grid-extremum': () => saveGridData(),
         'liq-deposit':   () => saveLiqData()
     };
-    const isPlainText = (t) => t.tagName === 'INPUT' && t.type === 'text' && !t.readOnly && !(t.classList && t.classList.contains('grid-percent'));
+    const isPlainText = (t) => t.tagName === 'INPUT' && t.type === 'text' && !t.readOnly && !(t.classList && t.classList.contains('grid-percent')) && !(t.classList && t.classList.contains('risk-retrace'));
 
     root.addEventListener('input', function(e) {
         const t = e.target;
         const fn = onInput[t.id];
         if (fn) fn();
         if (t.classList && t.classList.contains('grid-percent')) { calcGrid(); saveGridData(); }
+        if (t.classList && t.classList.contains('risk-retrace')) { styleRiskRetraceInput(t); saveRiskRetraceData(); }
     });
     root.addEventListener('focusin', function(e) {
         if (isPlainText(e.target)) unformatNumberInput(e.target);
