@@ -1089,3 +1089,36 @@
         .btn-confirm-cancel:active, .btn-confirm-danger:active { transform: scale(0.98); }
         body.dark .btn-confirm-cancel { background: #0f3460; color: #ffffff; }
         body.dark .btn-confirm-danger { background: #f87171; }
+
+
+/* ====== ТАБЛИЦА % ОТКАТА / ОБЪЕМ ПОЗИЦИЙ / ПЛЕЧО (Риск менеджмент) ====== */
+.risk-grid-header { margin-top: 4px; }
+.risk-grid-header .trade-grid {
+    grid-template-columns: 1fr 1.2fr 0.8fr;
+    gap: 8px;
+}
+.risk-grid-header .trade-grid .input-group { margin-bottom: 0; }
+.risk-grid-header .trade-grid .input-group label {
+    font-size: 12px !important;
+    margin-bottom: 2px;
+}
+.risk-lev-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 0.8fr;
+    gap: 8px;
+    align-items: end;
+    margin-bottom: 4px;
+}
+.risk-lev-row .input-group { margin-bottom: 0; }
+.risk-lev-row .percent-wrap input {
+    padding: 10px 24px 10px 12px;
+    min-width: 0;
+    font-size: 20px;
+}
+.risk-lev-row .result-box {
+    margin-top: 0;
+    min-height: 46px;
+}
+@media (max-width: 380px) {
+    .risk-lev-row { grid-template-columns: 1fr 1.1fr 0.7fr; gap: 6px; }
+}
