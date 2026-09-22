@@ -15,6 +15,7 @@
     <title>Трейдинг Помощник</title>
     <link rel="stylesheet" href="styles.css">
     <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -87,8 +88,8 @@
         </div>
         <div class="grid-header">
             <div class="trade-grid">
-                <div class="input-group"><label>%</label></div>
-                <div class="input-group"><label>РЕЗУЛЬТАТ</label></div>
+                <div class="input-group"><label>% ОТКАТА</label></div>
+                <div class="input-group"><label>ЦЕНА</label></div>
                 <div style="width:44px;"></div>
             </div>
         </div>
@@ -142,6 +143,141 @@
             <label>% ДО ЛИКВИДАЦИИ</label>
             <div class="result-box">
                 <div class="result-value neutral" id="risk-liq-pct">—</div>
+            </div>
+        </div>
+        <div class="risk-grid-header">
+            <div class="trade-grid">
+                <div class="input-group"><label>% ОТКАТА</label></div>
+                <div class="input-group"><label>ОБЪЕМ ПОЗИЦИЙ</label></div>
+                <div class="input-group"><label>ПЛЕЧО</label></div>
+            </div>
+        </div>
+        <div id="risk-leverage-rows">
+            <div class="risk-lev-row" data-leverage="1">
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="percent-wrap">
+                        <input type="text" class="risk-retrace" placeholder="0">
+                        <span class="percent-suffix">%</span>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-vol">—</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-value">1</div>
+                    </div>
+                </div>
+            </div>
+            <div class="risk-lev-row" data-leverage="1.5">
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="percent-wrap">
+                        <input type="text" class="risk-retrace" placeholder="0">
+                        <span class="percent-suffix">%</span>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-vol">—</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-value">1,5</div>
+                    </div>
+                </div>
+            </div>
+            <div class="risk-lev-row" data-leverage="2">
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="percent-wrap">
+                        <input type="text" class="risk-retrace" placeholder="0">
+                        <span class="percent-suffix">%</span>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-vol">—</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-value">2</div>
+                    </div>
+                </div>
+            </div>
+            <div class="risk-lev-row" data-leverage="2.5">
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="percent-wrap">
+                        <input type="text" class="risk-retrace" placeholder="0">
+                        <span class="percent-suffix">%</span>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-vol">—</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-value">2,5</div>
+                    </div>
+                </div>
+            </div>
+            <div class="risk-lev-row" data-leverage="3">
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="percent-wrap">
+                        <input type="text" class="risk-retrace" placeholder="0">
+                        <span class="percent-suffix">%</span>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-vol">—</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-value">3</div>
+                    </div>
+                </div>
+            </div>
+            <div class="risk-lev-row" data-leverage="3.5">
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="percent-wrap">
+                        <input type="text" class="risk-retrace" placeholder="0">
+                        <span class="percent-suffix">%</span>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-vol">—</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-value">3,5</div>
+                    </div>
+                </div>
+            </div>
+            <div class="risk-lev-row" data-leverage="4">
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="percent-wrap">
+                        <input type="text" class="risk-retrace" placeholder="0">
+                        <span class="percent-suffix">%</span>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-vol">—</div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <div class="result-box" style="margin-top:0;">
+                        <div class="result-value neutral risk-lev-value">4</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
