@@ -805,7 +805,7 @@ function initCalcInputs() {
     const calcInputs = [
         'calc1-open', 'calc1-close',
         'calc2-price', 'calc2-percent',
-        'risk-deposit',
+        'risk-deposit', 'risk-leverage',
         'calc4-btc-price', 'calc4-btc-qty', 'calc4-usd-qty',
         'calc5-btc-price', 'calc5-gold-price', 'calc5-btc-qty', 'calc5-gold-qty', 'calc5-usd-qty'
     ];
@@ -2189,8 +2189,8 @@ function renderFuturesQuotes(prices, positions) {
         if (tickerVolume > 0) {
             avgEntry = tickerWeighted / tickerVolume;
             const pct = (tickerPnl / tickerVolume) * 100;
-            pnlText = (tickerPnl >= 0 ? '+' : '−') + formatNumber(Math.abs(tickerPnl), 2) + ' $';
-            pctText = (pct >= 0 ? '+' : '−') + Math.abs(pct).toFixed(2) + '%';
+            pnlText = (tickerPnl >= 0 ? '+' : '−') + formatNumber(Math.abs(tickerPnl), 0) + ' $';
+            pctText = (pct >= 0 ? '+' : '−') + Math.abs(pct).toFixed(0) + '%';
             pnlClass = tickerPnl >= 0 ? 'green' : 'red';
         }
         const decimals = price >= 10000 ? 1 : price >= 100 ? 2 : price >= 1 ? 4 : 6;
@@ -2262,6 +2262,15 @@ function calcFuturesLiq() {
         }
 
         const avgPrice = weightedSum / totalVolume;
+        // Текущая цена: объёмно-взвешенная по котировкам из строки внизу карточки.
+        // Если котировки ещё не загружены — временно берём среднюю цену входа.
+        let currentWeighted = 0;
+        positions.forEach(function(t) {
+            const sum = parseNumber(t.buySum);
+            const cur = futuresTickerPrices[t.ticker];
+            if (!isNaN(sum) && cur && cur > 0) currentWeighted += sum * cur;
+        });
+        const currentPrice = currentWeighted > 0 ? currentWeighted / totalVolume : avgPrice;
         const dep = isNaN(deposit) ? 0 : deposit;
 
         if (marginEl) marginEl.textContent = formatNumber(totalMargin, 0);
@@ -2320,7 +2329,7 @@ function calcFuturesLiq() {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
-                const liq = avgPrice * (1 - 1 / leverage + LIQ_MMR);
+                const liq = currentPrice * (1 - 1 / leverage + LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 0); liqPriceEl.className = 'result-value red'; }
                 if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
@@ -2333,7 +2342,7 @@ function calcFuturesLiq() {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
-                const liq = avgPrice * (1 + 1 / leverage - LIQ_MMR);
+                const liq = currentPrice * (1 + 1 / leverage - LIQ_MMR);
                 const pct = (1 / leverage - LIQ_MMR) * 100;
                 if (liqPriceEl) { liqPriceEl.textContent = formatNumber(liq, 0); liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = Math.round(pct) + '%'; liqPctEl.className = 'result-value orange'; }
@@ -2346,8 +2355,8 @@ function calcFuturesLiq() {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Нет риска'; liqPriceEl.className = 'result-value green'; }
                 if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
             } else {
-                const liqL = avgPrice * (1 - 1 / leverage + LIQ_MMR);
-                const liqS = avgPrice * (1 + 1 / leverage - LIQ_MMR);
+                const liqL = currentPrice * (1 - 1 / leverage + LIQ_MMR);
+                const liqS = currentPrice * (1 + 1 / leverage - LIQ_MMR);
                 if (liqPriceEl) {
                     liqPriceEl.innerHTML = '<span class="liq-mix-long">' + formatNumber(liqL, 0) + '</span> / <span class="liq-mix-short">' + formatNumber(liqS, 0) + '</span>';
                     liqPriceEl.className = 'result-value';
