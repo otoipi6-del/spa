@@ -2263,14 +2263,14 @@ function calcFuturesLiq() {
 
         const avgPrice = weightedSum / totalVolume;
         // Текущая цена: объёмно-взвешенная по котировкам из строки внизу карточки.
-        // Если котировки ещё не загружены — временно берём среднюю цену входа.
+        // Без котировок цена ликвидации не считается — показываем «—», чтобы не вводить в заблуждение.
         let currentWeighted = 0;
         positions.forEach(function(t) {
             const sum = parseNumber(t.buySum);
             const cur = futuresTickerPrices[t.ticker];
             if (!isNaN(sum) && cur && cur > 0) currentWeighted += sum * cur;
         });
-        const currentPrice = currentWeighted > 0 ? currentWeighted / totalVolume : avgPrice;
+        const currentPrice = currentWeighted > 0 ? currentWeighted / totalVolume : null;
         const dep = isNaN(deposit) ? 0 : deposit;
 
         if (marginEl) marginEl.textContent = formatNumber(totalMargin, 0);
@@ -2321,6 +2321,13 @@ function calcFuturesLiq() {
         const liquidated = effectiveDeposit <= 0;
 
         const liqPctEl = document.getElementById('futures-liq-pct');
+
+        // Нет актуальных котировок — цену ликвидации не показываем совсем
+        if (currentPrice === null && !liquidated) {
+            if (liqPriceEl) { liqPriceEl.textContent = '—'; liqPriceEl.className = 'result-value'; }
+            if (liqPctEl) { liqPctEl.textContent = '—'; liqPctEl.className = 'result-value orange'; }
+            return;
+        }
         if (dir === 'LONG') {
             if (liquidated) {
                 if (liqPriceEl) { liqPriceEl.textContent = 'Ликвидация!'; liqPriceEl.className = 'result-value red'; }
