@@ -2262,21 +2262,27 @@ function calcFuturesLiq() {
         }
 
         const avgPrice = weightedSum / totalVolume;
-        // Текущая цена: объёмно-взвешенная по котировкам из строки внизу карточки.
-        // Без котировок цена ликвидации не считается — показываем «—», чтобы не вводить в заблуждение.
-        let currentWeighted = 0;
-        let pricedVolume = 0;
-        positions.forEach(function(t) {
-            const sum = parseNumber(t.buySum);
-            const cur = futuresTickerPrices[t.ticker];
-            if (!isNaN(sum) && cur && cur > 0) {
-                currentWeighted += sum * cur;
-                pricedVolume += sum;
-            }
-        });
-        // Только позиции с актуальной котировкой входят в средневзвешенную цену —
-        // иначе позиции без котировки "размывали" бы среднее вниз
-        const currentPrice = pricedVolume > 0 ? currentWeighted / pricedVolume : null;
+        // Текущая цена — та котировка, что отображается внизу карточки.
+        // Один актив: берём его цену как есть, без всякого усреднения.
+        let currentPrice = null;
+        const posTickers = [...new Set(positions.map(t => t.ticker).filter(Boolean))];
+        if (posTickers.length === 1) {
+            const p = futuresTickerPrices[posTickers[0]];
+            if (p && p > 0) currentPrice = p;
+        } else if (posTickers.length > 1) {
+            // Несколько разных активов: единая цена ликвидации возможна только по взвешенной цене
+            let currentWeighted = 0;
+            let pricedVolume = 0;
+            positions.forEach(function(t) {
+                const sum = parseNumber(t.buySum);
+                const cur = futuresTickerPrices[t.ticker];
+                if (!isNaN(sum) && cur && cur > 0) {
+                    currentWeighted += sum * cur;
+                    pricedVolume += sum;
+                }
+            });
+            currentPrice = pricedVolume > 0 ? currentWeighted / pricedVolume : null;
+        }
         const dep = isNaN(deposit) ? 0 : deposit;
 
         if (marginEl) marginEl.textContent = formatNumber(totalMargin, 0);
