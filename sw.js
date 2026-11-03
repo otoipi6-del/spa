@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trading-helper-v5';
+const CACHE_NAME = 'trading-helper-v6';
 const ASSETS = ['./', './index.html', './styles.css', './app.js', './config.js', './manifest.json',
     './apple-touch-icon.png', './icon-192.png', './icon-512.png'];
 
