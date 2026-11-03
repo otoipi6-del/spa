@@ -2265,12 +2265,18 @@ function calcFuturesLiq() {
         // Текущая цена: объёмно-взвешенная по котировкам из строки внизу карточки.
         // Без котировок цена ликвидации не считается — показываем «—», чтобы не вводить в заблуждение.
         let currentWeighted = 0;
+        let pricedVolume = 0;
         positions.forEach(function(t) {
             const sum = parseNumber(t.buySum);
             const cur = futuresTickerPrices[t.ticker];
-            if (!isNaN(sum) && cur && cur > 0) currentWeighted += sum * cur;
+            if (!isNaN(sum) && cur && cur > 0) {
+                currentWeighted += sum * cur;
+                pricedVolume += sum;
+            }
         });
-        const currentPrice = currentWeighted > 0 ? currentWeighted / totalVolume : null;
+        // Только позиции с актуальной котировкой входят в средневзвешенную цену —
+        // иначе позиции без котировки "размывали" бы среднее вниз
+        const currentPrice = pricedVolume > 0 ? currentWeighted / pricedVolume : null;
         const dep = isNaN(deposit) ? 0 : deposit;
 
         if (marginEl) marginEl.textContent = formatNumber(totalMargin, 0);
